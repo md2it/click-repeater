@@ -19,6 +19,11 @@
     "storage",
     "tabs"
   ],
+  "commands": {
+    "macros-prefix": {
+      "description": "Show macros shortcut hint"
+    }
+  },
   "content_scripts": [
     {
       "matches": [

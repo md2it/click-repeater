@@ -59,6 +59,9 @@ const TRACKER_DEFAULT_COLOR = "#ff0000";
 const TRACKER_ACTIVE_COLOR = "#ff0000";
 const TRACKER_ACTIVE_DURATION_MS = 50;
 const TRACKER_ELEMENT_ID = "__macros_repeater_tracker";
+const SHORTCUT_PREFIX_CODE = "KeyX";
+const SHORTCUT_RUN_DEFAULT_CODE = "KeyM";
+const SHORTCUT_HINT_DURATION_MS = 3000;
 
 const executionState = {
   isRunning: false,
@@ -73,6 +76,12 @@ const trackerState = {
   pulseTimerId: null
 };
 
+const shortcutState = {
+  isPrefixDown: false,
+  isWaitingForAction: false,
+  hintTimerId: null
+};
+
 function randomBetween(min, max) {
   return min + Math.random() * (max - min);
 }
@@ -83,6 +92,50 @@ function clamp(value, min, max) {
 
 function sleep(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function sendRuntimeMessage(message) {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(message, (response) => {
+      if (chrome.runtime.lastError) {
+        resolve({ ok: false });
+        return;
+      }
+
+      resolve(response ?? { ok: false });
+    });
+  });
+}
+
+function isMacPlatform() {
+  return /\bMac/.test(navigator.platform);
+}
+
+function isPrefixShortcut(event) {
+  const hasPlatformModifier = isMacPlatform() ? event.metaKey : event.ctrlKey;
+  return event.code === SHORTCUT_PREFIX_CODE && event.shiftKey && hasPlatformModifier;
+}
+
+function clearShortcutHintTimer() {
+  if (shortcutState.hintTimerId !== null) {
+    window.clearTimeout(shortcutState.hintTimerId);
+    shortcutState.hintTimerId = null;
+  }
+}
+
+function stopWaitingForShortcutAction() {
+  clearShortcutHintTimer();
+  shortcutState.isWaitingForAction = false;
+}
+
+function startWaitingForShortcutAction() {
+  clearShortcutHintTimer();
+  shortcutState.isWaitingForAction = true;
+  shortcutState.hintTimerId = window.setTimeout(() => {
+    shortcutState.isWaitingForAction = false;
+    shortcutState.hintTimerId = null;
+  }, SHORTCUT_HINT_DURATION_MS);
+  void sendRuntimeMessage({ type: "shortcut-prefix-activated" });
 }
 
 function trackerDefaultIconSvg() {
@@ -527,6 +580,41 @@ document.addEventListener(
       y: event.clientY,
       selector
     });
+  },
+  true
+);
+
+document.addEventListener(
+  "keydown",
+  (event) => {
+    if (event.key === "Escape") {
+      if (executionState.isRunning) {
+        executionState.stopRequested = true;
+        void sendRuntimeMessage({ type: "shortcut-stop-execution" });
+      }
+      return;
+    }
+
+    if (isPrefixShortcut(event)) {
+      shortcutState.isPrefixDown = true;
+      return;
+    }
+
+    if (shortcutState.isWaitingForAction && event.code === SHORTCUT_RUN_DEFAULT_CODE) {
+      stopWaitingForShortcutAction();
+      void sendRuntimeMessage({ type: "shortcut-run-default" });
+    }
+  },
+  true
+);
+
+document.addEventListener(
+  "keyup",
+  (event) => {
+    if (event.code === SHORTCUT_PREFIX_CODE && shortcutState.isPrefixDown) {
+      shortcutState.isPrefixDown = false;
+      startWaitingForShortcutAction();
+    }
   },
   true
 );

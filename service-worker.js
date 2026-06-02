@@ -1,10 +1,18 @@
 const RECORDING_SESSION_KEY = "recording_session";
 const EXECUTION_STATE_KEY = "execution_state";
 const EXECUTION_LAST_EVENT_KEY = "execution_last_event";
+const MACROS_STORAGE_KEY = "macros_list";
+const DEFAULT_MACRO_ID_KEY = "default_macro_id";
 const BADGE_BACKGROUND_COLOR = "#012292";
 const BADGE_TEXT_COLOR = "#ffffff";
 const CREATE_BADGE_TEXT = "REC";
 const RUN_BADGE_TEXT = "RUN";
+const SHORTCUT_HINT_BADGE_TEXT = "M";
+const SHORTCUT_HINT_BADGE_BACKGROUND_COLOR = "#ffffff";
+const SHORTCUT_HINT_BADGE_TEXT_COLOR = "#000000";
+const SHORTCUT_HINT_DURATION_MS = 3000;
+
+let shortcutHintTimerId = null;
 
 function buildMacroName(domain) {
   const now = new Date();
@@ -42,6 +50,21 @@ async function clearSession() {
 async function readExecutionState() {
   const data = await chrome.storage.local.get(EXECUTION_STATE_KEY);
   return data?.[EXECUTION_STATE_KEY] ?? null;
+}
+
+async function readMacros() {
+  const data = await chrome.storage.local.get(MACROS_STORAGE_KEY);
+  const storedMacros = data?.[MACROS_STORAGE_KEY];
+  if (!Array.isArray(storedMacros)) {
+    return [];
+  }
+
+  return storedMacros.filter((macro) => macro && typeof macro.id === "string");
+}
+
+async function readDefaultMacroId() {
+  const data = await chrome.storage.local.get(DEFAULT_MACRO_ID_KEY);
+  return typeof data?.[DEFAULT_MACRO_ID_KEY] === "string" ? data[DEFAULT_MACRO_ID_KEY] : null;
 }
 
 async function writeExecutionState(state) {
@@ -138,6 +161,13 @@ async function setActionBadgeText(text) {
   }
 }
 
+function clearShortcutHintTimer() {
+  if (shortcutHintTimerId !== null) {
+    clearTimeout(shortcutHintTimerId);
+    shortcutHintTimerId = null;
+  }
+}
+
 async function getRuntimeExecutionState() {
   const state = await readExecutionState();
   if (!state?.isRunning) {
@@ -177,6 +207,8 @@ async function openPopupWithCompletionMessage() {
 }
 
 async function syncActionBadge() {
+  clearShortcutHintTimer();
+
   const session = await readSession();
   if (session?.isActive) {
     await setActionBadgeText(CREATE_BADGE_TEXT);
@@ -190,6 +222,55 @@ async function syncActionBadge() {
   }
 
   await setActionBadgeText("");
+}
+
+async function showShortcutHintBadge() {
+  const session = await readSession();
+  const executionState = await getRuntimeExecutionState();
+  if (session?.isActive || executionState?.isRunning) {
+    await syncActionBadge();
+    return;
+  }
+
+  clearShortcutHintTimer();
+  await chrome.action.setBadgeText({ text: SHORTCUT_HINT_BADGE_TEXT });
+  await chrome.action.setBadgeBackgroundColor({ color: SHORTCUT_HINT_BADGE_BACKGROUND_COLOR });
+  if (typeof chrome.action.setBadgeTextColor === "function") {
+    await chrome.action.setBadgeTextColor({ color: SHORTCUT_HINT_BADGE_TEXT_COLOR });
+  }
+  shortcutHintTimerId = setTimeout(() => {
+    shortcutHintTimerId = null;
+    void syncActionBadge();
+  }, SHORTCUT_HINT_DURATION_MS);
+}
+
+async function startDefaultMacroFromTab(tabId) {
+  if (!Number.isInteger(tabId)) {
+    return { ok: false, error: "tab_id_required" };
+  }
+
+  const defaultMacroId = await readDefaultMacroId();
+  if (!defaultMacroId) {
+    return { ok: false, error: "default_macro_missing" };
+  }
+
+  const macros = await readMacros();
+  const macro = macros.find((item) => item.id === defaultMacroId);
+  if (!macro) {
+    return { ok: false, error: "default_macro_missing" };
+  }
+
+  const steps = Array.isArray(macro.steps) ? macro.steps.filter((step) => typeof step === "string" && step.trim()) : [];
+  const repeatsRaw = Number(macro.repeats);
+  const repeats = Number.isFinite(repeatsRaw) && repeatsRaw > 0 ? Math.floor(repeatsRaw) : 1;
+  return startExecutionOnTab({
+    tabId,
+    macroId: macro.id,
+    macroName: typeof macro.name === "string" && macro.name.trim() ? macro.name.trim() : "macros",
+    repeats,
+    trackMoves: Boolean(macro.displayMoves ?? macro.trackMoves),
+    steps
+  });
 }
 
 void syncActionBadge();
@@ -437,6 +518,57 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         failedMacroName: lastEvent?.type === "failed" ? lastEvent.macroName : undefined
       });
     })().catch(() => sendResponse({ ok: false, state: { isRunning: false } }));
+
+    return true;
+  }
+
+  if (message.type === "shortcut-prefix-activated") {
+    (async () => {
+      await showShortcutHintBadge();
+      sendResponse({ ok: true, hint: SHORTCUT_HINT_BADGE_TEXT, timeoutMs: SHORTCUT_HINT_DURATION_MS });
+    })().catch(() => sendResponse({ ok: false, error: "shortcut_hint_failed" }));
+
+    return true;
+  }
+
+  if (message.type === "shortcut-run-default") {
+    (async () => {
+      clearShortcutHintTimer();
+      const tabId = Number.isInteger(sender?.tab?.id) ? sender.tab.id : null;
+      const result = await startDefaultMacroFromTab(tabId);
+      if (!result?.ok) {
+        await syncActionBadge();
+      }
+      sendResponse(result);
+    })().catch(() => sendResponse({ ok: false, error: "shortcut_run_default_failed" }));
+
+    return true;
+  }
+
+  if (message.type === "shortcut-stop-execution") {
+    (async () => {
+      const currentState = await getRuntimeExecutionState();
+      if (!currentState?.isRunning) {
+        await syncActionBadge();
+        sendResponse({ ok: true, wasRunning: false });
+        return;
+      }
+
+      if (Number.isInteger(currentState.tabId)) {
+        try {
+          await chrome.tabs.sendMessage(currentState.tabId, { type: "execution-stop" });
+        } catch {
+          // Ignore: tab may be closed or unavailable.
+        }
+      }
+
+      await stopExecutionWithEvent({
+        type: "stopped",
+        macroId: currentState.macroId,
+        macroName: currentState.macroName
+      });
+      sendResponse({ ok: true, wasRunning: true, stoppedMacroName: currentState.macroName });
+    })().catch(() => sendResponse({ ok: false, error: "shortcut_stop_failed" }));
 
     return true;
   }
