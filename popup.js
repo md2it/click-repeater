@@ -22,7 +22,9 @@ const refs = {
   editModalTitle: document.getElementById("edit-modal-title"),
   editName: document.getElementById("edit-name"),
   editRepeats: document.getElementById("edit-repeats"),
-  editTrackMoves: document.getElementById("edit-track-moves"),
+  editDisplayMovesToggle: document.getElementById("edit-display-moves-toggle"),
+  editDisplayMovesIcon: document.getElementById("edit-display-moves-icon"),
+  editDisplayMoves: document.getElementById("edit-display-moves"),
   editSteps: document.getElementById("edit-steps"),
   deleteModal: document.getElementById("delete-modal"),
   deleteMacroName: document.getElementById("delete-macro-name"),
@@ -43,9 +45,26 @@ const refs = {
 const iconSet = {
   // Icons copied from official Lucide repository.
   play: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" /></svg>',
+  eye: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>',
+  eyeOff: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-.722-3.25" /><path d="M2 8a10.645 10.645 0 0 0 20 0" /><path d="m20 15-1.726-2.05" /><path d="m4 15 1.726-2.05" /><path d="m9 18 .722-3.25" /></svg>',
   trash: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6" /><path d="M14 11v6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>',
   squarePen: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" /></svg>'
 };
+
+function getDisplayMovesValue(macro) {
+  return Boolean(macro?.displayMoves ?? macro?.trackMoves);
+}
+
+function setEditDisplayMoves(enabled) {
+  const displayMovesEnabled = Boolean(enabled);
+  refs.editDisplayMoves.checked = displayMovesEnabled;
+  refs.editDisplayMovesIcon.innerHTML = displayMovesEnabled ? iconSet.eye : iconSet.eyeOff;
+  refs.editDisplayMovesToggle.classList.toggle("display-moves-off", !displayMovesEnabled);
+  const displayMovesTitle = displayMovesEnabled ? "Display moves: on" : "Display moves: off";
+  refs.editDisplayMovesToggle.setAttribute("title", displayMovesTitle);
+  refs.editDisplayMovesToggle.setAttribute("aria-label", displayMovesTitle);
+  refs.editDisplayMovesToggle.setAttribute("aria-pressed", String(displayMovesEnabled));
+}
 
 function buildDefaultMacroName() {
   const now = new Date();
@@ -92,6 +111,7 @@ async function readMacrosFromStorage() {
       .filter((item) => item && typeof item.id === "string" && typeof item.name === "string")
       .map((item) => ({
         ...item,
+        displayMoves: Boolean(item.displayMoves ?? item.trackMoves),
         trackMoves: Boolean(item.trackMoves)
       }));
   } catch {
@@ -256,7 +276,7 @@ async function startExecution(macroId) {
     repeats: macro.repeats,
     tabId: activeTab.id,
     steps,
-    trackMoves: Boolean(macro.trackMoves)
+    trackMoves: getDisplayMovesValue(macro)
   });
 
   if (!response?.ok) {
@@ -318,6 +338,10 @@ function render() {
   }
 
   for (const macro of macros) {
+    const displayMovesEnabled = getDisplayMovesValue(macro);
+    const displayMovesTitle = displayMovesEnabled ? "Display moves: on" : "Display moves: off";
+    const displayMovesIcon = displayMovesEnabled ? iconSet.eye : iconSet.eyeOff;
+    const displayMovesClassName = displayMovesEnabled ? "" : "display-moves-off";
     const row = document.createElement("li");
     row.className = "macro-row";
     row.innerHTML = `
@@ -326,6 +350,7 @@ function render() {
         <span class="macro-name ${macro.id === defaultMacroId ? "default" : ""}">${macro.name}</span>
       </div>
       <div class="macro-actions">
+        <button class="icon-btn ${displayMovesClassName}" type="button" data-action="toggle-display-moves" data-id="${macro.id}" title="${displayMovesTitle}" aria-label="${displayMovesTitle}">${displayMovesIcon}</button>
         <button class="icon-btn" type="button" data-action="edit" data-id="${macro.id}" title="Редактировать">${iconSet.squarePen}</button>
         <button class="icon-btn" type="button" data-action="delete" data-id="${macro.id}" title="Удалить">${iconSet.trash}</button>
       </div>
@@ -354,7 +379,7 @@ function openEditModal(macroId) {
     refs.editModalTitle.textContent = "Редактирование macros";
     refs.editName.value = macro.name;
     refs.editRepeats.value = String(macro.repeats ?? 1);
-    refs.editTrackMoves.checked = Boolean(macro.trackMoves);
+    setEditDisplayMoves(getDisplayMovesValue(macro));
     renderEditSteps(Array.isArray(macro.steps) ? macro.steps : []);
     refs.editModal.classList.remove("hidden");
     syncPopupHeight();
@@ -366,7 +391,7 @@ function openEditModal(macroId) {
   refs.editModalTitle.textContent = "Создание macros";
   refs.editName.value = buildDefaultMacroName();
   refs.editRepeats.value = "1";
-  refs.editTrackMoves.checked = false;
+  setEditDisplayMoves(false);
   renderEditSteps([]);
   refs.editModal.classList.remove("hidden");
   syncPopupHeight();
@@ -514,6 +539,7 @@ async function completeCreateModeIfNeeded() {
     id: createMacroId(),
     name: typeof response.macroName === "string" && response.macroName.trim() ? response.macroName : buildDefaultMacroName(),
     repeats: 1,
+    displayMoves: false,
     trackMoves: false,
     steps: Array.isArray(response.steps) ? response.steps.filter((step) => typeof step === "string") : []
   };
@@ -574,6 +600,23 @@ refs.list.addEventListener("click", (event) => {
     return;
   }
 
+  if (action === "toggle-display-moves") {
+    const macro = macros.find((item) => item.id === macroId);
+    if (!macro) {
+      setStatus("Macros не найден.");
+      return;
+    }
+
+    const nextDisplayMoves = !getDisplayMovesValue(macro);
+    macro.displayMoves = nextDisplayMoves;
+    macro.trackMoves = nextDisplayMoves;
+    void persistMacros().then(() => {
+      render();
+      setStatus(`Display moves ${nextDisplayMoves ? "включен" : "выключен"} для "${macro.name}".`);
+    });
+    return;
+  }
+
   if (action === "delete") {
     openDeleteModal(macroId);
   }
@@ -591,6 +634,10 @@ refs.defaultEditBtn.addEventListener("click", () => {
   openDefaultModal();
 });
 
+refs.editDisplayMovesToggle.addEventListener("click", () => {
+  setEditDisplayMoves(!refs.editDisplayMoves.checked);
+});
+
 refs.saveEditBtn.addEventListener("click", async () => {
   const name = refs.editName.value.trim();
   if (!name) {
@@ -600,7 +647,7 @@ refs.saveEditBtn.addEventListener("click", async () => {
 
   const repeats = Number(refs.editRepeats.value);
   const validRepeats = Number.isFinite(repeats) && repeats > 0 ? repeats : 1;
-  const trackMoves = Boolean(refs.editTrackMoves.checked);
+  const displayMoves = Boolean(refs.editDisplayMoves.checked);
 
   if (state.modalMode === "edit" && state.editMacroId) {
     const macro = macros.find((item) => item.id === state.editMacroId);
@@ -612,7 +659,8 @@ refs.saveEditBtn.addEventListener("click", async () => {
 
     macro.name = name;
     macro.repeats = validRepeats;
-    macro.trackMoves = trackMoves;
+    macro.displayMoves = displayMoves;
+    macro.trackMoves = displayMoves;
     if (!Array.isArray(macro.steps)) {
       macro.steps = [];
     }
@@ -632,7 +680,8 @@ refs.saveEditBtn.addEventListener("click", async () => {
     id: createMacroId(),
     name,
     repeats: validRepeats,
-    trackMoves,
+    displayMoves,
+    trackMoves: displayMoves,
     steps: []
   });
   await persistMacros();

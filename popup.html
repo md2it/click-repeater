@@ -40,9 +40,13 @@
           <input id="edit-repeats" type="number" min="1" step="1" />
         </label>
 
-        <label class="field field-checkbox">
-          <input id="edit-track-moves" type="checkbox" />
-          <span>Track moves</span>
+        <label class="field">
+          <span>Display moves</span>
+          <button id="edit-display-moves-toggle" class="display-moves-toggle" type="button" aria-pressed="false">
+            <span id="edit-display-moves-icon" class="display-moves-toggle-icon" aria-hidden="true"></span>
+            <span class="display-moves-toggle-label">Display moves</span>
+          </button>
+          <input id="edit-display-moves" type="checkbox" class="visually-hidden" />
         </label>
 
         <section class="field">

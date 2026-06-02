@@ -63,6 +63,71 @@ async function takeExecutionLastEvent() {
   return event;
 }
 
+async function startExecutionOnTab({ tabId, macroId, macroName, repeats, trackMoves, steps }) {
+  const currentState = await getRuntimeExecutionState();
+  if (currentState?.isRunning) {
+    return { ok: false, error: "already_running", state: currentState };
+  }
+
+  if (!Number.isInteger(tabId)) {
+    return { ok: false, error: "tab_id_required" };
+  }
+
+  if (!Array.isArray(steps) || !steps.length) {
+    return { ok: false, error: "empty_steps" };
+  }
+
+  const totalSteps = steps.length * repeats;
+  const state = {
+    isRunning: true,
+    macroId,
+    macroName,
+    tabId,
+    repeats,
+    startedAt: Date.now(),
+    completedSteps: 0,
+    totalSteps,
+    remainingMs: totalSteps * 1000
+  };
+  await writeExecutionState(state);
+  await syncActionBadge();
+
+  try {
+    const tabResponse = await chrome.tabs.sendMessage(tabId, {
+      type: "execution-run",
+      macroId,
+      macroName,
+      repeats,
+      steps,
+      trackMoves
+    });
+    if (!tabResponse?.ok) {
+      await clearExecutionState();
+      await syncActionBadge();
+      return { ok: false, error: tabResponse?.error ?? "execution_run_failed" };
+    }
+  } catch {
+    await clearExecutionState();
+    await syncActionBadge();
+    return { ok: false, error: "tab_unreachable" };
+  }
+
+  return {
+    ok: true,
+    state: {
+      isRunning: true,
+      macroId: state.macroId,
+      macroName: state.macroName,
+      tabId: state.tabId,
+      repeats: state.repeats,
+      startedAt: state.startedAt,
+      completedSteps: state.completedSteps,
+      totalSteps: state.totalSteps,
+      remainingMs: state.remainingMs
+    }
+  };
+}
+
 async function setActionBadgeText(text) {
   await chrome.action.setBadgeText({ text });
   if (text) {
@@ -233,12 +298,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.type === "execution-start") {
     (async () => {
-      const currentState = await getRuntimeExecutionState();
-      if (currentState?.isRunning) {
-        sendResponse({ ok: false, error: "already_running", state: currentState });
-        return;
-      }
-
       const macroId = typeof message.macroId === "string" ? message.macroId : "";
       const macroName = typeof message.macroName === "string" && message.macroName.trim() ? message.macroName.trim() : "macros";
       const repeatsRaw = Number(message.repeats);
@@ -246,67 +305,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const tabId = Number.isInteger(message.tabId) ? message.tabId : null;
       const trackMoves = Boolean(message.trackMoves);
       const steps = Array.isArray(message.steps) ? message.steps.filter((step) => typeof step === "string" && step.trim()) : [];
-      if (tabId === null) {
-        sendResponse({ ok: false, error: "tab_id_required" });
-        return;
-      }
-
-      if (steps.length === 0) {
-        sendResponse({ ok: false, error: "empty_steps" });
-        return;
-      }
-
-      const totalSteps = steps.length * repeats;
-      const state = {
-        isRunning: true,
-        macroId,
-        macroName,
-        tabId,
-        repeats,
-        startedAt: Date.now(),
-        completedSteps: 0,
-        totalSteps,
-        remainingMs: totalSteps * 1000
-      };
-      await writeExecutionState(state);
-      await syncActionBadge();
-
-      try {
-        const tabResponse = await chrome.tabs.sendMessage(tabId, {
-          type: "execution-run",
-          macroId,
-          macroName,
-          repeats,
-          steps,
-          trackMoves
-        });
-        if (!tabResponse?.ok) {
-          await clearExecutionState();
-          await syncActionBadge();
-          sendResponse({ ok: false, error: tabResponse?.error ?? "execution_run_failed" });
-          return;
-        }
-      } catch {
-        await clearExecutionState();
-        await syncActionBadge();
-        sendResponse({ ok: false, error: "tab_unreachable" });
-        return;
-      }
-
-      sendResponse({
-        ok: true,
-        state: {
-          isRunning: true,
-          macroId: state.macroId,
-          macroName: state.macroName,
-          tabId: state.tabId,
-          repeats: state.repeats,
-          startedAt: state.startedAt,
-          completedSteps: state.completedSteps,
-          totalSteps: state.totalSteps,
-          remainingMs: state.remainingMs
-        }
-      });
+      const result = await startExecutionOnTab({ tabId, macroId, macroName, repeats, trackMoves, steps });
+      sendResponse(result);
     })().catch(() => sendResponse({ ok: false, error: "execution_start_failed" }));
 
     return true;
