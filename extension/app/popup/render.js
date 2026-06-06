@@ -17,6 +17,8 @@ function render() {
     const displayMovesTitle = displayMovesEnabled ? "Display moves: on" : "Display moves: off";
     const displayMovesIcon = displayMovesEnabled ? iconSet.eye : iconSet.eyeOff;
     const displayMovesClassName = displayMovesEnabled ? "display-moves-on" : "display-moves-off";
+    const modeIcon = (macro.mode ?? "position") === "element" ? iconSet.code : iconSet.crosshair;
+    const modeTitle = (macro.mode ?? "position") === "element" ? "Mode: Element" : "Mode: Position";
     const isDefault = macro.id === defaultMacroId;
     const defaultTitle = isDefault ? "Дефолтный macros" : "Сделать дефолтным";
     const defaultDetail = isDefault ? "Работает по shortcut" : "Чтобы работал с shortcut";
@@ -25,11 +27,12 @@ function render() {
     row.innerHTML = `
       <div class="macro-main">
         <button class="icon-btn run-btn" type="button" data-action="run" data-id="${macro.id}" title="Запуск режима исполнения">${iconSet.play}</button>
+        <span class="macro-mode-icon" aria-hidden="true" title="${modeTitle}">${modeIcon}</span>
+        <span class="macro-display-moves-icon ${displayMovesClassName}" aria-hidden="true" title="${displayMovesTitle}">${displayMovesIcon}</span>
         <span class="macro-name">${macro.name}</span>
       </div>
       <div class="macro-actions">
         <button class="icon-btn default-btn ${isDefault ? "active" : ""}" type="button" data-action="set-default" data-id="${macro.id}" data-tooltip="${defaultTitle}" data-tooltip-detail="${defaultDetail}" aria-label="${defaultTitle}. ${defaultDetail}" aria-pressed="${isDefault}">${iconSet.star}</button>
-        <button class="icon-btn ${displayMovesClassName}" type="button" data-action="toggle-display-moves" data-id="${macro.id}" title="${displayMovesTitle}" aria-label="${displayMovesTitle}">${displayMovesIcon}</button>
         <input class="macro-repeats repeat-input" type="number" min="1" max="999" step="1" inputmode="numeric" value="${normalizeRepeats(macro.repeats)}" data-action="set-repeats" data-id="${macro.id}" title="Repeat" aria-label="Repeat" />
         <button class="icon-btn" type="button" data-action="edit" data-id="${macro.id}" title="Редактировать">${iconSet.squarePen}</button>
         <button class="icon-btn delete-btn" type="button" data-action="delete" data-id="${macro.id}" title="Удалить" aria-label="Удалить">${iconSet.trash}</button>

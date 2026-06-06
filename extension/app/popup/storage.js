@@ -30,10 +30,12 @@ function setEditDisplayMoves(enabled) {
 
 function setEditMode(mode) {
   state.editMode = mode === "element" ? "element" : "position";
+  refs.editModeIcon.innerHTML = state.editMode === "element" ? iconSet.code : iconSet.crosshair;
   refs.editModeLabel.textContent = state.editMode === "element" ? "Element" : "Position";
   const modeTitle = state.editMode === "element" ? "Mode: Element" : "Mode: Position";
   refs.editModeToggle.setAttribute("title", modeTitle);
   refs.editModeToggle.setAttribute("aria-label", modeTitle);
+  refs.editModeToggle.setAttribute("aria-pressed", String(state.editMode === "element"));
 }
 
 function setEditDefault(enabled) {

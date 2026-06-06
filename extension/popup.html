@@ -25,7 +25,7 @@
           <p id="status-line" class="status-line" role="status" aria-live="polite"></p>
 
           <section>
-            <ul id="macros-list" class="macros-list" aria-label="Список macros"></ul>
+            <ul id="macros-list" class="macros-list" aria-label="Список MACROSES"></ul>
           </section>
 
           <button id="stop-execution-btn" class="btn btn-danger hidden" type="button">STOP</button>
@@ -108,19 +108,20 @@
         </div>
 
         <div class="edit-settings">
-          <button id="edit-display-moves-toggle" class="setting-toggle display-moves-toggle" type="button" aria-pressed="false">
-            <span id="edit-display-moves-icon" class="display-moves-toggle-icon" aria-hidden="true"></span>
-            <span id="edit-display-moves-label" class="display-moves-toggle-label">Visible</span>
-          </button>
-          <input id="edit-display-moves" type="checkbox" class="visually-hidden" />
-
           <button id="edit-default-toggle" class="setting-toggle default-toggle" type="button" aria-pressed="false">
             <span id="edit-default-icon" class="default-toggle-icon" aria-hidden="true"></span>
             <span class="setting-toggle-label">Default</span>
           </button>
           <input id="edit-default" type="checkbox" class="visually-hidden" />
 
+          <button id="edit-display-moves-toggle" class="setting-toggle display-moves-toggle" type="button" aria-pressed="false">
+            <span id="edit-display-moves-icon" class="display-moves-toggle-icon" aria-hidden="true"></span>
+            <span id="edit-display-moves-label" class="display-moves-toggle-label">Visible</span>
+          </button>
+          <input id="edit-display-moves" type="checkbox" class="visually-hidden" />
+
           <button id="edit-mode-toggle" class="setting-toggle mode-toggle" type="button">
+            <span id="edit-mode-icon" class="mode-toggle-icon" aria-hidden="true"></span>
             <span id="edit-mode-label" class="setting-toggle-label">Position</span>
           </button>
 

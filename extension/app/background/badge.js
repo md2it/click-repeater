@@ -137,7 +137,18 @@ async function startDefaultMacroFromTab(tabId) {
     return { ok: false, error: "default_macro_missing" };
   }
 
-  const steps = Array.isArray(macro.steps) ? macro.steps.filter((step) => typeof step === "string" && step.trim()) : [];
+  const macroMode = macro.mode === "element" ? "element" : "position";
+  const steps = Array.isArray(macro.steps)
+    ? macro.steps
+      .map((step) => {
+        if (typeof step === "string") return step;
+        if (step && typeof step === "object") {
+          return macroMode === "element" ? (step.selector ?? "") : (step.position ?? "");
+        }
+        return "";
+      })
+      .filter((step) => step && step.trim())
+    : [];
   const repeatsRaw = Number(macro.repeats);
   const repeats = Number.isFinite(repeatsRaw) && repeatsRaw > 0 ? Math.floor(repeatsRaw) : 1;
   return startExecutionOnTab({

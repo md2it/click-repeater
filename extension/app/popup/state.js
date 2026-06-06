@@ -43,6 +43,7 @@ const refs = {
   editDefault: document.getElementById("edit-default"),
   editSteps: document.getElementById("edit-steps"),
   editModeToggle: document.getElementById("edit-mode-toggle"),
+  editModeIcon: document.getElementById("edit-mode-icon"),
   editModeLabel: document.getElementById("edit-mode-label"),
   saveEditBtn: document.getElementById("save-edit-btn"),
   cancelEditBtn: document.getElementById("cancel-edit-btn"),

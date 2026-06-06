@@ -313,7 +313,8 @@
 }
 
 .display-moves-toggle-icon,
-.default-toggle-icon {
+.default-toggle-icon,
+.mode-toggle-icon {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
@@ -321,7 +322,8 @@
 }
 
 .display-moves-toggle-icon svg,
-.default-toggle-icon svg {
+.default-toggle-icon svg,
+.mode-toggle-icon svg {
   width: 16px;
   height: 16px;
 }
@@ -335,7 +337,7 @@
 }
 
 .display-moves-toggle.display-moves-on .display-moves-toggle-icon {
-  color: #012292;
+  color: #1a1a1a;
 }
 
 .edit-repeat-setting {
