@@ -21,6 +21,7 @@ PUBLICATION/*.jpeg
 PUBLICATION/**/*.jpeg
 PUBLICATION/*.jpg
 PUBLICATION/**/*.jpg
+PUBLICATION/checklist.md
 
 build/
 out/
@@ -70,8 +71,9 @@ Thumbs.db
 !.vscode/extensions.json
 !.vscode/settings.json
 
-# Cursor / local tooling
+# AI LLM
 .cursor/
+.claude/
 
 # Playwright / browser artifacts
 test-results/
