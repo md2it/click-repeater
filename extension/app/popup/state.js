@@ -10,7 +10,8 @@ const settings = {
   executionSpeed: 1,
   skipNewMacroExplanation: false,
   skipDisplayMovesExplanation: false,
-  skipModeExplanation: false
+  skipModeExplanation: false,
+  darkTheme: false
 };
 
 const state = {
@@ -69,7 +70,8 @@ const refs = {
   languageSelector: document.getElementById("language-selector"),
   settingSkipNewMacro: document.getElementById("setting-skip-new-macro"),
   settingSkipDisplayMoves: document.getElementById("setting-skip-display-moves"),
-  settingSkipMode: document.getElementById("setting-skip-mode")
+  settingSkipMode: document.getElementById("setting-skip-mode"),
+  settingDarkTheme: document.getElementById("setting-dark-theme")
 };
 
 const iconSet = globalThis.macrosRepeaterLucideIcons;

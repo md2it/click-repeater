@@ -156,6 +156,9 @@ async function readSettingsFromStorage() {
       if (typeof stored.skipModeExplanation === "boolean") {
         settings.skipModeExplanation = stored.skipModeExplanation;
       }
+      if (typeof stored.darkTheme === "boolean") {
+        settings.darkTheme = stored.darkTheme;
+      }
     }
   } catch {}
 }
@@ -169,6 +172,8 @@ function syncSettingsUI() {
   refs.settingSkipNewMacro.checked = settings.skipNewMacroExplanation;
   refs.settingSkipDisplayMoves.checked = settings.skipDisplayMovesExplanation;
   refs.settingSkipMode.checked = settings.skipModeExplanation;
+  refs.settingDarkTheme.checked = settings.darkTheme;
+  document.documentElement.classList.toggle("dark-theme", settings.darkTheme);
 }
 
 async function cleanupLegacyTrackMovesSetting() {

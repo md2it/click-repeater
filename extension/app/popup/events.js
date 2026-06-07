@@ -448,6 +448,12 @@ refs.settingSkipMode.addEventListener("change", async () => {
   await persistSettings();
 });
 
+refs.settingDarkTheme.addEventListener("change", async () => {
+  settings.darkTheme = refs.settingDarkTheme.checked;
+  syncSettingsUI();
+  await persistSettings();
+});
+
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") {
     return;
