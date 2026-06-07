@@ -74,7 +74,11 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "contact@md2it.com"
+      "id": "contact@md2it.com",
+      "data_collection_permissions": {
+        "required": [],
+        "optional": []
+      }
     }
   }
 }
