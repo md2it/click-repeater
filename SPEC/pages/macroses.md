@@ -1,7 +1,7 @@
 # MACROSES PAGE
 
 - Содержит:
-   - Кнопка "NEW macros"
+   - Кнопка "NEW MACRO"
    - Ниже список имеющихся macros плашками друг над другом
 
 ## Каждый macros
