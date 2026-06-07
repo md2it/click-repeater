@@ -144,7 +144,7 @@ async function sendRecordingListenerMessage(tabId, message) {
 }
 
 // Scope the temporary popup override to this tab and clear it after opening.
-async function openMainPopup(tabId, windowId) {
+async function openMainPopup(tabId, windowId, page) {
   if (!ext.action || typeof ext.action.openPopup !== "function") {
     return false;
   }
@@ -157,9 +157,11 @@ async function openMainPopup(tabId, windowId) {
     } catch {}
   }
 
+  const popupUrl = page ? `popup.html?page=${encodeURIComponent(page)}` : "popup.html";
+
   try {
     if (Number.isInteger(tabId)) {
-      await ext.action.setPopup({ tabId, popup: "popup.html" });
+      await ext.action.setPopup({ tabId, popup: popupUrl });
     }
     await ext.action.openPopup(winId !== void 0 ? { windowId: winId } : undefined);
     return true;

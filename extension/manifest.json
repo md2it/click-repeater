@@ -38,7 +38,8 @@
     "storage",
     "tabs",
     "scripting",
-    "activeTab"
+    "activeTab",
+    "contextMenus"
   ],
   "commands": {
     "macros-prefix": {

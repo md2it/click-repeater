@@ -84,3 +84,14 @@ refs.menu.addEventListener("click", (event) => {
     selectPopupPage(button.dataset.page);
   }
 });
+
+const VALID_POPUP_PAGES = new Set(["macros", "settings", "shortcuts", "about"]);
+
+function applyInitialPage() {
+  const page = new URLSearchParams(location.search).get("page");
+  if (page && VALID_POPUP_PAGES.has(page)) {
+    selectPopupPage(page);
+  }
+}
+
+applyInitialPage();
