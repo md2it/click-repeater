@@ -9,6 +9,9 @@ Version logic:
 
 ## RELEASES
 
+### 1.0.1
+- AMO compliance: added Firefox add-on ID and data collection permissions declaration to manifest
+
 ### 1.0.0
 - Record click sequences on web pages
 - Run macros in Position or Element mode
