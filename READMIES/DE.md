@@ -6,7 +6,8 @@
 
 ### Stores
 
-Store-Versionen sind noch nicht veröffentlicht.
+- [Chrome Web Store](https://chromewebstore.google.com/detail/click-repeater/ojdgninjdijhhclanjlhaipehopjjmoo)
+- [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/click-repeater/)
 
 ### Entwicklungsmodus
 

@@ -6,7 +6,8 @@
 
 ### المتاجر
 
-لم تُنشر إصدارات المتاجر بعد.
+- [Chrome Web Store](https://chromewebstore.google.com/detail/click-repeater/ojdgninjdijhhclanjlhaipehopjjmoo)
+- [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/click-repeater/)
 
 ### وضع التطوير
 
