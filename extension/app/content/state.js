@@ -1,13 +1,10 @@
 const BASE_EXECUTION_SPEED_PROFILE = {
-  moveIntervalMs: 12,
-  beforeDownMinMs: 80,
-  beforeDownMaxMs: 140,
-  holdMinMs: 50,
-  holdMaxMs: 90,
-  afterUpMinMs: 25,
-  afterUpMaxMs: 60,
-  stepMinMs: 250,
-  stepMaxMs: 450
+  moveIntervalMs: 15,
+  beforeDownMs: 200,
+  holdMs: 200,
+  afterUpMs: 1,
+  stepMinMs: 100,
+  stepMaxMs: 200
 };
 
 const HUMAN_MM_IN_PX = 0.75; // 0.2mm offset radius at 96 DPI
@@ -93,12 +90,9 @@ function getExecutionSpeedProfile(speed = executionState.executionSpeed) {
   const speedMultiplier = normalizeExecutionSpeed(speed);
   return {
     moveIntervalMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.moveIntervalMs, speedMultiplier),
-    beforeDownMinMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.beforeDownMinMs, speedMultiplier),
-    beforeDownMaxMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.beforeDownMaxMs, speedMultiplier),
-    holdMinMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.holdMinMs, speedMultiplier),
-    holdMaxMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.holdMaxMs, speedMultiplier),
-    afterUpMinMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.afterUpMinMs, speedMultiplier),
-    afterUpMaxMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.afterUpMaxMs, speedMultiplier),
+    beforeDownMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.beforeDownMs, speedMultiplier),
+    holdMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.holdMs, speedMultiplier),
+    afterUpMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.afterUpMs, speedMultiplier),
     stepMinMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.stepMinMs, speedMultiplier),
     stepMaxMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.stepMaxMs, speedMultiplier)
   };

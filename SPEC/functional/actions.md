@@ -58,15 +58,15 @@
 
 - `1x` is the base timing profile
 - Click action:
-   - Movement point interval: 12 ms between generated pointer movement points before the click
-   - Pause before pressing: 80-140 ms after target entry and before `pointerdown`
-   - Button hold: 50-90 ms between `mousedown` and `pointerup`
-   - Release-to-click pause: 25-60 ms between `mouseup` and `click`
-   - Completed-action pause: 250-450 ms after the click action completes
+   - Movement point interval: 15 ms between generated pointer movement points before the click
+   - Pause before pressing: 200 ms after target entry and before `pointerdown`
+   - Button hold: 200 ms between `mousedown` and `pointerup`
+   - Release-to-click pause: 1 ms between `mouseup` and `click`
 - Key down action:
-   - Completed-action pause: 250-450 ms after the `keydown` action completes
+   - No specific pauses
 - Key up action:
-   - Completed-action pause: 250-450 ms after the `keyup` action completes
+   - No specific pauses
+- Completed-action pause: 100-200 ms after each action
 
 ### Speed calculation
 

@@ -197,7 +197,7 @@ async function runClickAction(token, fromPoint, action) {
     executionState.lastTarget = clickTarget;
   }
 
-  await sleep(randomDelay(profile.beforeDownMinMs, profile.beforeDownMaxMs));
+  await sleep(profile.beforeDownMs);
   if (shouldStop(token)) {
     throw new Error("stopped");
   }
@@ -290,9 +290,9 @@ async function runExecution(payload) {
   const estimatedMovementPointCount = 19;
   const msPerStep =
     estimatedMovementPointCount * profile.moveIntervalMs +
-    (profile.beforeDownMinMs + profile.beforeDownMaxMs) / 2 +
-    (profile.holdMinMs + profile.holdMaxMs) / 2 +
-    (profile.afterUpMinMs + profile.afterUpMaxMs) / 2 +
+    profile.beforeDownMs +
+    profile.holdMs +
+    profile.afterUpMs +
     (profile.stepMinMs + profile.stepMaxMs) / 2;
 
   void chrome.runtime.sendMessage({

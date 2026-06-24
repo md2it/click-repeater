@@ -263,7 +263,7 @@ async function dispatchMouseClick(token, target, point) {
   target.dispatchEvent(buildPointerEvent("pointerdown", init));
   target.dispatchEvent(buildMouseEvent("mousedown", init));
 
-  await sleep(randomDelay(profile.holdMinMs, profile.holdMaxMs));
+  await sleep(profile.holdMs);
   if (shouldStop(token)) {
     throw new Error("stopped");
   }
@@ -271,7 +271,7 @@ async function dispatchMouseClick(token, target, point) {
   target.dispatchEvent(buildPointerEvent("pointerup", { ...init, buttons: 0 }));
   target.dispatchEvent(buildMouseEvent("mouseup", { ...init, buttons: 0 }));
 
-  await sleep(randomDelay(profile.afterUpMinMs, profile.afterUpMaxMs));
+  await sleep(profile.afterUpMs);
   if (shouldStop(token)) {
     throw new Error("stopped");
   }
