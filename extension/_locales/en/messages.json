@@ -1,6 +1,6 @@
 {
   "extDescription": {
-    "message": "Record click sequences on web pages and repeat them whenever you need."
+    "message": "Record clicks and keyboard input on web pages, then replay them whenever you need."
   },
   "commandRunDefaultClick": {
     "message": "Run default"

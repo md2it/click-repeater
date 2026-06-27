@@ -1,6 +1,6 @@
 {
   "extDescription": {
-    "message": "سجّل تسلسلات النقرات على صفحات الويب وكررها متى شئت."
+    "message": "سجّل النقرات وإدخال لوحة المفاتيح على صفحات الويب، ثم أعد تشغيلها متى شئت."
   },
   "commandRunDefaultClick": {
     "message": "Run default"
