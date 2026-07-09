@@ -1,6 +1,15 @@
 # CLICK REPEATER
 
-=-=-=-=-=-=-=-=-= | [DE](./DE.md) | [EN](../../README.md) | ES | [FR](./FR.md) | [RU](./RU.md) | [中文](./ZH.md) | [عربي](./AR.md) | =-=-=-=-=-=-=-=-=
+<p align="center">
+=-=-=-=-=-=-=-=-= | <a href="./DE.md">DE</a> | <a href="../../README.md">EN</a> | ES | <a href="./FR.md">FR</a> | <a href="./RU.md">RU</a> | <a href="./ZH.md">中文</a> | <a href="./AR.md">عربي</a> | =-=-=-=-=-=-=-=-=
+</p>
+
+<p align="center">
+  <a href="../publication/screenshots/ES-0.png"><img src="../publication/screenshots/ES-0.png" width="180" alt="Click Repeater screenshot 1"></a>
+  <a href="../publication/screenshots/ES-1.png"><img src="../publication/screenshots/ES-1.png" width="180" alt="Click Repeater screenshot 2"></a>
+  <a href="../publication/screenshots/ES-2.png"><img src="../publication/screenshots/ES-2.png" width="180" alt="Click Repeater screenshot 3"></a>
+  <a href="../publication/screenshots/ES-3.png"><img src="../publication/screenshots/ES-3.png" width="180" alt="Click Repeater screenshot 4"></a>
+</p>
 
 ## INSTALACIÓN
 
