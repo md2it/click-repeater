@@ -1,6 +1,6 @@
 # CLICK REPEATER
 
-=-=-=-=-=-=-=-=-= | [DE](./DE.md) | [EN](../README.md) | [ES](./ES.md) | FR | [RU](./RU.md) | [中文](./ZH.md) | [عربي](./AR.md) | =-=-=-=-=-=-=-=-=
+=-=-=-=-=-=-=-=-= | [DE](./DE.md) | [EN](../../README.md) | [ES](./ES.md) | FR | [RU](./RU.md) | [中文](./ZH.md) | [عربي](./AR.md) | =-=-=-=-=-=-=-=-=
 
 ## INSTALLATION
 
@@ -66,7 +66,7 @@ Créez une séquence d'actions une fois, configurez son exécution et lancez-la 
 
 Un clic de l'utilisateur ou `Esc` arrête l'exécution. L'option par défaut peut également être lancée avec `Ctrl+Shift+X` → `M` ou, sur Mac, `Cmd+Shift+X` → `M`.
 
-Consultez [tous les parcours utilisateur](../SPEC/user-path.md) pour plus de détails.
+Consultez [tous les parcours utilisateur](../../docs/spec/user-path.md) pour plus de détails.
 
 ## LIMITATIONS
 

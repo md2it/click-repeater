@@ -1,6 +1,6 @@
 # CLICK REPEATER
 
-=-=-=-=-=-=-=-=-= | DE | [EN](../README.md) | [ES](./ES.md) | [FR](./FR.md) | [RU](./RU.md) | [中文](./ZH.md) | [عربي](./AR.md) | =-=-=-=-=-=-=-=-=
+=-=-=-=-=-=-=-=-= | DE | [EN](../../README.md) | [ES](./ES.md) | [FR](./FR.md) | [RU](./RU.md) | [中文](./ZH.md) | [عربي](./AR.md) | =-=-=-=-=-=-=-=-=
 
 ## INSTALLATION
 
@@ -66,7 +66,7 @@ Erstellen Sie einmal eine Aktionsfolge, konfigurieren Sie die Ausführung und st
 
 Ein Benutzerklick oder `Esc` stoppt die Ausführung. Der Standard kann auch mit `Ctrl+Shift+X` → `M` oder auf dem Mac mit `Cmd+Shift+X` → `M` gestartet werden.
 
-Weitere Informationen finden Sie unter [alle Benutzerpfade](../SPEC/user-path.md).
+Weitere Informationen finden Sie unter [alle Benutzerpfade](../../docs/spec/user-path.md).
 
 ## EINSCHRÄNKUNGEN
 

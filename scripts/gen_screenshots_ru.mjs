@@ -1,8 +1,8 @@
 /**
  * Generate Russian screenshot set for Chrome Web Store:
- *   PUBLICATION/screenshots/RU-1.png  — md2it.com/ru/click-repeater/ with Chrome+Firefox download clicks
- *   PUBLICATION/screenshots/RU-2.png  — popup main + settings, light theme
- *   PUBLICATION/screenshots/RU-3.png  — popup main + settings, dark theme
+ *   docs/publication/screenshots/RU-1.png  — md2it.com/ru/click-repeater/ with Chrome+Firefox download clicks
+ *   docs/publication/screenshots/RU-2.png  — popup main + settings, light theme
+ *   docs/publication/screenshots/RU-3.png  — popup main + settings, dark theme
  *
  * RU-1 design notes:
  *   - Page: https://www.md2it.com/{locale}/click-repeater/
@@ -21,7 +21,7 @@ import { execSync } from 'child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const EXT_DIR = path.resolve(__dirname, '../extension');
-const OUT_DIR = path.resolve(__dirname, '../PUBLICATION/screenshots');
+const OUT_DIR = path.resolve(__dirname, '../docs/publication/screenshots');
 
 const W = 1280, H = 800;
 

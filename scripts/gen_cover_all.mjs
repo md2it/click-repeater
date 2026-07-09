@@ -1,6 +1,6 @@
 /**
  * Generate cover screenshots for all supported locales:
- *   PUBLICATION/screenshots/{LANG}-0.png  — 1280×800 RGB
+ *   docs/publication/screenshots/{LANG}-0.png  — 1280×800 RGB
  *
  * Composition: promo-tile style (dark bg + brand left + localized scene right).
  * Placed before {LANG}-1/2/3 in the store gallery.
@@ -18,7 +18,7 @@ import { execSync } from 'child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ICON_PATH = path.resolve(__dirname, '../extension/icons/icon-128.png');
-const OUT_DIR   = path.resolve(__dirname, '../PUBLICATION/screenshots');
+const OUT_DIR   = path.resolve(__dirname, '../docs/publication/screenshots');
 
 const W = 1280, H = 800;
 

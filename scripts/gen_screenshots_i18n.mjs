@@ -11,7 +11,7 @@ import fs from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const EXT_DIR = path.resolve(__dirname, '../extension');
-const OUT_DIR = path.resolve(__dirname, '../PUBLICATION/screenshots');
+const OUT_DIR = path.resolve(__dirname, '../docs/publication/screenshots');
 
 const W = 1280, H = 800;
 

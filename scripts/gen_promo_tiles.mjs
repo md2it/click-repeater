@@ -1,7 +1,7 @@
 /**
  * Generate Chrome Web Store promo tiles:
- *   PUBLICATION/promo-small.png    — 440×280
- *   PUBLICATION/promo-marquee.png  — 1400×560
+ *   docs/publication/promo-small.png    — 440×280
+ *   docs/publication/promo-marquee.png  — 1400×560
  */
 
 import { createCanvas, loadImage } from 'canvas';
@@ -11,7 +11,7 @@ import fs from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ICON_PATH = path.resolve(__dirname, '../extension/icons/icon-128.png');
-const OUT_DIR   = path.resolve(__dirname, '../PUBLICATION');
+const OUT_DIR   = path.resolve(__dirname, '../docs/publication');
 
 // ── Background ─────────────────────────────────────────────────────────────────
 

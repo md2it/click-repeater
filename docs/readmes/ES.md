@@ -1,6 +1,6 @@
 # CLICK REPEATER
 
-=-=-=-=-=-=-=-=-= | [DE](./DE.md) | [EN](../README.md) | ES | [FR](./FR.md) | [RU](./RU.md) | [中文](./ZH.md) | [عربي](./AR.md) | =-=-=-=-=-=-=-=-=
+=-=-=-=-=-=-=-=-= | [DE](./DE.md) | [EN](../../README.md) | ES | [FR](./FR.md) | [RU](./RU.md) | [中文](./ZH.md) | [عربي](./AR.md) | =-=-=-=-=-=-=-=-=
 
 ## INSTALACIÓN
 
@@ -66,7 +66,7 @@ Crea una secuencia de acciones una vez, configura cómo debe ejecutarse e iníci
 
 Un clic del usuario o `Esc` detiene la ejecución. La opción predeterminada también puede iniciarse con `Ctrl+Shift+X` → `M` o, en Mac, `Cmd+Shift+X` → `M`.
 
-Consulta [todas las rutas de usuario](../SPEC/user-path.md) para obtener más información.
+Consulta [todas las rutas de usuario](../../docs/spec/user-path.md) para obtener más información.
 
 ## LIMITACIONES
 

@@ -1,6 +1,6 @@
 /**
  * Generate Russian gallery cover screenshot:
- *   PUBLICATION/screenshots/RU-0.png  — 1280×800 RGB
+ *   docs/publication/screenshots/RU-0.png  — 1280×800 RGB
  *
  * Composition: promo-tile style (dark bg + brand left + scene right)
  * at screenshot dimensions. Placed before RU-1/2/3 in the store gallery.
@@ -14,7 +14,7 @@ import { execSync } from 'child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ICON_PATH = path.resolve(__dirname, '../extension/icons/icon-128.png');
-const OUT_DIR   = path.resolve(__dirname, '../PUBLICATION/screenshots');
+const OUT_DIR   = path.resolve(__dirname, '../docs/publication/screenshots');
 
 const W = 1280, H = 800;
 

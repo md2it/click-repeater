@@ -1,6 +1,6 @@
 # CLICK REPEATER
 
-=-=-=-=-=-=-=-=-= | [DE](./READMIES/DE.md) | EN | [ES](./READMIES/ES.md) | [FR](./READMIES/FR.md) | [RU](./READMIES/RU.md) | [中文](./READMIES/ZH.md) | [عربي](./READMIES/AR.md) | =-=-=-=-=-=-=-=-=
+=-=-=-=-=-=-=-=-= | [DE](./docs/readmes/DE.md) | EN | [ES](./docs/readmes/ES.md) | [FR](./docs/readmes/FR.md) | [RU](./docs/readmes/RU.md) | [中文](./docs/readmes/ZH.md) | [عربي](./docs/readmes/AR.md) | =-=-=-=-=-=-=-=-=
 
 ## INSTALLATION
 
@@ -66,7 +66,7 @@ Create an action sequence once, configure how it should run, and launch it from 
 
 A user click or `Esc` stops execution. The default can also be launched with `Ctrl+Shift+X` → `M` or, on Mac, `Cmd+Shift+X` → `M`.
 
-See [all user paths](./SPEC/user-path.md) for more details.
+See [all user paths](./docs/spec/user-path.md) for more details.
 
 ## LIMITATIONS
 

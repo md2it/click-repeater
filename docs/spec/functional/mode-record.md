@@ -6,7 +6,7 @@
 
 ### Starting the mode
 1. Use the dedicated button in the popup
-2. A dismissible explanation modal is shown as described in SPEC/ui/modal-explanations.md
+2. A dismissible explanation modal is shown as described in docs/spec/ui/modal-explanations.md
 3. The mode starts:
    - From the button in the modal, if the modal is shown
    - Immediately, if the modal is not shown
@@ -15,7 +15,7 @@
 ### During the mode
 - The user performs supported actions on the page
 - The extension records:
-   - Actions described in SPEC/functional/actions.md
+   - Actions described in docs/spec/functional/actions.md
    - Click coordinates, for click actions
    - Selectors of clicked elements, for click actions
    - Keyboard event data, for key press and key release actions

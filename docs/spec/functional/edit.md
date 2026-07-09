@@ -11,13 +11,13 @@
       - Do not show the word "Visualisation", only Visible | Stealth
       - Default: Visible
       - Use eye / eye-off to show the setting state
-      - A dismissible explanation modal is available as described in SPEC/ui/modal-explanations.md
+      - A dismissible explanation modal is available as described in docs/spec/ui/modal-explanations.md
    - Mode // button
       - Position | Element
       - Do not show the word "Mode", only Position | Element
       - Default: Position
       - Use code for Element / crosshair for Position to show the setting state
-      - A dismissible explanation modal is available as described in SPEC/ui/modal-explanations.md
+      - A dismissible explanation modal is available as described in docs/spec/ui/modal-explanations.md
    - Speed // drop-down
       - Default: "Speed 1"
       - Possible options 0.1, 0.25, 0.5, 0.75, 1, 2, 4, 8

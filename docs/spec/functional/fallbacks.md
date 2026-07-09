@@ -9,7 +9,7 @@
 - Subsequent steps and repetitions do not start
 - The user receives a notification explaining why execution stopped:
    1. A small popup with text appears
-      - Appearance, disappearance, and proportions follow the popup in SPEC/functional/page-operability.md
+      - Appearance, disappearance, and proportions follow the popup in docs/spec/functional/page-operability.md
       - Differences: notification text states the reason for stopping and uses a different color
    2. A notification is shown in place of the recent-event explanation text in the standard popup
 - A failure event is shown in red
@@ -42,4 +42,4 @@
 
 ## EXTENSION CANNOT START
 
-- Described in SPEC/functional/page-operability.md
+- Described in docs/spec/functional/page-operability.md

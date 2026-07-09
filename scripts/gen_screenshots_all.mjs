@@ -1,7 +1,7 @@
 /**
  * Generate screenshot sets for all supported locales.
  *
- * Per locale: 3 files in PUBLICATION/screenshots/
+ * Per locale: 3 files in docs/publication/screenshots/
  *   {LANG}-1.png — md2it.com/{locale}/click-repeater/  (Chrome + Firefox download clicks)
  *   {LANG}-2.png — popup: records list + settings, light theme
  *   {LANG}-3.png — popup: records list + settings, dark theme
@@ -23,7 +23,7 @@ import { execSync } from 'child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const EXT_DIR   = path.resolve(__dirname, '../extension');
-const OUT_DIR   = path.resolve(__dirname, '../PUBLICATION/screenshots');
+const OUT_DIR   = path.resolve(__dirname, '../docs/publication/screenshots');
 
 const W = 1280, H = 800;
 
