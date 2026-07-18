@@ -24,6 +24,7 @@ const state = {
   pendingDeleteClickId: null,
   activeCheckClickId: null,
   executionPollTimer: null,
+  stopButtonShowTimer: null,
   soundPreviewClickTimer: null,
   soundPreviewReleaseTimer: null
 };

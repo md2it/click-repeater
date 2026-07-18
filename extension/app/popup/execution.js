@@ -21,11 +21,31 @@ function syncPopupHeight() {
   document.body.style.height = `${targetHeight}px`;
 }
 
+const STOP_BUTTON_SHOW_DELAY_MS = 500;
+
 function clearExecutionPolling() {
   if (state.executionPollTimer !== null) {
     window.clearInterval(state.executionPollTimer);
     state.executionPollTimer = null;
   }
+}
+
+function clearStopButtonShowTimer() {
+  if (state.stopButtonShowTimer !== null) {
+    window.clearTimeout(state.stopButtonShowTimer);
+    state.stopButtonShowTimer = null;
+  }
+}
+
+function hideStopExecutionButton() {
+  clearStopButtonShowTimer();
+  refs.stopExecutionBtn.classList.add("hidden");
+}
+
+function showStopExecutionButton() {
+  clearStopButtonShowTimer();
+  refs.stopExecutionBtn.classList.remove("hidden");
+  syncPopupHeight();
 }
 
 function formatRemainingMs(remainingMs) {
@@ -37,14 +57,28 @@ function formatRemainingMs(remainingMs) {
 
 function renderExecutionStatus(executionState) {
   if (!executionState?.isRunning) {
-    refs.stopExecutionBtn.classList.add("hidden");
+    hideStopExecutionButton();
     syncPopupHeight();
     return;
   }
 
-  refs.stopExecutionBtn.classList.remove("hidden");
   const remaining = formatRemainingMs(executionState.remainingMs ?? 0);
   setStatus(t("running", { name: executionState.clickName, remaining }));
+
+  const startedAt = Number(executionState.startedAt) || Date.now();
+  const elapsedMs = Date.now() - startedAt;
+  if (elapsedMs >= STOP_BUTTON_SHOW_DELAY_MS) {
+    showStopExecutionButton();
+    return;
+  }
+
+  refs.stopExecutionBtn.classList.add("hidden");
+  clearStopButtonShowTimer();
+  state.stopButtonShowTimer = window.setTimeout(() => {
+    state.stopButtonShowTimer = null;
+    refs.stopExecutionBtn.classList.remove("hidden");
+    syncPopupHeight();
+  }, STOP_BUTTON_SHOW_DELAY_MS - elapsedMs);
 }
 
 async function refreshExecutionStatus({ silent = false } = {}) {
@@ -62,7 +96,7 @@ async function refreshExecutionStatus({ silent = false } = {}) {
   }
 
   clearExecutionPolling();
-  refs.stopExecutionBtn.classList.add("hidden");
+  hideStopExecutionButton();
   if (!silent) {
     const description = describeExecutionEvent(response?.lastEvent);
     if (description) {
@@ -236,7 +270,7 @@ async function stopExecution() {
   }
 
   clearExecutionPolling();
-  refs.stopExecutionBtn.classList.add("hidden");
+  hideStopExecutionButton();
   if (response.wasRunning) {
     setStatus(t("stopped"), { error: true });
   } else {

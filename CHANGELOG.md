@@ -9,6 +9,9 @@ Version logic:
 
 ## RELEASES
 
+### 1.2.2
+- Delayed Stop button appearance on scenario start to avoid a brief red flash
+
 ### 1.2.1
 - Refined activity statistics in About
 
