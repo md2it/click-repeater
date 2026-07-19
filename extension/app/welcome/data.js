@@ -1,7 +1,6 @@
 import { ext } from "../../lib/our/api.js";
 import {
   ARROW_UP,
-  CHART_COLUMN_INCREASING,
   HEART,
   INFO,
   PIN,
@@ -30,7 +29,6 @@ const WELCOME_ABOUT_SECTION_ICONS = {
   capabilities: SQUARE_CHECK,
   privacy: SHIELD_CHECK,
   code: TERMINAL,
-  statistics: CHART_COLUMN_INCREASING,
 };
 
 export async function getLocaleForWelcome() {
@@ -58,8 +56,7 @@ function buildWelcomeLocalePayload(locale) {
       { heading: tl("aboutOverviewHeading"), iconHtml: WELCOME_ABOUT_SECTION_ICONS.overview, items: [{ text: tl("aboutOverview") }] },
       { heading: tl("aboutCapabilitiesHeading"), iconHtml: WELCOME_ABOUT_SECTION_ICONS.capabilities, items: ["aboutRecordsClicks", "aboutRepeatsClicks", "aboutPositionMode", "aboutVisualisation", "aboutRepeats", "aboutSpeed", "aboutDefaultShortcut"].map((key) => ({ text: tl(key) })) },
       { heading: tl("aboutPrivacyHeading"), iconHtml: WELCOME_ABOUT_SECTION_ICONS.privacy, items: ["noNetwork", "noCollection"].map((key) => ({ text: tl(key) })) },
-      { heading: tl("aboutCodeHeading"), iconHtml: WELCOME_ABOUT_SECTION_ICONS.code, items: [{ text: tl("codeOnGithub"), href: WELCOME_GITHUB_URL }, { text: tl("credits") }] },
-      { heading: tl("aboutStatisticsHeading"), iconHtml: WELCOME_ABOUT_SECTION_ICONS.statistics, items: [{ text: tl("aboutScenarioRuns").replace("{count}", "0") }] }
+      { heading: tl("aboutCodeHeading"), iconHtml: WELCOME_ABOUT_SECTION_ICONS.code, items: [{ text: tl("codeOnGithub"), href: WELCOME_GITHUB_URL }, { text: tl("credits") }] }
     ],
     aboutFooter: { productName: "Click Repeater", author: "md2it" },
     langAriaLabel: tl("language")
