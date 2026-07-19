@@ -21,7 +21,7 @@ const EN_MESSAGES = {
   aboutPrivacyHeading: "Privacy",
   aboutCodeHeading: "Code",
   aboutStatisticsHeading: "Statistics",
-  aboutOverview: "Record and replay browser interaction scenarios.",
+  aboutOverview: "Records and replays actions on web pages",
   aboutRecordsClicks: "Records clicks and key input",
   aboutRepeatsClicks: "Replays clicks and key presses",
   aboutPositionMode: "Position mode: replays clicks by coordinates or elements",
@@ -353,7 +353,7 @@ const TRANSLATIONS = {
   },
   ru: {
     navClicks: "НАЖАТИЯ", navSettings: "НАСТРОЙКИ", navShortcuts: "СОЧЕТАНИЯ", navAbout: "О РАСШИРЕНИИ",
-    aboutTitle: "CLICK REPEATER", aboutOverviewHeading: "Обзор", aboutCapabilitiesHeading: "Возможности", aboutPrivacyHeading: "Приватность", aboutCodeHeading: "Код", aboutStatisticsHeading: "Статистика", aboutOverview: "Записывает и воспроизводит сценарии взаимодействия в браузере.", aboutRecordsClicks: "Записывает клики и ввод с клавиатуры",
+    aboutTitle: "CLICK REPEATER", aboutOverviewHeading: "Обзор", aboutCapabilitiesHeading: "Возможности", aboutPrivacyHeading: "Приватность", aboutCodeHeading: "Код", aboutStatisticsHeading: "Статистика", aboutOverview: "Записывает и воспроизводит действия на веб-страницах", aboutRecordsClicks: "Записывает клики и ввод с клавиатуры",
     aboutRepeatsClicks: "Воспроизводит клики и нажатия клавиш", aboutPositionMode: "Режим Позиция: воспроизводит клики по координатам или элементам",
     aboutElementMode: "Режим Элемент: кликает по элементам",
     aboutVisibleMode: "Режим Видимый: показывает движения, клики и нажатия клавиш",
