@@ -4,6 +4,9 @@ Regular SemVer logic.
 
 ## RELEASES
 
+### 1.2.7
+- Welcome pin hint is positioned from the viewport edge (no fixed inset)
+
 ### 1.2.6
 - Refactored background to a single modular entry (`app/background/main.js`) for Chrome MV3 and Firefox 121+
 - Goal: one complete background load path instead of a short `background.scripts` list plus a longer `sw.js` `importScripts` list

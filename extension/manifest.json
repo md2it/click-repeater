@@ -3,7 +3,7 @@
   "default_locale": "en",
   "name": "Click Repeater",
   "description": "__MSG_extDescription__",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "background": {
     "service_worker": "app/background/main.js",
     "type": "module",
