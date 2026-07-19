@@ -1,9 +1,5 @@
 # INTERFACE
 
-- All icons:
-   - SVG only
-   - Use Lucide icons from the original source
-   - Copy them as code and embed them in the project code
 - All modal windows:
    - If they do not fit entirely in the popup, they may scroll vertically
    - Can be closed with Esc

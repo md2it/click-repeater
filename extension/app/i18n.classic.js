@@ -1,8 +1,6 @@
-import { ext } from "../lib/our/api.js";
-
-export const LOCALE_STORAGE_KEY = "locale";
-export const LOCALES = ["en", "es", "fr", "de", "ru", "zh_CN", "ar"];
-export const LOCALE_LABELS = {
+const LOCALE_STORAGE_KEY = "locale";
+const LOCALES = ["en", "es", "fr", "de", "ru", "zh_CN", "ar"];
+const LOCALE_LABELS = {
   en: "EN",
   es: "ES",
   fr: "FR",
@@ -12,7 +10,7 @@ export const LOCALE_LABELS = {
   ar: "عربي"
 };
 
-export const EN_MESSAGES = {
+const EN_MESSAGES = {
   navClicks: "CLICKS",
   navSettings: "SETTINGS",
   navShortcuts: "SHORTCUTS",
@@ -158,7 +156,7 @@ export const EN_MESSAGES = {
   surveySendEmail: "Send an email"
 };
 
-export const TRANSLATIONS = {
+const TRANSLATIONS = {
   en: EN_MESSAGES,
   es: {
     navClicks: "CLICKS", navSettings: "AJUSTES", navShortcuts: "ATAJOS", navAbout: "ACERCA DE",
@@ -536,12 +534,12 @@ export const TRANSLATIONS = {
 
 let currentLocale = "en";
 
-export function normalizeLocale(value) {
+function normalizeLocale(value) {
   if (value === "zh") return "zh_CN";
   return LOCALES.includes(value) ? value : null;
 }
 
-export function detectLocale() {
+function detectLocale() {
   for (const tag of navigator.languages ?? [navigator.language]) {
     const base = String(tag ?? "").trim().toLowerCase().replace(/_/g, "-").split("-")[0];
     const locale = normalizeLocale(base);
@@ -550,12 +548,12 @@ export function detectLocale() {
   return "en";
 }
 
-export function t(key, params = {}) {
+function t(key, params = {}) {
   const template = TRANSLATIONS[currentLocale]?.[key] ?? EN_MESSAGES[key] ?? key;
   return String(template).replace(/\{(\w+)\}/g, (_, name) => String(params[name] ?? ""));
 }
 
-export function applyTranslations() {
+function applyTranslations() {
   document.documentElement.lang = currentLocale.replace("_", "-");
   document.documentElement.dir = currentLocale === "ar" ? "rtl" : "ltr";
   for (const element of document.querySelectorAll("[data-i18n]")) {
@@ -571,20 +569,16 @@ export function applyTranslations() {
   }
 }
 
-export async function initializeLocale() {
+async function initializeLocale() {
   const data = await ext.storage.local.get(LOCALE_STORAGE_KEY);
   currentLocale = normalizeLocale(data?.[LOCALE_STORAGE_KEY]) ?? detectLocale();
   applyTranslations();
 }
 
-export async function selectLocale(locale) {
+async function selectLocale(locale) {
   const normalized = normalizeLocale(locale);
   if (!normalized || normalized === currentLocale) return;
   currentLocale = normalized;
   await ext.storage.local.set({ [LOCALE_STORAGE_KEY]: currentLocale });
   applyTranslations();
-}
-
-export function getCurrentLocale() {
-  return currentLocale;
 }

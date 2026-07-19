@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "verify:structure": "node scripts/verify-extension-structure.mjs"
+  },
   "devDependencies": {
     "canvas": "^3.2.3",
     "playwright": "^1.60.0"

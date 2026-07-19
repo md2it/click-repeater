@@ -9,17 +9,15 @@ const SURVEY_FEEDBACK_EMAIL = "mailto:contact@md2it.com";
 /** True for Firefox/Gecko extension runtime; not fooled by a `browser` polyfill on Chromium. */
 function isFirefoxExtensionRuntime() {
   try {
-    const chromeApi = globalThis.chrome;
-    const browserApi = globalThis.browser;
     const runtime =
-      (chromeApi && chromeApi.runtime) ||
-      (browserApi && browserApi.runtime) ||
+      (typeof chrome !== "undefined" && chrome && chrome.runtime) ||
+      (typeof browser !== "undefined" && browser && browser.runtime) ||
       null;
     if (runtime && typeof runtime.getURL === "function") {
       return String(runtime.getURL("/")).startsWith("moz-extension:");
     }
   } catch (_) {}
-  return typeof globalThis.navigator !== "undefined" && /Firefox\//.test(String(globalThis.navigator.userAgent || ""));
+  return typeof navigator !== "undefined" && /Firefox\//.test(String(navigator.userAgent || ""));
 }
 
 function getSurveyStoreUrl() {
@@ -31,16 +29,3 @@ function getSurveyStoreRateLabel() {
     ? "Rate in Firefox store"
     : "Rate in Chrome web store";
 }
-
-export {
-  SURVEY_STORAGE_KEY,
-  SURVEY_THRESHOLD,
-  SURVEY_COOLDOWN_MS,
-  SURVEY_GITHUB_URL,
-  SURVEY_CHROME_STORE_URL,
-  SURVEY_FIREFOX_STORE_URL,
-  SURVEY_FEEDBACK_EMAIL,
-  isFirefoxExtensionRuntime,
-  getSurveyStoreUrl,
-  getSurveyStoreRateLabel,
-};

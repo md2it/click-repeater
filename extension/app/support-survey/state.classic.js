@@ -1,10 +1,7 @@
-import { ext } from "../../lib/our/api.js";
-import { createSupportSurveyLogic } from "../../lib/our/support-survey/logic.js";
-import {
-  SURVEY_STORAGE_KEY,
-  SURVEY_THRESHOLD,
-  SURVEY_COOLDOWN_MS,
-} from "./constants.js";
+// Classic popup/content companion for app/support-survey/state.js (ES module).
+// Shares scope with api.classic.js, logic.classic.js, and constants.classic.js.
+var ext = globalThis.ext;
+var createSupportSurveyLogic = globalThis.createSupportSurveyLogic;
 
 const supportSurveyLogic = createSupportSurveyLogic({
   threshold: SURVEY_THRESHOLD,
@@ -73,13 +70,3 @@ async function completeSupportSurvey() {
   const state = await readSupportSurveyState();
   return writeSupportSurveyState(supportSurveyLogic.markCompleted(state));
 }
-
-export {
-  readSupportSurveyState,
-  recordSuccessfulScenario,
-  shouldShowSupportSurvey,
-  markSupportSurveyShown,
-  deferSupportSurvey,
-  disableSupportSurveyForever,
-  completeSupportSurvey,
-};

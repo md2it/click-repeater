@@ -1,3 +1,7 @@
+import { createPanelDivider, createPanelHeader } from "../panel-header/header.js";
+import { ext } from "../api.js";
+import { localeToHtmlLang } from "../i18n/locale-code.js";
+
 var WELCOME_BODY_MIN_VAR = "--welcome-body-min";
 var WELCOME_PROBE_WIDTH = "480px";
 var PANEL_HEADER_STYLE_ID = "dd-panel-header-styles";
@@ -324,3 +328,5 @@ async function bootstrapWelcomePage(config) {
   syncLangButtons(data, config);
   setupPinHint(data, config);
 }
+
+export { bootstrapWelcomePage };

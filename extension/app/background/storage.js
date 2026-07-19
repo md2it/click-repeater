@@ -6,8 +6,7 @@ import {
   CLICKS_STORAGE_KEY,
   DEFAULT_CLICK_ID_KEY,
 } from "./state.js";
-
-const ext = globalThis.ext;
+import { ext } from "../../lib/our/api.js";
 
 export function buildClickName(domain) {
   const now = new Date();

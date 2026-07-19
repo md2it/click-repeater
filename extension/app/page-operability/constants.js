@@ -1,5 +1,5 @@
-"use strict";
-const ext = globalThis.ext;
+import { ext } from "../../lib/our/api.js";
+
 // Keep these translations aligned with element-deleter.
 const RESTRICTED_PAGE_NOTICE = {
   en: "Browser extensions don't work on system pages and protected sites. Try another site.",

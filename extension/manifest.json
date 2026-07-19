@@ -3,7 +3,7 @@
   "default_locale": "en",
   "name": "Click Repeater",
   "description": "__MSG_extDescription__",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "background": {
     "service_worker": "app/background/main.js",
     "type": "module",
@@ -35,10 +35,10 @@
         "<all_urls>"
       ],
       "js": [
-        "lib/icons/lucide/icons.js",
-        "lib/our/api.js",
-        "lib/our/page-operability/probe.js",
-        "lib/our/page-operability/content-probe.js",
+        "lib/vendor/icons/lucide/icons.js",
+        "lib/our/api.classic.js",
+        "lib/our/page-operability/probe.classic.js",
+        "lib/our/page-operability/content-probe.classic.js",
         "app/content/selectors.js",
         "app/content/state.js",
         "app/content/tracker.js",

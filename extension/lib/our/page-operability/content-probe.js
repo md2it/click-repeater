@@ -1,14 +1,15 @@
-"use strict";
-var PROBE_DOCUMENT_OPERABILITY = "PROBE_DOCUMENT_OPERABILITY";
+import { ext } from "../api.js";
+import { probeDocumentOperability } from "./probe.js";
+
+const PROBE_DOCUMENT_OPERABILITY = "PROBE_DOCUMENT_OPERABILITY";
+
 function isProbeDocumentOperabilityMessage(message) {
   if (typeof message !== "object" || message === null) return false;
   return message.type === PROBE_DOCUMENT_OPERABILITY;
 }
-var probeListenerRegistered = false;
-// `var` re-declaration: harmless merge with the `function probeDocumentOperability`
-// from probe.js when sharing a classic script scope; needed for correctness if
-// this file is ever imported as an ES module without probe.js already present.
-var probeDocumentOperability = globalThis.probeDocumentOperability;
+
+let probeListenerRegistered = false;
+
 function registerDocumentOperabilityProbeListener() {
   if (probeListenerRegistered) return;
   probeListenerRegistered = true;
@@ -19,7 +20,8 @@ function registerDocumentOperabilityProbeListener() {
   });
 }
 
-// Bridge for background-context ES modules; harmless no-op as a classic script.
-globalThis.PROBE_DOCUMENT_OPERABILITY = PROBE_DOCUMENT_OPERABILITY;
-globalThis.isProbeDocumentOperabilityMessage = isProbeDocumentOperabilityMessage;
-globalThis.registerDocumentOperabilityProbeListener = registerDocumentOperabilityProbeListener;
+export {
+  PROBE_DOCUMENT_OPERABILITY,
+  isProbeDocumentOperabilityMessage,
+  registerDocumentOperabilityProbeListener,
+};

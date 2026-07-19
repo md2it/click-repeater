@@ -27,12 +27,8 @@ import {
 import { syncActionBadge, showShortcutHintBadge, startDefaultClickFromTab } from "./badge.js";
 import { stopCheckMode, startCheckModeOnTab } from "./check.js";
 import { watchWelcomePinStatus2, showWelcome } from "../welcome/background.js";
-
-const ext = globalThis.ext;
-// recordSuccessfulScenario comes from app/support-survey/state.js, which is
-// also loaded as a classic script on the popup page, so it bridges this onto
-// globalThis instead of using ES `export`.
-const recordSuccessfulScenario = globalThis.recordSuccessfulScenario;
+import { recordSuccessfulScenario } from "../support-survey/state.js";
+import { ext } from "../../lib/our/api.js";
 
 void syncActionBadge();
 

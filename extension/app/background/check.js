@@ -2,8 +2,8 @@ import { readCheckState, writeCheckState, clearCheckState } from "./storage.js";
 import { canOperateOnTab } from "../../lib/our/page-operability/can-operate.js";
 import { showRestrictedNotice } from "../page-operability/notice.js";
 import { syncActionBadge } from "./badge.js";
-
-const ext = globalThis.ext;
+import { ext } from "../../lib/our/api.js";
+import { CONTENT_SCRIPT_FILES } from "./content-script-files.js";
 
 async function sendCheckOverlayMessage(tabId, message, steps = []) {
   if (!Number.isInteger(tabId)) {
@@ -28,21 +28,7 @@ async function sendCheckOverlayMessage(tabId, message, steps = []) {
   try {
     await ext.scripting.executeScript({
       target: { tabId, allFrames: true },
-      files: [
-        "lib/icons/lucide/icons.js",
-        "lib/our/api.js",
-        "lib/our/page-operability/probe.js",
-        "lib/our/page-operability/content-probe.js",
-        "app/content/selectors.js",
-        "app/content/state.js",
-        "app/content/tracker.js",
-        "app/content/mouse.js",
-        "app/content/listeners.js",
-        "app/content/sound.js",
-        "app/content/check-overlay.js",
-        "app/content/runner.js",
-        "app/content/main.js"
-      ]
+      files: CONTENT_SCRIPT_FILES,
     });
   } catch {
     return initial;

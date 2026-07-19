@@ -1,6 +1,6 @@
-"use strict";
-const ext = globalThis.ext;
-export async function showBlockedNotice(tabId, config, payload, windowId) {
+import { ext } from "../api.js";
+
+async function showBlockedNotice(tabId, config, payload, windowId) {
   const { popupHtml, sessionKey, logLabel } = config;
   void ext.storage.session.set({
     [sessionKey]: { ...payload, tabId },
@@ -38,3 +38,5 @@ export async function showBlockedNotice(tabId, config, payload, windowId) {
     await ext.action.setPopup({ tabId, popup: "" });
   }
 }
+
+export { showBlockedNotice };

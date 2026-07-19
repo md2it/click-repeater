@@ -1,3 +1,4 @@
+"use strict";
 function probeDocumentOperability() {
   try {
     const root = document.documentElement ?? document.body;
@@ -13,4 +14,5 @@ function probeDocumentOperability() {
   }
 }
 
-export { probeDocumentOperability };
+// Bridge for background-context ES modules; harmless no-op as a classic script.
+globalThis.probeDocumentOperability = probeDocumentOperability;

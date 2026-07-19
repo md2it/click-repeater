@@ -1,4 +1,6 @@
-const SAFE_EXTENSION_API_IGNORED_ERRORS = {
+"use strict";
+
+var SAFE_EXTENSION_API_IGNORED_ERRORS = {
   "tabs.sendMessage": {
     messages: [
       "No tab with id",
@@ -34,4 +36,14 @@ const SAFE_EXTENSION_API_IGNORED_ERRORS = {
   },
 };
 
-export { SAFE_EXTENSION_API_IGNORED_ERRORS };
+// `var` re-declaration: harmless merge with the `var ext` from lib/our/api.js
+// when sharing a classic script global scope (popup/welcome pages); required
+// so this file also works when imported as an ES module in the background
+// context, where module scopes don't share bindings with other modules.
+var ext = globalThis.ext;
+var createSafeExtensionApi = globalThis.createSafeExtensionApi;
+ext = createSafeExtensionApi(ext, [
+  SAFE_EXTENSION_API_IGNORED_ERRORS,
+  globalThis.CLICK_REPEATER_SAFE_EXTENSION_API_IGNORED_ERRORS,
+]);
+globalThis.ext = ext;

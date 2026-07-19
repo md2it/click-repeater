@@ -27,3 +27,5 @@ function createPanelHeader(options) {
   header.append(titleRow);
   return header;
 }
+
+export { createPanelDivider, createPanelHeader };

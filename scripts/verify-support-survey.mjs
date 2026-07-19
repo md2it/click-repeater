@@ -1,11 +1,7 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { createContext, runInContext } from "node:vm";
+import { createSupportSurveyLogic } from "../extension/lib/our/support-survey/logic.js";
 
-const root = new URL("../extension/", import.meta.url);
-const context = createContext({ console });
-runInContext(readFileSync(new URL("lib/our/support-survey/logic.js", root), "utf8"), context);
-const logic = context.createSupportSurveyLogic({
+const logic = createSupportSurveyLogic({
   threshold: 25,
   cooldownMs: 60 * 24 * 60 * 60 * 1000,
 });

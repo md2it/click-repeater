@@ -1,3 +1,4 @@
+"use strict";
 function normalizeSafeExtensionApiIgnoredErrors(sources) {
   const sourceList = Array.isArray(sources) ? sources : [sources];
   const normalized = {};
@@ -14,14 +15,12 @@ function normalizeSafeExtensionApiIgnoredErrors(sources) {
   }
   return normalized;
 }
-
 function shouldIgnoreExtensionApiError(ignoredErrors, method, err) {
   const rule = ignoredErrors[method];
   if (!rule) return false;
   const message = String(err instanceof Error ? err.message : err?.message ?? err);
   return rule.messages.some((expected) => message.includes(expected));
 }
-
 function safeExtensionApiMethod(ignoredErrors, method, target, fn) {
   const rule = ignoredErrors[method];
   return function (...args) {
@@ -42,7 +41,6 @@ function safeExtensionApiMethod(ignoredErrors, method, target, fn) {
     }
   };
 }
-
 function createSafeExtensionApi(base, ignoredErrors) {
   const normalizedIgnoredErrors = normalizeSafeExtensionApiIgnoredErrors(ignoredErrors);
   const namespaceCache = new Map();
@@ -72,4 +70,6 @@ function createSafeExtensionApi(base, ignoredErrors) {
   });
 }
 
-export { createSafeExtensionApi };
+// Bridge for background-context ES modules, which don't share a classic
+// script global scope: harmless no-op when loaded as a plain classic script.
+globalThis.createSafeExtensionApi = createSafeExtensionApi;

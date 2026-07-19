@@ -6,8 +6,9 @@ const CHROME_STORE =
   "https://chromewebstore.google.com/detail/click-repeater/ojdgninjdijhhclanjlhaipehopjjmoo";
 const FIREFOX_STORE = "https://addons.mozilla.org/firefox/addon/click-repeater/";
 
+// Classic copy: same detection logic, loadable in vm without touching real navigator.
 const root = new URL("../extension/", import.meta.url);
-const source = readFileSync(new URL("app/support-survey/constants.js", root), "utf8");
+const source = readFileSync(new URL("app/support-survey/constants.classic.js", root), "utf8");
 
 function loadWithGlobals(globals) {
   const context = createContext({ console, ...globals });

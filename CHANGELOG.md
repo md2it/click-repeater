@@ -4,6 +4,9 @@ Regular SemVer logic.
 
 ## RELEASES
 
+### 1.2.8
+- Centralized content-script injection files and added an extension structure consistency check
+
 ### 1.2.7
 - Welcome pin hint is positioned from the viewport edge (no fixed inset)
 
