@@ -98,28 +98,34 @@
         <section class="popup-page about-page hidden" data-page-content="about">
           <h1 class="page-title" data-i18n="aboutTitle">CLICK REPEATER</h1>
           <div class="page-divider"></div>
-          <p class="about-activity"><span class="about-icon" data-about-icon="play"></span><span id="about-scenario-runs">Total scenario runs: 0</span></p>
-          <div class="page-divider"></div>
-          <ul class="about-list">
-            <li><span class="about-icon" data-about-icon="mousePointer"></span><span data-i18n="aboutRecordsClicks">Records clicks and key input</span></li>
-            <li><span class="about-icon" data-about-icon="play"></span><span data-i18n="aboutRepeatsClicks">Replays clicks and key presses</span></li>
-            <li><span class="about-icon" data-about-icon="crosshair"></span><span data-i18n="aboutPositionMode">Position mode: clicks coordinates</span></li>
-            <li><span class="about-icon" data-about-icon="code"></span><span data-i18n="aboutElementMode">Element mode: clicks elements</span></li>
-            <li><span class="about-icon" data-about-icon="eye"></span><span data-i18n="aboutVisibleMode">Visible mode: shows movement, clicks, and key playback</span></li>
-            <li><span class="about-icon" data-about-icon="eyeOff"></span><span data-i18n="aboutStealthMode">Stealth mode: works without visualisation</span></li>
-            <li><span class="about-icon" data-about-icon="repeat2"></span><span data-i18n="aboutRepeats">Repeats recordings up to 999 times</span></li>
-            <li><span class="about-icon" data-about-icon="gauge"></span><span data-i18n="aboutSpeed">Scenario speed: 0.1×, 0.25×, 0.5×, 0.75×, 1×, 2×, 4×, 8×</span></li>
-            <li><span class="about-icon" data-about-icon="star"></span><span data-i18n="aboutDefaultShortcut">"Default" recordings launch by shortcut</span></li>
-            <li><span class="about-icon" data-about-icon="shieldCheck"></span><span data-i18n="noNetwork">Doesn't use the network</span></li>
-            <li>
-              <span class="about-icon" data-about-icon="gitFork"></span>
-              <a href="https://github.com/md2it/browser-extension-click-repeater" target="_blank" rel="noopener noreferrer" data-i18n="codeOnGithub">Code on GitHub</a>
-            </li>
-            <li>
-              <span class="about-icon" data-about-icon="heart"></span>
-              <span><span data-i18n="creditsLabel">Credits (MIT):</span> <a href="https://github.com/lucide-icons/lucide" target="_blank" rel="noopener noreferrer">Lucide</a></span>
-            </li>
-          </ul>
+          <section class="about-section">
+            <h2><span class="about-icon" data-about-icon="info"></span><span data-i18n="aboutOverviewHeading">Overview</span></h2>
+            <ul class="about-list"><li><span class="about-icon" data-about-icon="check"></span><span data-i18n="aboutOverview">Record and replay browser interaction scenarios.</span></li></ul>
+          </section>
+          <section class="about-section">
+            <h2><span class="about-icon" data-about-icon="squareCheck"></span><span data-i18n="aboutCapabilitiesHeading">Capabilities</span></h2>
+            <ul class="about-list">
+              <li><span class="about-icon" data-about-icon="check"></span><span data-i18n="aboutRecordsClicks">Records clicks and key input</span></li>
+              <li><span class="about-icon" data-about-icon="check"></span><span data-i18n="aboutRepeatsClicks">Replays clicks and key presses</span></li>
+              <li><span class="about-icon" data-about-icon="check"></span><span data-i18n="aboutPositionMode">Position mode: replays clicks by coordinates or elements</span></li>
+              <li><span class="about-icon" data-about-icon="check"></span><span data-i18n="aboutVisibleMode">Visible mode: shows movement, clicks, and key playback; Stealth mode: works without visualisation</span></li>
+              <li><span class="about-icon" data-about-icon="check"></span><span data-i18n="aboutRepeats">Repeats recordings up to 999 times</span></li>
+              <li><span class="about-icon" data-about-icon="check"></span><span data-i18n="aboutSpeed">Choose from multiple playback speeds</span></li>
+              <li><span class="about-icon" data-about-icon="check"></span><span data-i18n="aboutDefaultShortcut">Start the default recording by shortcut</span></li>
+            </ul>
+          </section>
+          <section class="about-section">
+            <h2><span class="about-icon" data-about-icon="shieldCheck"></span><span data-i18n="aboutPrivacyHeading">Privacy</span></h2>
+            <ul class="about-list"><li><span class="about-icon" data-about-icon="check"></span><span data-i18n="noNetwork">Doesn't use the network</span></li><li><span class="about-icon" data-about-icon="check"></span><span data-i18n="noCollection">Doesn't collect data</span></li></ul>
+          </section>
+          <section class="about-section">
+            <h2><span class="about-icon" data-about-icon="terminal"></span><span data-i18n="aboutCodeHeading">Code</span></h2>
+            <ul class="about-list"><li><span class="about-icon" data-about-icon="check"></span><a href="https://github.com/md2it/browser-extension-click-repeater" target="_blank" rel="noopener noreferrer" data-i18n="codeOnGithub">Code on GitHub</a></li><li><span class="about-icon" data-about-icon="check"></span><span><span data-i18n="creditsLabel">Credits (MIT):</span> <a href="https://github.com/lucide-icons/lucide" target="_blank" rel="noopener noreferrer">Lucide</a></span></li></ul>
+          </section>
+          <section class="about-section">
+            <h2><span class="about-icon" data-about-icon="chartColumnIncreasing"></span><span data-i18n="aboutStatisticsHeading">Statistics</span></h2>
+            <ul class="about-list"><li><span class="about-icon" data-about-icon="check"></span><span id="about-scenario-runs">Total scenario runs: 0</span></li></ul>
+          </section>
           <footer class="about-footer">
             <div class="soft-divider"></div>
             <p>Click Repeater</p>

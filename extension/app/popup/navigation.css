@@ -183,6 +183,20 @@ kbd {
   padding: 0;
 }
 
+.about-section {
+  margin: 0 0 7px;
+}
+
+.about-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 2px;
+  color: #374151;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
 .about-page > .about-activity {
   display: flex;
   align-items: flex-start;
@@ -196,11 +210,11 @@ kbd {
 .about-list li {
   display: flex;
   align-items: flex-start;
-  gap: 7px;
-  margin-bottom: 6px;
+  gap: 6px;
+  margin-bottom: 3px;
   color: #374151;
   font-size: 13px;
-  line-height: 1.45;
+  line-height: 1.3;
 }
 
 .about-icon {
@@ -215,8 +229,30 @@ kbd {
   height: 16px;
 }
 
+.about-list .about-icon,
+.about-list .about-icon svg {
+  width: 12px;
+  height: 12px;
+  flex-basis: 12px;
+}
+
+.about-list .about-icon {
+  margin-top: 2px;
+}
+
 .about-list a {
   color: inherit;
+  text-decoration: underline;
+}
+
+.about-page .about-section h2,
+.about-page .about-list li,
+.about-page .about-icon,
+.about-page .about-list a,
+.about-page .page-title,
+.about-page .about-footer,
+.about-page .about-footer a {
+  color: #374151;
 }
 
 .about-footer {

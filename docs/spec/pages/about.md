@@ -1,18 +1,12 @@
 # PAGE ABOUT
 
 - Header "CLICK REPEATER"
-- First line: "Total scenario runs: {count}"
-- Divider below the activity line
-- (mouse-pointer) Records clicks and key input
-- (play) Replays clicks and key presses
-- (crosshair) Position mode: clicks coordinates
-- (code) Element mode: clicks elements
-- (eye) Visible mode: shows movement, clicks, and key playback
-- (eye-off) Stealth mode: works without visualisation
-- (repeat-2) Repeats recordings up to 999 times
-- (gauge) Scenario speed: 0.1×, 0.25×, 0.5×, 0.75×, 1×, 2×, 4×, 8×
-- (star) "Default" recordings launch by shortcut
-- (shield-check) Doesn't use the network
-- (git-fork) Code on GitHub // [https://github.com/md2it/browser-extension-click-repeater](https://github.com/md2it/browser-extension-click-repeater)
-- (heart) Credits (MIT): [Lucide](https://github.com/lucide-icons/lucide)
+- Sections, in this order: Overview, Capabilities, Privacy, Code, Statistics
+- Section icons: info, square-check, shield-check, terminal, chart-column-increasing
+- Every content line is prefixed with the Lucide check icon.
+  - Overview: "Record and replay browser interaction scenarios."
+  - Capabilities: recording/replay; coordinate or element mode; Visible and Stealth mode; repeats; multiple playback speeds; shortcut starts the default recording
+  - Privacy: does not use the network; does not collect data
+  - Code: GitHub link and Lucide MIT credit
+  - Statistics: "Total scenario runs: {count}"
 - Standard mini-footer at the bottom below a divider
