@@ -1,11 +1,6 @@
 import { join } from "node:path";
 
-declare const OffscreenCanvas: new (w: number, h: number) => {
-  getContext(type: "2d"): any;
-};
-declare const Path2D: new (d: string) => any;
-
-const CATALOG_ROOT: string = (process.env as any).CATALOG_ROOT;
+const CATALOG_ROOT = process.env.CATALOG_ROOT;
 const ICON_SVG_PATH = join(CATALOG_ROOT, "lib/icons/extension-logos/click-repeater/icon.svg");
 
 const SIZES = [16, 32, 48, 128];
@@ -16,7 +11,7 @@ const ICON_PATHS = [
   "m4 4 7.07 17 2.51-7.39L21 11.07z",
 ];
 
-function renderIcon(size: number): { size: number; data: Buffer } {
+function renderIcon(size) {
   const canvas = new OffscreenCanvas(size, size);
   const ctx = canvas.getContext("2d");
   const scale = size / 24;
