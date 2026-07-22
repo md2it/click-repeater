@@ -4,6 +4,9 @@ Regular SemVer logic.
 
 ## RELEASES
 
+### 1.2.13
+- Prepared Chrome Web Store upload release
+
 ### 1.2.11
 - Reduced expected popup fallback logs from warning level to debug level
 
