@@ -1,6 +1,30 @@
 # CLICK REPEATER
 
-<p align="center">
+<p align="center" id="installation">
+  <a href="https://chromewebstore.google.com/detail/click-repeater/ojdgninjdijhhclanjlhaipehopjjmoo">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/Chrome%20Web%20Store.svg?logo=googlechrome&logoColor=4285F4&mode=dark">
+      <source media="(prefers-color-scheme: light)" srcset="https://shieldcn.dev/badge/Chrome%20Web%20Store.svg?logo=googlechrome&logoColor=4285F4&mode=light">
+      <img src="https://shieldcn.dev/badge/Chrome%20Web%20Store.svg?logo=googlechrome&logoColor=4285F4&mode=dark" alt="Chrome Web Store">
+    </picture>
+  </a>
+  <a href="https://addons.mozilla.org/firefox/addon/click-repeater/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/Firefox%20Add%E2%80%91ons.svg?logo=firefoxbrowser&logoColor=FF7139&mode=dark">
+      <source media="(prefers-color-scheme: light)" srcset="https://shieldcn.dev/badge/Firefox%20Add%E2%80%91ons.svg?logo=firefoxbrowser&logoColor=FF7139&mode=light">
+      <img src="https://shieldcn.dev/badge/Firefox%20Add%E2%80%91ons.svg?logo=firefoxbrowser&logoColor=FF7139&mode=dark" alt="Firefox Add-ons">
+    </picture>
+  </a>
+  <a href="https://github.com/md2it/click-repeater/releases/latest/download/click-repeater.zip">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/Latest%20Release%20ZIP.svg?logo=lu:FileArchive&logoColor=CA8A04&mode=dark">
+      <source media="(prefers-color-scheme: light)" srcset="https://shieldcn.dev/badge/Latest%20Release%20ZIP.svg?logo=lu:FileArchive&logoColor=CA8A04&mode=light">
+      <img src="https://shieldcn.dev/badge/Latest%20Release%20ZIP.svg?logo=lu:FileArchive&logoColor=CA8A04&mode=dark" alt="Latest Release ZIP">
+    </picture>
+  </a>
+</p>
+
+<p align="center" id="language">
 =-=-=-=-=-=-=-=-= | DE | <a href="../../README.md">EN</a> | <a href="./ES.md">ES</a> | <a href="./FR.md">FR</a> | <a href="./RU.md">RU</a> | <a href="./ZH.md">中文</a> | <a href="./AR.md">عربي</a> | =-=-=-=-=-=-=-=-=
 </p>
 
@@ -10,28 +34,12 @@ Click Repeater zeichnet Klicks und Tastatureingaben auf einer Webseite auf und w
 
 Erstellen Sie einmal eine Aktionsfolge, konfigurieren Sie die Ausführung und starten Sie sie über das Erweiterungsfenster oder eine Tastenkombination. Klicks können aufgezeichnete Koordinaten oder Seitenelemente verwenden.
 
-<p align="center">
+<p align="center" id="screenshots">
   <a href="../publication/screenshots/DE-0.png"><img src="../publication/screenshots/DE-0.png" width="180" alt="Click Repeater screenshot 1"></a>
   <a href="../publication/screenshots/DE-1.png"><img src="../publication/screenshots/DE-1.png" width="180" alt="Click Repeater screenshot 2"></a>
   <a href="../publication/screenshots/DE-2.png"><img src="../publication/screenshots/DE-2.png" width="180" alt="Click Repeater screenshot 3"></a>
   <a href="../publication/screenshots/DE-3.png"><img src="../publication/screenshots/DE-3.png" width="180" alt="Click Repeater screenshot 4"></a>
 </p>
-
-## INSTALLATION
-
-### Stores
-
-- [Chrome Web Store](https://chromewebstore.google.com/detail/click-repeater/ojdgninjdijhhclanjlhaipehopjjmoo)
-- [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/click-repeater/)
-
-### Manuelle Installation
-
-- **GitHub Release.** Laden Sie das aktuelle Release-ZIP für die lokale Installation herunter:
-  [click-repeater.zip](https://github.com/md2it/click-repeater/releases/latest/download/click-repeater.zip)
-
-  Entpacken Sie das Archiv und laden Sie den Ordner als entpackte Erweiterung.
-
-- **Entwicklungsmodus.** Laden Sie das gesamte Verzeichnis [`extension`](../extension) als entpackte Erweiterung.
 
 ## HAUPTFUNKTIONEN
 
@@ -44,26 +52,14 @@ Erstellen Sie einmal eine Aktionsfolge, konfigurieren Sie die Ausführung und st
 - Per Tastenkombination starten
 - Gespeicherte Klicks bearbeiten, löschen und sortieren
 - Helles und dunkles Design
+- Oberfläche verfügbar auf Englisch, Französisch, Deutsch, Spanisch, Russisch, Arabisch und vereinfachtem Chinesisch
 
-## VERWENDUNG
+## DATENSCHUTZ
 
-### Klicks aufzeichnen
-
-1. Öffnen Sie das Erweiterungsfenster
-2. Starten Sie die Aufzeichnung
-3. Klicken Sie auf die erforderlichen Punkte oder Elemente der Seite
-4. Klicken Sie erneut auf das Erweiterungssymbol
-5. Benennen und konfigurieren Sie die Klicks und speichern Sie sie
-
-### Klicks ausführen
-
-1. Öffnen Sie das Erweiterungsfenster
-2. Starten Sie die gewünschten Klicks
-3. Die Erweiterung wiederholt die aufgezeichneten Klicks und meldet das Ergebnis
-
-Ein Benutzerklick oder `Esc` stoppt die Ausführung. Der Standard kann auch mit `Ctrl+Shift+X` → `M` oder auf dem Mac mit `Cmd+Shift+X` → `M` gestartet werden.
-
-Weitere Informationen finden Sie unter [alle Benutzerpfade](../../docs/spec/user-path.md).
+- Keine Datenerfassung
+- Kein Tracking
+- Keine Netzwerkanfragen
+- Klicks und Einstellungen werden lokal im Browser gespeichert
 
 ## EINSCHRÄNKUNGEN
 
@@ -75,23 +71,6 @@ Weitere Informationen finden Sie unter [alle Benutzerpfade](../../docs/spec/user
 - Die Wiedergabe von Delete / Backspace funktioniert in Google Docs nicht
 - Tastatureingaben in Google-Sheets-Zellen funktionieren nicht
 - Simulierte Klicks können von Websites auch im Stealth-Modus erkannt werden — browsergenerierte Ereignisse tragen nicht das Flag `isTrusted: true`, das echten Nutzerinteraktionen vorbehalten ist; Seiten, die `event.isTrusted` prüfen, erkennen die Automatisierung unabhängig davon, wie der Klick ausgelöst wurde
-
-## DATENSCHUTZ
-
-- Keine Datenerfassung
-- Kein Tracking
-- Keine Netzwerkanfragen
-- Klicks und Einstellungen werden lokal im Browser gespeichert
-
-## OBERFLÄCHENSPRACHEN
-
-- Englisch
-- Französisch
-- Deutsch
-- Spanisch
-- Russisch
-- Arabisch
-- Vereinfachtes Chinesisch
 
 ## LIZENZ
 
