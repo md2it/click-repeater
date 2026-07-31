@@ -5,8 +5,9 @@ Regular SemVer logic.
 ## RELEASES
 
 ### Unreleased
-- Removed permanent access to all sites (`<all_urls>`) and the `tabs` permission; content scripts inject on demand via `activeTab` + `scripting`
-- Recording, check, and execution stop only when the tab navigates to a different origin; same-origin navigations continue with re-injection and resume
+- Asks for page access only when you start the extension, instead of all websites and tabs upfront
+- Recording, check, and execution stop when you navigate to a different site; navigation within the same site continues
+- Removed the Shortcuts page and public hotkey documentation; shortcuts remain available as a hidden capability
 
 ### 1.2.13
 - Prepared Chrome Web Store upload release
