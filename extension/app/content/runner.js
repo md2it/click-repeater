@@ -200,9 +200,15 @@ async function runExecution(payload) {
   }
   const hasClickActions = steps.some(isClickAction);
   const hasSoundActions = steps.some((step) => isClickAction(step) || step?.type === "keydown");
+  const totalSteps = repeats * steps.length;
+  const startAtRaw = Number(payload?.startAtCompletedSteps);
+  let completedSteps = Number.isFinite(startAtRaw)
+    ? Math.max(0, Math.min(totalSteps, Math.floor(startAtRaw)))
+    : 0;
 
   executionState.isRunning = true;
   executionState.stopRequested = false;
+  executionState.unloadDuringRun = false;
   executionState.token += 1;
   const token = executionState.token;
   executionState.trackMoves = trackMoves;
@@ -219,8 +225,6 @@ async function runExecution(payload) {
     moveTracker(executionState.lastPoint);
   }
   startExecutionClickListener();
-  const totalSteps = repeats * steps.length;
-  let completedSteps = 0;
 
   const profile = getExecutionSpeedProfile(executionSpeed);
   const estimatedMovementPointCount = 19;
@@ -237,17 +241,22 @@ async function runExecution(payload) {
     clickName,
     completedSteps,
     totalSteps,
-    remainingMs: totalSteps * msPerStep
+    remainingMs: Math.max(0, totalSteps - completedSteps) * msPerStep
   });
 
   (async () => {
     try {
       for (let repeatIndex = 0; repeatIndex < repeats; repeatIndex += 1) {
-        for (const step of steps) {
+        for (let stepIndex = 0; stepIndex < steps.length; stepIndex += 1) {
+          if (repeatIndex * steps.length + stepIndex < completedSteps) {
+            continue;
+          }
+
           if (shouldStop(token)) {
             throw new Error("stopped");
           }
 
+          const step = steps[stepIndex];
           executionState.lastPoint = await runAction(token, executionState.lastPoint ?? getInitialPoint(), step);
           completedSteps += 1;
           const remainingSteps = Math.max(0, totalSteps - completedSteps);
@@ -273,6 +282,10 @@ async function runExecution(payload) {
         clickName
       });
     } catch (error) {
+      // Page navigation destroys this document; background resumes on same origin.
+      if (executionState.unloadDuringRun) {
+        return;
+      }
       const stopReason = error instanceof Error && error.message === "stopped"
         ? "user_stop"
         : error instanceof Error && (
@@ -292,6 +305,7 @@ async function runExecution(payload) {
       if (executionState.token === token) {
         executionState.isRunning = false;
         executionState.stopRequested = false;
+        executionState.unloadDuringRun = false;
         executionState.trackMoves = false;
         executionState.executionSpeed = 1;
         executionState.soundVolume = "volume-1";

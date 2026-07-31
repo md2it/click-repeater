@@ -22,7 +22,9 @@
 - The prefix and action letter work while an input field is focused; the characters may appear in the field
 
 ### Shortcut interception
-- Always listen for `Ctrl+Shift+X` / `⇧⌘X`
+- Listen for `Ctrl+Shift+X` / `⇧⌘X` in the content script after it is injected on the current tab
+- Content scripts are injected on explicit user actions (`activeTab`): toolbar icon, popup, context menu, recording/check/execution start, or the optional browser command `clicks-prefix`
+- Page shortcuts therefore work on the current origin after the extension has been used on that tab (or after the browser command fires)
 - All other shortcuts work only while the extension is active, to avoid blocking other applications
 - When using common shortcuts, enable the content listener only while active
 

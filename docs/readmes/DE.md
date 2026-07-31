@@ -64,6 +64,8 @@ Erstellen Sie einmal eine Aktionsfolge, konfigurieren Sie die Ausführung und st
 ## EINSCHRÄNKUNGEN
 
 - Browsererweiterungen funktionieren nicht auf Systemseiten des Browsers oder geschützten Websites
+- Aufnahme, Prüfung und Ausführung bleiben auf dem Origin der aktuellen Website: ein Wechsel zu einem anderen Origin beendet das aktive Szenario; Navigationen im selben Origin werden fortgesetzt (erneutes Injizieren / Fortsetzen)
+- Tastenkürzel auf der Seite funktionieren, nachdem die Erweiterung auf dem aktuellen Tab verwendet wurde (oder über den optionalen Browserbefehl)
 - Der Elementmodus setzt voraus, dass die aufgezeichneten Elemente weiterhin auf der Seite vorhanden sind
 - Der Positionsmodus setzt voraus, dass sich der relevante Inhalt weiterhin an den aufgezeichneten Koordinaten befindet
 - Änderungen an einer Website können verhindern, dass ältere gespeicherte Klicks abgeschlossen werden

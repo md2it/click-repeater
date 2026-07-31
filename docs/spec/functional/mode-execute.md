@@ -53,3 +53,11 @@ Loop:
     - The user has not clicked
     - Stop has not been requested
     - The target was found, if the action was a click
+
+---
+
+## NAVIGATION DURING EXECUTION
+
+- Same origin: execution continues after the page loads; content scripts are re-injected and the run resumes from the last completed step
+- Different origin: execution stops; the extension does not request access to other sites to continue
+- Closing the execution tab stops execution

@@ -11,7 +11,9 @@ import {
   takeExecutionLastEvent,
   buildClickName,
   getDomainFromUrl,
+  getOriginFromUrl,
   normalizeKeyboardAction,
+  readExecutionState,
 } from "./storage.js";
 import { SHORTCUT_HINT_BADGE_TEXT, SHORTCUT_HINT_DURATION_MS, normalizeExecutionSpeed } from "./state.js";
 import {
@@ -29,6 +31,8 @@ import { stopCheckMode, startCheckModeOnTab } from "./check.js";
 import { watchWelcomePinStatus2, showWelcome } from "../welcome/background.js";
 import { recordSuccessfulScenario } from "../support-survey/state.js";
 import { ext } from "../../lib/our/api.js";
+import { ensureContentScripts } from "./inject.js";
+import "./navigation.js";
 
 void syncActionBadge();
 
@@ -66,6 +70,7 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
         isActive: true,
         tabId,
         domain: getDomainFromUrl(message.url),
+        origin: getOriginFromUrl(message.url),
         steps: []
       };
       await writeSession(session);
@@ -299,12 +304,12 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   if (message.type === "execution-progress") {
     (async () => {
-      const currentState = await getRuntimeExecutionState();
-      if (!currentState?.isRunning) {
+      const storedState = await readExecutionState();
+      if (!storedState?.isRunning) {
         sendResponse({ ok: true, ignored: true, reason: "inactive" });
         return;
       }
-      if (!sender?.tab || sender.tab.id !== currentState.tabId) {
+      if (!sender?.tab || sender.tab.id !== storedState.tabId) {
         sendResponse({ ok: true, ignored: true, reason: "other_tab" });
         return;
       }
@@ -312,10 +317,10 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const totalStepsRaw = Number(message.totalSteps);
       const remainingMsRaw = Number(message.remainingMs);
       const nextState = {
-        ...currentState,
-        completedSteps: Number.isFinite(completedStepsRaw) ? Math.max(0, completedStepsRaw) : currentState.completedSteps,
-        totalSteps: Number.isFinite(totalStepsRaw) ? Math.max(0, totalStepsRaw) : currentState.totalSteps,
-        remainingMs: Number.isFinite(remainingMsRaw) ? Math.max(0, remainingMsRaw) : currentState.remainingMs
+        ...storedState,
+        completedSteps: Number.isFinite(completedStepsRaw) ? Math.max(0, completedStepsRaw) : storedState.completedSteps,
+        totalSteps: Number.isFinite(totalStepsRaw) ? Math.max(0, totalStepsRaw) : storedState.totalSteps,
+        remainingMs: Number.isFinite(remainingMsRaw) ? Math.max(0, remainingMsRaw) : storedState.remainingMs
       };
       await writeExecutionState(nextState);
       await syncActionBadge();
@@ -434,3 +439,46 @@ ext.runtime.onInstalled.addListener((details) => {
     void showWelcome();
   }
 });
+
+async function handleShortcutPrefixCommand(tab) {
+  const tabId = Number.isInteger(tab?.id) ? tab.id : null;
+  if (tabId === null) {
+    return;
+  }
+
+  if (!(await canOperateOnTab(tabId))) {
+    await showRestrictedNotice(tabId, tab.windowId);
+    return;
+  }
+
+  if (!await ensureContentScripts(tabId)) {
+    await showRestrictedNotice(tabId, tab.windowId);
+    return;
+  }
+
+  try {
+    await ext.tabs.sendMessage(tabId, { type: "shortcut-prefix-command" });
+  } catch {
+    await showRestrictedNotice(tabId, tab.windowId);
+  }
+}
+
+if (ext.commands && typeof ext.commands.onCommand?.addListener === "function") {
+  ext.commands.onCommand.addListener((command, tab) => {
+    if (command !== "clicks-prefix") {
+      return;
+    }
+    void (async () => {
+      let targetTab = tab;
+      if (!Number.isInteger(targetTab?.id)) {
+        try {
+          const tabs = await ext.tabs.query({ active: true, currentWindow: true });
+          targetTab = tabs[0];
+        } catch {
+          return;
+        }
+      }
+      await handleShortcutPrefixCommand(targetTab);
+    })();
+  });
+}

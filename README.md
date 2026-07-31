@@ -64,6 +64,8 @@ Create an action sequence once, configure how it should run, and launch it from 
 ## LIMITATIONS
 
 - Browser extensions cannot operate on browser system pages or protected websites
+- Recording, check, and execution stay on the current site origin: navigating to a different origin stops the active scenario; same-origin navigations continue (re-inject / resume)
+- Page keyboard shortcuts work after the extension has been used on the current tab (or via the optional browser command)
 - Element mode depends on recorded elements remaining available on the page
 - Position mode depends on the relevant content remaining at the recorded coordinates
 - Website changes may prevent older saved clicks from completing

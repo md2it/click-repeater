@@ -39,3 +39,8 @@
    - Repeat = 1
    - All other values use their defaults
    - The user can work with this window in the same way as when editing existing recorded scenarios
+
+### Navigation during recording
+- Same origin (same site): recording continues; content scripts are re-injected after the page loads
+- Different origin (another site): recording stops
+- Closing the recording tab stops recording

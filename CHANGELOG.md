@@ -4,6 +4,10 @@ Regular SemVer logic.
 
 ## RELEASES
 
+### Unreleased
+- Removed permanent access to all sites (`<all_urls>`) and the `tabs` permission; content scripts inject on demand via `activeTab` + `scripting`
+- Recording, check, and execution stop only when the tab navigates to a different origin; same-origin navigations continue with re-injection and resume
+
 ### 1.2.13
 - Prepared Chrome Web Store upload release
 

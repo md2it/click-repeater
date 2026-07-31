@@ -1,5 +1,5 @@
-// Shared by declarative content_scripts and on-demand injection. Keeping this
-// list in one place prevents the two execution paths from drifting apart.
+// Shared list for on-demand injection via scripting.executeScript.
+// Kept in one place so callers cannot drift apart.
 const CONTENT_SCRIPT_FILES = [
   "lib/vendor/icons/lucide/icons.js",
   "lib/our/api.classic.js",

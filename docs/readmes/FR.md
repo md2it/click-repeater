@@ -64,6 +64,8 @@ Créez une séquence d'actions une fois, configurez son exécution et lancez-la 
 ## LIMITATIONS
 
 - Les extensions ne fonctionnent pas sur les pages système du navigateur ni sur les sites web protégés
+- L’enregistrement, la vérification et l’exécution restent sur l’origine du site actuel : naviguer vers une autre origine arrête le scénario actif ; les navigations sur la même origine continuent (réinjection / reprise)
+- Les raccourcis clavier de page fonctionnent après utilisation de l’extension sur l’onglet actuel (ou via la commande navigateur optionnelle)
 - Le mode Élément nécessite que les éléments enregistrés soient toujours présents sur la page
 - Le mode Position nécessite que le contenu concerné reste aux coordonnées enregistrées
 - Les modifications d'un site web peuvent empêcher l'exécution complète d'anciens clics enregistrés

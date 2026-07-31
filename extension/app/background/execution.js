@@ -1,13 +1,41 @@
-import { writeExecutionState, clearExecutionState, readExecutionState, writeExecutionLastEvent } from "./storage.js";
+import { writeExecutionState, clearExecutionState, readExecutionState, writeExecutionLastEvent, getOriginFromUrl } from "./storage.js";
 import { shortcutHintTimer, BADGE_BACKGROUND_COLOR, BADGE_TEXT_COLOR } from "./state.js";
 import { canOperateOnTab } from "../../lib/our/page-operability/can-operate.js";
 import { showRestrictedNotice } from "../page-operability/notice.js";
 import { ext } from "../../lib/our/api.js";
-import { CONTENT_SCRIPT_FILES } from "./content-script-files.js";
+import { ensureContentScripts, applyRecordingListenersAllFrames } from "./inject.js";
 // Circular with badge.js (badge.js also imports from this file); safe because
 // syncActionBadge is only referenced inside function bodies below, never at
 // module-evaluation time.
 import { syncActionBadge } from "./badge.js";
+
+async function resolveTabOrigin(tabId) {
+  try {
+    const tab = await ext.tabs.get(tabId);
+    return getOriginFromUrl(tab?.url);
+  } catch {
+    return null;
+  }
+}
+
+async function sendExecutionRunMessage(tabId, payload) {
+  const targetFrameId = getExecutionFrameId(payload.steps);
+  const executionMessage = {
+    type: "execution-run",
+    clickId: payload.clickId,
+    clickName: payload.clickName,
+    repeats: payload.repeats,
+    steps: payload.steps,
+    trackMoves: payload.trackMoves,
+    executionSpeed: payload.executionSpeed ?? 1,
+    soundVolume: payload.soundVolume,
+    clickSound: payload.clickSound,
+    startAtCompletedSteps: payload.startAtCompletedSteps ?? 0,
+  };
+  return Number.isInteger(targetFrameId)
+    ? ext.tabs.sendMessage(tabId, executionMessage, { frameId: targetFrameId })
+    : ext.tabs.sendMessage(tabId, executionMessage);
+}
 
 export async function startExecutionOnTab({ tabId, clickId, clickName, repeats, trackMoves, executionSpeed, soundVolume = "volume-1", clickSound = true, steps }) {
   const currentState = await getRuntimeExecutionState();
@@ -29,15 +57,26 @@ export async function startExecutionOnTab({ tabId, clickId, clickName, repeats, 
     return { ok: false, error: "empty_steps" };
   }
 
+  if (!await ensureContentScripts(tabId)) {
+    return { ok: false, error: "tab_unreachable" };
+  }
+
   const stepsPerCycle = steps.length;
   const totalSteps = stepsPerCycle * repeats;
+  const origin = await resolveTabOrigin(tabId);
   const state = {
     isRunning: true,
     clickId,
     clickName,
     tabId,
+    origin,
     repeats,
     stepsPerCycle,
+    steps,
+    trackMoves: Boolean(trackMoves),
+    executionSpeed: executionSpeed ?? 1,
+    soundVolume,
+    clickSound,
     startedAt: Date.now(),
     completedSteps: 0,
     totalSteps,
@@ -47,21 +86,10 @@ export async function startExecutionOnTab({ tabId, clickId, clickName, repeats, 
   await syncActionBadge();
 
   try {
-    const targetFrameId = getExecutionFrameId(steps);
-    const executionMessage = {
-      type: "execution-run",
-      clickId,
-      clickName,
-      repeats,
-      steps,
-      trackMoves,
-      executionSpeed: executionSpeed ?? 1,
-      soundVolume,
-      clickSound
-    };
-    const tabResponse = Number.isInteger(targetFrameId)
-      ? await ext.tabs.sendMessage(tabId, executionMessage, { frameId: targetFrameId })
-      : await ext.tabs.sendMessage(tabId, executionMessage);
+    const tabResponse = await sendExecutionRunMessage(tabId, {
+      ...state,
+      startAtCompletedSteps: 0,
+    });
     if (!tabResponse?.ok) {
       await clearExecutionState();
       await syncActionBadge();
@@ -87,6 +115,60 @@ export async function startExecutionOnTab({ tabId, clickId, clickName, repeats, 
       remainingMs: state.remainingMs
     }
   };
+}
+
+export async function resumeExecutionAfterNavigation(tabId) {
+  const state = await readExecutionState();
+  if (!state?.isRunning || state.tabId !== tabId) {
+    return { ok: false, error: "inactive" };
+  }
+
+  const steps = Array.isArray(state.steps) ? state.steps : [];
+  if (!steps.length) {
+    await stopExecutionWithEvent({ kind: "failed", clickName: state.clickName });
+    return { ok: false, error: "empty_steps" };
+  }
+
+  if (!await ensureContentScripts(tabId)) {
+    await stopExecutionWithEvent({ kind: "stopped", clickName: state.clickName });
+    return { ok: false, error: "inject_failed" };
+  }
+
+  const completedSteps = Number.isFinite(Number(state.completedSteps))
+    ? Math.max(0, Math.floor(Number(state.completedSteps)))
+    : 0;
+  const totalSteps = Number.isFinite(Number(state.totalSteps))
+    ? Math.max(0, Math.floor(Number(state.totalSteps)))
+    : steps.length * (Number(state.repeats) || 1);
+
+  if (completedSteps >= totalSteps && totalSteps > 0) {
+    return { ok: true, resumed: false };
+  }
+
+  try {
+    const tabResponse = await sendExecutionRunMessage(tabId, {
+      clickId: state.clickId,
+      clickName: state.clickName,
+      repeats: Number.isFinite(Number(state.repeats)) && Number(state.repeats) > 0
+        ? Math.floor(Number(state.repeats))
+        : 1,
+      steps,
+      trackMoves: Boolean(state.trackMoves),
+      executionSpeed: state.executionSpeed ?? 1,
+      soundVolume: state.soundVolume ?? "volume-1",
+      clickSound: state.clickSound !== false,
+      startAtCompletedSteps: completedSteps,
+    });
+    if (!tabResponse?.ok) {
+      await stopExecutionWithEvent({ kind: "failed", clickName: state.clickName });
+      return { ok: false, error: tabResponse?.error ?? "execution_run_failed" };
+    }
+  } catch {
+    await stopExecutionWithEvent({ kind: "stopped", clickName: state.clickName });
+    return { ok: false, error: "tab_unreachable" };
+  }
+
+  return { ok: true, resumed: true };
 }
 
 export function getExecutionFrameId(steps) {
@@ -171,34 +253,32 @@ export async function sendRecordingListenerMessage(tabId, message) {
     return { ok: false, error: "tab_id_required" };
   }
 
-  const send = async () => {
-    try {
-      const response = await ext.tabs.sendMessage(tabId, message);
-      return response?.ok ? { ok: true } : { ok: false, error: response?.error ?? "listener_message_failed" };
-    } catch {
-      return { ok: false, error: "tab_unreachable" };
-    }
-  };
-
-  const initial = await send();
-  if (initial.ok) return initial;
-
-  try {
-    await ext.scripting.executeScript({
-      target: { tabId, allFrames: true },
-      files: CONTENT_SCRIPT_FILES,
-    });
-  } catch {
-    return initial;
+  const shouldStart = message?.type === "recording-listener-start";
+  const shouldStop = message?.type === "recording-listener-stop";
+  if (shouldStart || shouldStop) {
+    return applyRecordingListenersAllFrames(tabId, shouldStart);
   }
 
-  return send();
+  if (!await ensureContentScripts(tabId)) {
+    return { ok: false, error: "tab_unreachable" };
+  }
+
+  try {
+    const response = await ext.tabs.sendMessage(tabId, message);
+    return response?.ok ? { ok: true } : { ok: false, error: response?.error ?? "listener_message_failed" };
+  } catch {
+    return { ok: false, error: "tab_unreachable" };
+  }
 }
 
 // Scope the temporary popup override to this tab and clear it after opening.
 export async function openMainPopup(tabId, windowId, page) {
   if (!ext.action || typeof ext.action.openPopup !== "function") {
     return false;
+  }
+
+  if (Number.isInteger(tabId)) {
+    void ensureContentScripts(tabId);
   }
 
   let winId = windowId;

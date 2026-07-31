@@ -24,6 +24,9 @@
 - Check mode stops:
    - When the user clicks the same button again
    - When the extension exits its active state for any reason
+   - When the tab navigates to a different origin
+   - When the check tab is closed
+- Same-origin navigation: check mode continues; content scripts are re-injected and the overlay is restored
 - When check mode stops:
    - The check overlay is removed
 

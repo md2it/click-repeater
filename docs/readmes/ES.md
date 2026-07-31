@@ -64,6 +64,8 @@ Crea una secuencia de acciones una vez, configura cómo debe ejecutarse e iníci
 ## LIMITACIONES
 
 - Las extensiones no funcionan en páginas del sistema del navegador ni en sitios web protegidos
+- La grabación, la comprobación y la ejecución permanecen en el origen del sitio actual: navegar a otro origen detiene el escenario activo; las navegaciones en el mismo origen continúan (reinyección / reanudación)
+- Los atajos de teclado de la página funcionan después de usar la extensión en la pestaña actual (o mediante el comando opcional del navegador)
 - El modo Elemento requiere que los elementos grabados sigan disponibles en la página
 - El modo Posición requiere que el contenido correspondiente permanezca en las coordenadas grabadas
 - Los cambios en un sitio web pueden impedir que los clics guardados más antiguos se completen

@@ -15,6 +15,17 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
 
+  if (message.type === "content-ping") {
+    sendResponse({ ok: true });
+    return;
+  }
+
+  if (message.type === "shortcut-prefix-command") {
+    startWaitingForShortcutAction();
+    sendResponse({ ok: true });
+    return;
+  }
+
   if (message.type === "execution-stop") {
     if (!executionState.isRunning) {
       sendResponse({ ok: true, wasRunning: false });
@@ -93,6 +104,21 @@ void sendRuntimeMessage({ type: "recording-status" }).then((response) => {
   }
 });
 
+globalThis.__clickRepeaterRecording = {
+  start: () => {
+    removeCheckOverlay();
+    startRecordingListeners();
+  },
+  stop: stopRecordingListeners,
+};
+
+window.addEventListener("pagehide", () => {
+  if (!executionState.isRunning) {
+    return;
+  }
+  executionState.unloadDuringRun = true;
+  executionState.stopRequested = true;
+});
 document.addEventListener(
   "keyup",
   (event) => {

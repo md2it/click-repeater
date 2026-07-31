@@ -1,40 +1,28 @@
-import { readCheckState, writeCheckState, clearCheckState } from "./storage.js";
+import { readCheckState, writeCheckState, clearCheckState, getOriginFromUrl } from "./storage.js";
 import { canOperateOnTab } from "../../lib/our/page-operability/can-operate.js";
 import { showRestrictedNotice } from "../page-operability/notice.js";
 import { syncActionBadge } from "./badge.js";
 import { ext } from "../../lib/our/api.js";
-import { CONTENT_SCRIPT_FILES } from "./content-script-files.js";
+import { ensureContentScripts } from "./inject.js";
 
 async function sendCheckOverlayMessage(tabId, message, steps = []) {
   if (!Number.isInteger(tabId)) {
     return { ok: false, error: "tab_id_required" };
   }
 
-  const send = async () => {
-    try {
-      const targetFrameId = getCheckFrameId(steps);
-      const response = Number.isInteger(targetFrameId)
-        ? await ext.tabs.sendMessage(tabId, message, { frameId: targetFrameId })
-        : await ext.tabs.sendMessage(tabId, message);
-      return response?.ok ? response : { ok: false, error: response?.error ?? "check_message_failed" };
-    } catch {
-      return { ok: false, error: "tab_unreachable" };
-    }
-  };
-
-  const initial = await send();
-  if (initial.ok) return initial;
-
-  try {
-    await ext.scripting.executeScript({
-      target: { tabId, allFrames: true },
-      files: CONTENT_SCRIPT_FILES,
-    });
-  } catch {
-    return initial;
+  if (!await ensureContentScripts(tabId)) {
+    return { ok: false, error: "tab_unreachable" };
   }
 
-  return send();
+  try {
+    const targetFrameId = getCheckFrameId(steps);
+    const response = Number.isInteger(targetFrameId)
+      ? await ext.tabs.sendMessage(tabId, message, { frameId: targetFrameId })
+      : await ext.tabs.sendMessage(tabId, message);
+    return response?.ok ? response : { ok: false, error: response?.error ?? "check_message_failed" };
+  } catch {
+    return { ok: false, error: "tab_unreachable" };
+  }
 }
 
 function getCheckFrameId(steps) {
@@ -51,6 +39,15 @@ function getCheckFrameId(steps) {
 
   const firstFrameId = frameIds[0];
   return frameIds.every((frameId) => frameId === firstFrameId) ? firstFrameId : null;
+}
+
+async function resolveTabOrigin(tabId) {
+  try {
+    const tab = await ext.tabs.get(tabId);
+    return getOriginFromUrl(tab?.url);
+  } catch {
+    return null;
+  }
 }
 
 export async function stopCheckMode() {
@@ -100,6 +97,8 @@ export async function startCheckModeOnTab({ tabId, clickId, clickName, steps }) 
     clickId,
     clickName,
     tabId,
+    origin: await resolveTabOrigin(tabId),
+    steps: Array.isArray(steps) ? steps : [],
     renderedCount: Number.isFinite(Number(response.renderedCount)) ? Number(response.renderedCount) : 0
   });
   await syncActionBadge();
@@ -107,20 +106,34 @@ export async function startCheckModeOnTab({ tabId, clickId, clickName, steps }) 
   return { ok: true, isActive: true, renderedCount: response.renderedCount ?? 0 };
 }
 
-async function stopCheckModeForTab(tabId) {
+export async function resumeCheckModeAfterNavigation(tabId) {
   const state = await readCheckState();
   if (!state?.isActive || state.tabId !== tabId) {
-    return;
+    return { ok: false, error: "inactive" };
   }
-  await stopCheckMode();
+
+  const steps = Array.isArray(state.steps) ? state.steps : [];
+  if (!await ensureContentScripts(tabId)) {
+    await stopCheckMode();
+    return { ok: false, error: "inject_failed" };
+  }
+
+  const response = await sendCheckOverlayMessage(tabId, {
+    type: "check-start",
+    clickId: state.clickId,
+    clickName: state.clickName,
+    steps,
+  }, steps);
+
+  if (!response?.ok) {
+    await stopCheckMode();
+    return { ok: false, error: response?.error ?? "check_start_failed" };
+  }
+
+  await writeCheckState({
+    ...state,
+    renderedCount: Number.isFinite(Number(response.renderedCount)) ? Number(response.renderedCount) : 0,
+  });
+  await syncActionBadge();
+  return { ok: true, resumed: true };
 }
-
-ext.tabs.onUpdated.addListener((tabId, changeInfo) => {
-  if (changeInfo.status === "loading") {
-    void stopCheckModeForTab(tabId);
-  }
-});
-
-ext.tabs.onRemoved.addListener((tabId) => {
-  void stopCheckModeForTab(tabId);
-});
