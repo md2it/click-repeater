@@ -32,7 +32,7 @@
 
 Click Repeater records clicks and keyboard input on a web page and repeats them later.
 
-Create an action sequence once, configure how it should run, and launch it from the extension popup or with a keyboard shortcut. Clicks can target recorded coordinates or page elements.
+Create an action sequence once, configure how it should run, and launch it from the extension popup. Clicks can target recorded coordinates or page elements.
 
 <p align="center" id="screenshots">
   <a href="./docs/publication/screenshots/EN-0.png"><img src="./docs/publication/screenshots/EN-0.png" width="180" alt="Click Repeater screenshot 1"></a>
@@ -49,7 +49,6 @@ Create an action sequence once, configure how it should run, and launch it from 
 - Visible and Stealth execution
 - Repeat up to 999 times
 - Agile execution speed settings
-- Set one as default and launch it with a shortcut
 - Edit, delete, and reorder saved clicks
 - Light and dark themes
 - Interface available in English, French, German, Spanish, Russian, Arabic, and Simplified Chinese
@@ -65,7 +64,6 @@ Create an action sequence once, configure how it should run, and launch it from 
 
 - Browser extensions cannot operate on browser system pages or protected websites
 - Recording, check, and execution stay on the current site origin: navigating to a different origin stops the active scenario; same-origin navigations continue (re-inject / resume)
-- Page keyboard shortcuts work after the extension has been used on the current tab (or via the optional browser command)
 - Element mode depends on recorded elements remaining available on the page
 - Position mode depends on the relevant content remaining at the recorded coordinates
 - Website changes may prevent older saved clicks from completing

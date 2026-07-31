@@ -18,4 +18,4 @@
 
 ## CONTEXT MENU
 - Uses the same list of items as the menu in popup with the same therms, CAPS, incl. i18n
-- Uses relevant emoji instead of lucide icons. ▶️⚙️⌨️ℹ️
+- Uses relevant emoji instead of lucide icons. ▶️⚙️ℹ️

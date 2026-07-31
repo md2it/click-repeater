@@ -1,7 +1,6 @@
 const menuIcons = {
   clicks: iconSet.play,
   settings: iconSet.settings,
-  shortcuts: iconSet.keyboard,
   about: iconSet.info
 };
 
@@ -40,7 +39,6 @@ function syncPopupLocale() {
   const menuKeys = {
     clicks: "navClicks",
     settings: "navSettings",
-    shortcuts: "navShortcuts",
     about: "navAbout"
   };
   for (const button of refs.menuButtons) {
@@ -87,7 +85,7 @@ refs.menu.addEventListener("click", (event) => {
   }
 });
 
-const VALID_POPUP_PAGES = new Set(["clicks", "settings", "shortcuts", "about"]);
+const VALID_POPUP_PAGES = new Set(["clicks", "settings", "about"]);
 
 function applyInitialPage() {
   const page = new URLSearchParams(location.search).get("page");

@@ -8,7 +8,6 @@ FUNCIONES
 - Elegir entre ejecución visible o invisible,
 - Repetir hasta 999 veces,
 - Velocidad de ejecución ajustable,
-- Iniciar los clics predeterminados con un atajo de teclado,
 - Editar, eliminar y ordenar los clics guardados,
 - Temas claro y oscuro.
 
@@ -25,7 +24,7 @@ HECHO CON CUIDADO
 - Crea una secuencia de acciones una vez y reutilízala en lugar de repetir manualmente las mismas acciones;
 - Elige el modo Posición para coordenadas grabadas o el modo Elemento para elementos de la página;
 - Configura la velocidad de ejecución y el número de repeticiones;
-- Define la secuencia que más utilizas como predeterminada e iníciala con un atajo de teclado;
+- Define la secuencia que más utilizas como predeterminada;
 - Un clic del usuario o Esc detiene la ejecución en cualquier momento.
 
 Algunas páginas protegidas y aplicaciones web pueden limitar los clics simulados o la reproducción de entradas de teclado.

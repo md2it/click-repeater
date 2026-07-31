@@ -10,20 +10,17 @@ import { isRtlLocale } from "../../lib/our/i18n/rtl.js";
 
 const CONTEXT_MENU_CLICKS = "clicks";
 const CONTEXT_MENU_SETTINGS = "settings";
-const CONTEXT_MENU_SHORTCUTS = "shortcuts";
 const CONTEXT_MENU_ABOUT = "about";
 
 const CONTEXT_MENU_EMOJI = {
   clicks: "▶️",
   settings: "⚙️",
-  shortcuts: "⌨️",
   about: "ℹ️",
 };
 
 const CONTEXT_MENU_NAV_KEYS = {
   clicks: "navClicks",
   settings: "navSettings",
-  shortcuts: "navShortcuts",
   about: "navAbout",
 };
 
@@ -61,7 +58,7 @@ function ensureContextMenu() {
     } catch (err) {
       console.error("[Click Repeater] contextMenus.removeAll failed:", err);
     }
-    for (const id of [CONTEXT_MENU_CLICKS, CONTEXT_MENU_SETTINGS, CONTEXT_MENU_SHORTCUTS, CONTEXT_MENU_ABOUT]) {
+    for (const id of [CONTEXT_MENU_CLICKS, CONTEXT_MENU_SETTINGS, CONTEXT_MENU_ABOUT]) {
       await createContextMenuItem({
         id,
         title: contextMenuTitle(id, locale),
@@ -87,7 +84,7 @@ ext.storage.onChanged.addListener((changes, area) => {
 ext.contextMenus.onClicked.addListener((info, tab) => {
   const page = info.menuItemId;
   if (page === CONTEXT_MENU_CLICKS || page === CONTEXT_MENU_SETTINGS ||
-      page === CONTEXT_MENU_SHORTCUTS || page === CONTEXT_MENU_ABOUT) {
+      page === CONTEXT_MENU_ABOUT) {
     void openMainPopup(tab?.id, tab?.windowId, page);
   }
 });

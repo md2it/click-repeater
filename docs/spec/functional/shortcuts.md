@@ -1,5 +1,8 @@
 # SHORTCUTS
 
+> [!NOTE]
+> These hotkeys exist as a **hidden capability**. The SHORTCUTS page was removed from the UI because without `<all_urls>` the page-side chord does not run on cold pages (it needs a prior user gesture / content-script injection on the tab). We chose mass-user simplicity over advertising advanced shortcuts.
+
 ---
 
 ## USAGE EXAMPLE

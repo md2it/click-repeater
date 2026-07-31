@@ -32,7 +32,7 @@
 
 Click Repeater enregistre les clics et les saisies au clavier effectués sur une page web et les répète ultérieurement.
 
-Créez une séquence d'actions une fois, configurez son exécution et lancez-la depuis la fenêtre de l'extension ou avec un raccourci clavier. Les clics peuvent utiliser des coordonnées enregistrées ou des éléments de la page.
+Créez une séquence d'actions une fois, configurez son exécution et lancez-la depuis la fenêtre de l'extension. Les clics peuvent utiliser des coordonnées enregistrées ou des éléments de la page.
 
 <p align="center" id="screenshots">
   <a href="../publication/screenshots/FR-0.png"><img src="../publication/screenshots/FR-0.png" width="180" alt="Click Repeater screenshot 1"></a>
@@ -49,7 +49,6 @@ Créez une séquence d'actions une fois, configurez son exécution et lancez-la 
 - Exécution visible ou invisible
 - Répéter jusqu'à 999 fois
 - Réglage de la vitesse d'exécution
-- Définir une option par défaut et la lancer avec un raccourci
 - Modifier, supprimer et réorganiser les clics enregistrés
 - Thèmes clair et sombre
 - Interface disponible en anglais, français, allemand, espagnol, russe, arabe et chinois simplifié
@@ -65,7 +64,6 @@ Créez une séquence d'actions une fois, configurez son exécution et lancez-la 
 
 - Les extensions ne fonctionnent pas sur les pages système du navigateur ni sur les sites web protégés
 - L’enregistrement, la vérification et l’exécution restent sur l’origine du site actuel : naviguer vers une autre origine arrête le scénario actif ; les navigations sur la même origine continuent (réinjection / reprise)
-- Les raccourcis clavier de page fonctionnent après utilisation de l’extension sur l’onglet actuel (ou via la commande navigateur optionnelle)
 - Le mode Élément nécessite que les éléments enregistrés soient toujours présents sur la page
 - Le mode Position nécessite que le contenu concerné reste aux coordonnées enregistrées
 - Les modifications d'un site web peuvent empêcher l'exécution complète d'anciens clics enregistrés

@@ -8,7 +8,6 @@ FEATURES
 - Choose visible or stealth execution,
 - Repeat up to 999 times,
 - Flexible execution speed settings,
-- Launch the default with a keyboard shortcut,
 - Edit, delete, and reorder saved clicks,
 - Light and dark themes.
 
@@ -25,7 +24,7 @@ MADE WITH CARE
 - Create an action sequence once and reuse it instead of repeating the same actions manually;
 - Choose Position mode for recorded coordinates or Element mode for recorded page elements;
 - Select an execution speed and repeat count;
-- Set your most frequently used sequence as the default and launch it with a keyboard shortcut;
+- Set your most frequently used sequence as the default;
 - A user click or Esc stops execution at any time.
 
 Some protected pages and web apps may limit simulated clicks or keyboard playback.

@@ -15,4 +15,4 @@ Click Repeater records a user-defined sequence of clicks on the current web page
   Grant temporary access to the tab the user is viewing when they invoke the extension (toolbar icon, popup, context menu, command, or start of recording / check / execution). Access is limited to that tab’s origin and is not a permanent host permission for all sites.
 
 - `contextMenus`
-  Provide toolbar-context menu entries that open the extension popup on a chosen page (clicks, settings, shortcuts, about).
+  Provide toolbar-context menu entries that open the extension popup on a chosen page (clicks, settings, about).

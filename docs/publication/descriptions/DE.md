@@ -8,7 +8,6 @@ FUNKTIONEN
 - Sichtbare oder unsichtbare Ausführung wählen,
 - Bis zu 999-mal wiederholen,
 - Einstellbare Ausführungsgeschwindigkeit,
-- Gespeicherte Klicks per Tastenkombination starten,
 - Gespeicherte Klicks bearbeiten, löschen und sortieren,
 - Helles und dunkles Design.
 
@@ -25,7 +24,7 @@ MIT SORGFALT ENTWICKELT
 - Erstellen Sie eine Aktionsfolge einmal und verwenden Sie sie erneut, statt dieselben Aktionen manuell zu wiederholen;
 - Wählen Sie den Positionsmodus für aufgezeichnete Koordinaten oder den Elementmodus für Seitenelemente;
 - Legen Sie Ausführungsgeschwindigkeit und Wiederholungsanzahl fest;
-- Bestimmen Sie Ihre meistverwendete Folge als Standard und starten Sie sie per Tastenkombination;
+- Bestimmen Sie Ihre meistverwendete Folge als Standard;
 - Ein Benutzerklick oder Esc stoppt die Ausführung jederzeit.
 
 Einige geschützte Seiten und Web-Apps können simulierte Klicks oder die Wiedergabe von Tastatureingaben einschränken.

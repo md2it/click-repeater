@@ -32,7 +32,7 @@
 
 Click Repeater graba clics y entradas de teclado en una página web y los repite posteriormente.
 
-Crea una secuencia de acciones una vez, configura cómo debe ejecutarse e iníciala desde la ventana de la extensión o con un atajo de teclado. Los clics pueden usar coordenadas grabadas o elementos de la página.
+Crea una secuencia de acciones una vez, configura cómo debe ejecutarse e iníciala desde la ventana de la extensión. Los clics pueden usar coordenadas grabadas o elementos de la página.
 
 <p align="center" id="screenshots">
   <a href="../publication/screenshots/ES-0.png"><img src="../publication/screenshots/ES-0.png" width="180" alt="Click Repeater screenshot 1"></a>
@@ -49,7 +49,6 @@ Crea una secuencia de acciones una vez, configura cómo debe ejecutarse e iníci
 - Ejecución visible o invisible
 - Repetir hasta 999 veces
 - Ajuste de velocidad de ejecución
-- Definir una opción predeterminada e iniciarla con un atajo
 - Editar, eliminar y ordenar los clics guardados
 - Temas claro y oscuro
 - Interfaz disponible en inglés, francés, alemán, español, ruso, árabe y chino simplificado
@@ -65,7 +64,6 @@ Crea una secuencia de acciones una vez, configura cómo debe ejecutarse e iníci
 
 - Las extensiones no funcionan en páginas del sistema del navegador ni en sitios web protegidos
 - La grabación, la comprobación y la ejecución permanecen en el origen del sitio actual: navegar a otro origen detiene el escenario activo; las navegaciones en el mismo origen continúan (reinyección / reanudación)
-- Los atajos de teclado de la página funcionan después de usar la extensión en la pestaña actual (o mediante el comando opcional del navegador)
 - El modo Elemento requiere que los elementos grabados sigan disponibles en la página
 - El modo Posición requiere que el contenido correspondiente permanezca en las coordenadas grabadas
 - Los cambios en un sitio web pueden impedir que los clics guardados más antiguos se completen
