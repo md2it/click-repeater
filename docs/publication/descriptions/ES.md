@@ -20,11 +20,4 @@ SEGURIDAD
 IDIOMAS DE LA INTERFAZ
 Inglés, francés, alemán, español, ruso, árabe, chino simplificado.
 
-HECHO CON CUIDADO
-- Crea una secuencia de acciones una vez y reutilízala en lugar de repetir manualmente las mismas acciones;
-- Elige el modo Posición para coordenadas grabadas o el modo Elemento para elementos de la página;
-- Configura la velocidad de ejecución y el número de repeticiones;
-- Define la secuencia que más utilizas como predeterminada;
-- Un clic del usuario o Esc detiene la ejecución en cualquier momento.
-
 Algunas páginas protegidas y aplicaciones web pueden limitar los clics simulados o la reproducción de entradas de teclado.

@@ -20,11 +20,4 @@ SECURITY
 INTERFACE LANGUAGES
 English, French, German, Spanish, Russian, Arabic, Simplified Chinese.
 
-MADE WITH CARE
-- Create an action sequence once and reuse it instead of repeating the same actions manually;
-- Choose Position mode for recorded coordinates or Element mode for recorded page elements;
-- Select an execution speed and repeat count;
-- Set your most frequently used sequence as the default;
-- A user click or Esc stops execution at any time.
-
 Some protected pages and web apps may limit simulated clicks or keyboard playback.

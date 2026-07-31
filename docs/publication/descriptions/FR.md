@@ -20,11 +20,4 @@ SÉCURITÉ
 LANGUES DE L'INTERFACE
 Anglais, français, allemand, espagnol, russe, arabe, chinois simplifié.
 
-CONÇU AVEC SOIN
-- Créez une séquence d'actions une seule fois et réutilisez-la au lieu de répéter manuellement les mêmes actions ;
-- Choisissez le mode Position pour les coordonnées enregistrées ou le mode Élément pour les éléments de la page ;
-- Configurez la vitesse d'exécution et le nombre de répétitions ;
-- Définissez votre séquence la plus utilisée comme option par défaut ;
-- Un clic de l'utilisateur ou Esc arrête l'exécution à tout moment.
-
 Certaines pages protégées et applications web peuvent limiter les clics simulés ou la lecture des saisies au clavier.
