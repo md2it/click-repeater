@@ -4,18 +4,17 @@ Graba secuencias de clics y entradas de teclado en páginas web, y repítelas cu
 FUNCIONES
 - Grabar clics en coordenadas o elementos de la página,
 - Grabar y repetir entradas de teclado,
+- Crear tus propios conjuntos de macros,
 - Ejecutar en modo Posición o Elemento,
-- Elegir entre ejecución visible o invisible,
+- Ejecución visible u oculta,
 - Repetir hasta 999 veces,
-- Velocidad de ejecución ajustable,
-- Editar, eliminar y ordenar los clics guardados,
+- Ajuste de la velocidad de ejecución,
 - Temas claro y oscuro.
 
 SEGURIDAD
 - La extensión no recopila datos,
 - No realiza seguimiento de los usuarios,
-- No realiza solicitudes de red,
-- Los clics, las entradas de teclado y los ajustes se guardan localmente en el navegador.
+- Los clics, las entradas de teclado y los ajustes se guardan solo contigo y no se transmiten a ningún lado.
 
 IDIOMAS DE LA INTERFAZ
 Inglés, francés, alemán, español, ruso, árabe, chino simplificado.

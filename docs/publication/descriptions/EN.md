@@ -4,18 +4,17 @@ Record click sequences and keyboard input on web pages, then repeat them wheneve
 FEATURES
 - Record clicks on page coordinates or elements,
 - Record and repeat keyboard input,
-- Run clicks in Position or Element mode,
-- Choose visible or stealth execution,
+- Create your own macro sets,
+- Run in Position or Element mode,
+- Visible or stealth execution,
 - Repeat up to 999 times,
-- Flexible execution speed settings,
-- Edit, delete, and reorder saved clicks,
+- Execution speed settings,
 - Light and dark themes.
 
 SECURITY
 - The extension does not collect data,
 - It does not track users,
-- It does not make network requests,
-- Clicks, keyboard input, and settings are stored locally in the browser.
+- Clicks, keyboard input, and settings are stored only with you and are never transmitted.
 
 INTERFACE LANGUAGES
 English, French, German, Spanish, Russian, Arabic, Simplified Chinese.

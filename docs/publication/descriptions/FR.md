@@ -4,18 +4,17 @@ Enregistrez des séquences de clics et des saisies au clavier sur les pages web,
 FONCTIONNALITÉS
 - Enregistrer les clics sur des coordonnées ou des éléments de la page,
 - Enregistrer et répéter les saisies au clavier,
+- Créer vos propres jeux de macros,
 - Exécuter en mode Position ou Élément,
-- Choisir une exécution visible ou invisible,
+- Exécution visible ou masquée,
 - Répéter jusqu'à 999 fois,
-- Vitesse d'exécution réglable,
-- Modifier, supprimer et réorganiser les clics enregistrés,
+- Réglage de la vitesse d'exécution,
 - Thèmes clair et sombre.
 
 SÉCURITÉ
 - L'extension ne collecte aucune donnée,
 - Elle ne suit pas les utilisateurs,
-- Elle n'effectue aucune requête réseau,
-- Les clics, les saisies au clavier et les paramètres sont enregistrés localement dans le navigateur.
+- Les clics, les saisies au clavier et les paramètres sont stockés uniquement chez vous et ne sont transmis nulle part.
 
 LANGUES DE L'INTERFACE
 Anglais, français, allemand, espagnol, russe, arabe, chinois simplifié.
