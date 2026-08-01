@@ -1,4 +1,4 @@
-import { ext } from "../../lib/our/api.js";
+import { ext } from "../api.js";
 
 // Keep these translations aligned with element-deleter.
 const RESTRICTED_PAGE_NOTICE = {

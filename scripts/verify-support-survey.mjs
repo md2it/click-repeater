@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { createSupportSurveyLogic } from "../extension/lib/our/support-survey/logic.js";
+import { createSupportSurveyLogic } from "../extension/app/support-survey/logic-core.js";
 
 const logic = createSupportSurveyLogic({
   threshold: 25,

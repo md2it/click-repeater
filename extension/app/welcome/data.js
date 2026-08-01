@@ -1,14 +1,5 @@
-import { ext } from "../../lib/our/api.js";
-import {
-  ARROW_UP,
-  HEART,
-  INFO,
-  PIN,
-  PUZZLE,
-  SHIELD_CHECK,
-  SQUARE_CHECK,
-  TERMINAL,
-} from "../../lib/vendor/icons/index.js";
+import { ext } from "../api.js";
+import "../../vendor/lucide.js";
 import {
   LOCALES,
   LOCALE_LABELS,
@@ -16,8 +7,19 @@ import {
   EN_MESSAGES,
   normalizeLocale,
 } from "../i18n.js";
-import { isRtlLocale } from "../../lib/our/i18n/rtl.js";
-import { welcomeStepIcon } from "../../lib/our/welcome/step-icon.js";
+import { isRtlLocale } from "../i18n/rtl.js";
+import { welcomeStepIcon } from "./step-icon.js";
+
+const {
+  arrowUp: ARROW_UP,
+  heart: HEART,
+  welcomeInfo: INFO,
+  pin: PIN,
+  puzzle: PUZZLE,
+  welcomeShieldCheck: SHIELD_CHECK,
+  welcomeSquareCheck: SQUARE_CHECK,
+  welcomeTerminal: TERMINAL,
+} = globalThis.clickRepeaterLucideIcons;
 
 /** Extension logo — project-specific, not a shared Lucide icon. */
 const WELCOME_ICON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Click Repeater"><rect width="24" height="24" rx="3" fill="#012292"/><g fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 4 7.07 17 2.51-7.39L21 11.07z"/></g></svg>';

@@ -1,8 +1,8 @@
 import { readCheckState, writeCheckState, clearCheckState, getOriginFromUrl } from "./storage.js";
-import { canOperateOnTab } from "../../lib/our/page-operability/can-operate.js";
+import { canOperateOnTab } from "../page-operability/can-operate.js";
 import { showRestrictedNotice } from "../page-operability/notice.js";
 import { syncActionBadge } from "./badge.js";
-import { ext } from "../../lib/our/api.js";
+import { ext } from "../api.js";
 import { ensureContentScripts } from "./inject.js";
 
 async function sendCheckOverlayMessage(tabId, message, steps = []) {

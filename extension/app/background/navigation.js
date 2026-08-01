@@ -3,7 +3,7 @@ import { ensureContentScripts, applyRecordingListenersAllFrames } from "./inject
 import { stopCheckMode, resumeCheckModeAfterNavigation } from "./check.js";
 import { stopExecutionWithEvent, resumeExecutionAfterNavigation } from "./execution.js";
 import { syncActionBadge } from "./badge.js";
-import { ext } from "../../lib/our/api.js";
+import { ext } from "../api.js";
 
 // Prefer changeInfo.url from tabs.onUpdated; fall back to tab.url / tabs.get.
 function resolveNavigationUrl(changeInfo, tab) {

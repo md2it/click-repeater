@@ -1,8 +1,8 @@
 import { writeExecutionState, clearExecutionState, readExecutionState, writeExecutionLastEvent, getOriginFromUrl } from "./storage.js";
 import { shortcutHintTimer, BADGE_BACKGROUND_COLOR, BADGE_TEXT_COLOR } from "./state.js";
-import { canOperateOnTab } from "../../lib/our/page-operability/can-operate.js";
+import { canOperateOnTab } from "../page-operability/can-operate.js";
 import { showRestrictedNotice } from "../page-operability/notice.js";
-import { ext } from "../../lib/our/api.js";
+import { ext } from "../api.js";
 import { ensureContentScripts, applyRecordingListenersAllFrames } from "./inject.js";
 // Circular with badge.js (badge.js also imports from this file); safe because
 // syncActionBadge is only referenced inside function bodies below, never at

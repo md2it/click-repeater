@@ -1,5 +1,5 @@
 import { CONTENT_SCRIPT_FILES } from "./content-script-files.js";
-import { ext } from "../../lib/our/api.js";
+import { ext } from "../api.js";
 
 async function isContentScriptReady(tabId) {
   try {

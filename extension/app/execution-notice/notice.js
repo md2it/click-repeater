@@ -1,6 +1,6 @@
 "use strict";
 
-import { showBlockedNotice } from "../../lib/our/page-operability/show-notice.js";
+import { showBlockedNotice } from "../page-operability/show-notice.js";
 import { restrictedPageNoticeLocale } from "../page-operability/constants.js";
 import { executionErrorNoticeText, EXECUTION_NOTICE_MIN_MS, EXECUTION_NOTICE_CONFIG } from "./constants.js";
 
