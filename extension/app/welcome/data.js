@@ -54,7 +54,7 @@ function buildWelcomeLocalePayload(locale) {
     pinStep3: tl("welcomePinStep3"),
     aboutSections: [
       { heading: tl("aboutOverviewHeading"), iconHtml: WELCOME_ABOUT_SECTION_ICONS.overview, items: [{ text: tl("aboutOverview") }] },
-      { heading: tl("aboutCapabilitiesHeading"), iconHtml: WELCOME_ABOUT_SECTION_ICONS.capabilities, items: ["aboutRecordsClicks", "aboutRepeatsClicks", "aboutPositionMode", "aboutVisualisation", "aboutRepeats", "aboutSpeed", "aboutDefaultShortcut"].map((key) => ({ text: tl(key) })) },
+      { heading: tl("aboutCapabilitiesHeading"), iconHtml: WELCOME_ABOUT_SECTION_ICONS.capabilities, items: ["aboutRecordsClicks", "aboutRepeatsClicks", "aboutPositionMode", "aboutVisualisation", "aboutRepeats", "aboutSpeed"].map((key) => ({ text: tl(key) })) },
       { heading: tl("aboutPrivacyHeading"), iconHtml: WELCOME_ABOUT_SECTION_ICONS.privacy, items: ["noNetwork", "noCollection"].map((key) => ({ text: tl(key) })) },
       { heading: tl("aboutCodeHeading"), iconHtml: WELCOME_ABOUT_SECTION_ICONS.code, items: [{ text: tl("codeOnGithub"), href: WELCOME_GITHUB_URL }, { text: tl("credits") }] }
     ],

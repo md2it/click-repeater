@@ -23,7 +23,6 @@ html.dark-theme .popup-menu-btn.active {
 }
 
 html.dark-theme .page-title,
-html.dark-theme kbd,
 html.dark-theme .edit-name-input,
 html.dark-theme .setting-toggle,
 html.dark-theme .display-moves-toggle.display-moves-on,
@@ -42,9 +41,6 @@ html.dark-theme .settings-divider {
   background: rgba(148, 163, 184, 0.22);
 }
 
-html.dark-theme .shortcuts-heading,
-html.dark-theme .shortcuts-stop,
-html.dark-theme .shortcuts-steps,
 html.dark-theme .about-list li,
 html.dark-theme .about-activity,
 html.dark-theme .settings-row-label,
@@ -57,7 +53,6 @@ html.dark-theme .click-display-moves-icon {
   color: #cbd5e1;
 }
 
-html.dark-theme .page-note,
 html.dark-theme .about-footer,
 html.dark-theme .about-icon,
 html.dark-theme .step-row::before,
@@ -74,11 +69,6 @@ html.dark-theme .about-page .page-title,
 html.dark-theme .about-page .about-footer,
 html.dark-theme .about-page .about-footer a {
   color: #e5e7eb;
-}
-
-html.dark-theme kbd {
-  border-color: #4b5563;
-  background: #1f2937;
 }
 
 html.dark-theme .btn,

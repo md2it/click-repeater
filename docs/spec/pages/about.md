@@ -5,7 +5,7 @@
 - Section icons: info, square-check, shield-check, terminal, chart-column-increasing
 - Every content line uses a standard list bullet.
   - Overview: "Record and replay browser interaction scenarios."
-  - Capabilities: recording/replay; coordinate or element mode; Visible and Stealth mode; repeats; multiple playback speeds; shortcut starts the default recording
+  - Capabilities: recording/replay; coordinate or element mode; Visible and Stealth mode; repeats; multiple playback speeds
   - Privacy: does not use the network; does not collect data
   - Code: GitHub link and Lucide MIT credit
   - Statistics: "Total scenario runs: {count}"

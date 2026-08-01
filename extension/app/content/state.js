@@ -23,6 +23,7 @@ const SHORTCUT_HINT_DURATION_MS = 3000;
 const executionState = {
   isRunning: false,
   stopRequested: false,
+  unloadDuringRun: false,
   token: 0,
   lastPoint: null,
   lastTarget: null,

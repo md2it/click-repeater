@@ -28,6 +28,18 @@ export function getDomainFromUrl(rawUrl) {
   }
 }
 
+export function getOriginFromUrl(rawUrl) {
+  if (typeof rawUrl !== "string" || !rawUrl) {
+    return null;
+  }
+
+  try {
+    return new URL(rawUrl).origin || null;
+  } catch {
+    return null;
+  }
+}
+
 export function normalizeKeyboardAction(step) {
   if (!step || typeof step !== "object" || (step.type !== "keydown" && step.type !== "keyup")) {
     return null;

@@ -42,8 +42,7 @@ function render() {
     const displayMovesEnabled = getDisplayMovesValue(macro);
     const isElementMode = (macro.mode ?? "position") === "element";
     const isDefault = macro.id === defaultClickId;
-    const defaultTitle = t(isDefault ? "defaultLabel" : "makeDefault");
-    const defaultDetail = t(isDefault ? "worksByShortcut" : "enableShortcut");
+    const defaultTitle = t("makeDefault");
     const runLabel = t("run");
     const checkLabel = t("check");
     const editLabel = t("edit");
@@ -116,11 +115,10 @@ function render() {
       action: "set-default",
       id: macro.id,
       tooltip: defaultTitle,
-      ariaLabel: `${defaultTitle}. ${defaultDetail}`,
+      ariaLabel: defaultTitle,
       ariaPressed: isDefault,
       svgHtml: iconSet.star
     });
-    defaultBtn.dataset.tooltipDetail = defaultDetail;
 
     const repeatField = document.createElement("span");
     repeatField.className = "repeat-field";

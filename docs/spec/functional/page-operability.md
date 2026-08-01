@@ -10,6 +10,7 @@
 - Check again immediately before recording or executing
 - A check failure, content-script injection failure, or communication failure means the page is unavailable
 - State is determined separately for each tab and is not cached after navigation to another page
+- Content scripts are not declared for all sites; they are injected on demand with `scripting` after an `activeTab` user gesture
 
 ## UNAVAILABLE PAGE
 
@@ -27,3 +28,9 @@
 
 - The standard popup opens
 - Recording and execution work without a warning
+
+## ORIGIN BOUNDARY
+
+- Temporary access from `activeTab` applies to the current tab origin
+- Recording, check, and execution may continue across same-origin navigations (content scripts are re-injected; execution resumes from progress)
+- A navigation to a different origin stops recording, check, or execution; the extension does not keep broad host access to follow the user across sites

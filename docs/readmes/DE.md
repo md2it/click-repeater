@@ -32,7 +32,7 @@
 
 Click Repeater zeichnet Klicks und Tastatureingaben auf einer Webseite auf und wiederholt sie später.
 
-Erstellen Sie einmal eine Aktionsfolge, konfigurieren Sie die Ausführung und starten Sie sie über das Erweiterungsfenster oder eine Tastenkombination. Klicks können aufgezeichnete Koordinaten oder Seitenelemente verwenden.
+Erstellen Sie einmal eine Aktionsfolge, konfigurieren Sie die Ausführung und starten Sie sie über das Erweiterungsfenster. Klicks können aufgezeichnete Koordinaten oder Seitenelemente verwenden.
 
 <p align="center" id="screenshots">
   <a href="../publication/screenshots/DE-0.png"><img src="../publication/screenshots/DE-0.png" width="180" alt="Click Repeater screenshot 1"></a>
@@ -49,7 +49,6 @@ Erstellen Sie einmal eine Aktionsfolge, konfigurieren Sie die Ausführung und st
 - Sichtbare oder unsichtbare Ausführung
 - Bis zu 999-mal wiederholen
 - Einstellbare Ausführungsgeschwindigkeit
-- Per Tastenkombination starten
 - Gespeicherte Klicks bearbeiten, löschen und sortieren
 - Helles und dunkles Design
 - Oberfläche verfügbar auf Englisch, Französisch, Deutsch, Spanisch, Russisch, Arabisch und vereinfachtem Chinesisch
@@ -64,6 +63,7 @@ Erstellen Sie einmal eine Aktionsfolge, konfigurieren Sie die Ausführung und st
 ## EINSCHRÄNKUNGEN
 
 - Browsererweiterungen funktionieren nicht auf Systemseiten des Browsers oder geschützten Websites
+- Aufnahme, Prüfung und Ausführung bleiben auf dem Origin der aktuellen Website: ein Wechsel zu einem anderen Origin beendet das aktive Szenario; Navigationen im selben Origin werden fortgesetzt (erneutes Injizieren / Fortsetzen)
 - Der Elementmodus setzt voraus, dass die aufgezeichneten Elemente weiterhin auf der Seite vorhanden sind
 - Der Positionsmodus setzt voraus, dass sich der relevante Inhalt weiterhin an den aufgezeichneten Koordinaten befindet
 - Änderungen an einer Website können verhindern, dass ältere gespeicherte Klicks abgeschlossen werden

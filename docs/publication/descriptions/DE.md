@@ -4,28 +4,19 @@ Zeichnen Sie Klickfolgen und Tastatureingaben auf Webseiten auf und wiederholen 
 FUNKTIONEN
 - Klicks auf Koordinaten oder Seitenelemente aufzeichnen,
 - Tastatureingaben aufzeichnen und wiederholen,
+- Eigene Makrosätze erstellen,
 - Im Positions- oder Elementmodus ausführen,
-- Sichtbare oder unsichtbare Ausführung wählen,
+- Sichtbare oder unsichtbare Ausführung,
 - Bis zu 999-mal wiederholen,
-- Einstellbare Ausführungsgeschwindigkeit,
-- Gespeicherte Klicks per Tastenkombination starten,
-- Gespeicherte Klicks bearbeiten, löschen und sortieren,
+- Einstellung der Ausführungsgeschwindigkeit,
 - Helles und dunkles Design.
 
 SICHERHEIT
 - Die Erweiterung erfasst keine Daten,
 - Sie verfolgt keine Benutzer,
-- Sie stellt keine Netzwerkanfragen,
-- Klicks, Tastatureingaben und Einstellungen werden lokal im Browser gespeichert.
+- Klicks, Tastatureingaben und Einstellungen werden nur bei Ihnen gespeichert und nirgendwohin übertragen.
 
 OBERFLÄCHENSPRACHEN
 Englisch, Französisch, Deutsch, Spanisch, Russisch, Arabisch, vereinfachtes Chinesisch.
-
-MIT SORGFALT ENTWICKELT
-- Erstellen Sie eine Aktionsfolge einmal und verwenden Sie sie erneut, statt dieselben Aktionen manuell zu wiederholen;
-- Wählen Sie den Positionsmodus für aufgezeichnete Koordinaten oder den Elementmodus für Seitenelemente;
-- Legen Sie Ausführungsgeschwindigkeit und Wiederholungsanzahl fest;
-- Bestimmen Sie Ihre meistverwendete Folge als Standard und starten Sie sie per Tastenkombination;
-- Ein Benutzerklick oder Esc stoppt die Ausführung jederzeit.
 
 Einige geschützte Seiten und Web-Apps können simulierte Klicks oder die Wiedergabe von Tastatureingaben einschränken.
