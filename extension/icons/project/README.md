@@ -2,4 +2,4 @@
 
 SVG icons designed specifically for Click Repeater, including the tracker cursor and mouse-left icon.
 
-Runtime icon definitions are exposed through `extension/vendor/lucide.js`.
+Runtime icon definitions are exposed through `extension/app/icons/project.js`.

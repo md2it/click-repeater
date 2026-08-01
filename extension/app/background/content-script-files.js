@@ -2,6 +2,7 @@
 // Kept in one place so callers cannot drift apart.
 const CONTENT_SCRIPT_FILES = [
   "vendor/lucide.js",
+  "app/icons/project.js",
   "app/api.classic.js",
   "app/page-operability/probe.classic.js",
   "app/page-operability/content-probe.classic.js",

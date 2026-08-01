@@ -227,7 +227,7 @@ function makeCheckOverlayElement(groups) {
     icon.style.cssText = `display:block;width:${CHECK_ICON_SIZE}px;height:${CHECK_ICON_SIZE}px;color:#012292;`;
     icon.innerHTML = group.kind === "keyboard"
       ? globalThis.clickRepeaterLucideIcons.keyboard
-      : globalThis.clickRepeaterLucideIcons.mouseLeft;
+      : globalThis.clickRepeaterProjectIcons.mouseLeft;
     const svgIcon = icon.querySelector("svg");
     if (svgIcon) {
       svgIcon.style.width = `${CHECK_ICON_SIZE}px`;
