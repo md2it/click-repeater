@@ -36,7 +36,7 @@ var SAFE_EXTENSION_API_IGNORED_ERRORS = {
   },
 };
 
-// `var` re-declaration: harmless merge with the `var ext` from lib/our/api.js
+// `var` re-declaration: harmless merge with the extension-local API module's `var ext`
 // when sharing a classic script global scope (popup/welcome pages); required
 // so this file also works when imported as an ES module in the background
 // context, where module scopes don't share bindings with other modules.

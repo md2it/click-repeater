@@ -1,8 +1,3 @@
-import { join } from "node:path";
-
-const CATALOG_ROOT = process.env.CATALOG_ROOT;
-const ICON_SVG_PATH = join(CATALOG_ROOT, "lib/icons/extension-logos/click-repeater/icon.svg");
-
 const SIZES = [16, 32, 48, 128];
 const BG = "#012292";
 const FG = "#ffffff";
@@ -59,6 +54,5 @@ export const manifestIconOutputs = [
   {
     prefix: "icon",
     getRasters: getInactiveManifestRasters,
-    svgPath: ICON_SVG_PATH,
   },
 ];
