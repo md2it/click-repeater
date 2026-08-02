@@ -34,6 +34,10 @@ var SAFE_EXTENSION_API_IGNORED_ERRORS = {
     messages: ["No tab with id", "Invalid tab ID"],
     fallback: void 0,
   },
+  "action.setIcon": {
+    messages: ["No tab with id", "Invalid tab ID"],
+    fallback: void 0,
+  },
 };
 
 // `var` re-declaration: harmless merge with the extension-local API module's `var ext`
