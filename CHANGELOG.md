@@ -4,7 +4,7 @@ Regular SemVer logic.
 
 ## RELEASES
 
-### Unreleased
+### 1.2.14
 - Asks for page access only when you start the extension, instead of all websites and tabs upfront
 - Recording, check, and execution stop when you navigate to a different site; navigation within the same site continues
 - Removed the Shortcuts page and public hotkey documentation; shortcuts remain available as a hidden capability
