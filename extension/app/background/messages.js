@@ -1,5 +1,5 @@
-import { isBlockedNoticeDismissedMessage } from "../../lib/our/page-operability/messages.js";
-import { canOperateOnTab } from "../../lib/our/page-operability/can-operate.js";
+import { isBlockedNoticeDismissedMessage } from "../page-operability/messages.js";
+import { canOperateOnTab } from "../page-operability/can-operate.js";
 import { showRestrictedNotice } from "../page-operability/notice.js";
 import { showExecutionErrorNotice } from "../execution-notice/notice.js";
 import {
@@ -28,9 +28,9 @@ import {
 } from "./execution.js";
 import { syncActionBadge, showShortcutHintBadge, startDefaultClickFromTab } from "./badge.js";
 import { stopCheckMode, startCheckModeOnTab } from "./check.js";
-import { watchWelcomePinStatus2, showWelcome } from "../welcome/background.js";
+import { watchWelcomePinStatus, showWelcome } from "../welcome/background.js";
 import { recordSuccessfulScenario } from "../support-survey/state.js";
-import { ext } from "../../lib/our/api.js";
+import { ext } from "../api.js";
 import { ensureContentScripts } from "./inject.js";
 import "./navigation.js";
 
@@ -428,7 +428,7 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   if (message.type === "WATCH_PIN_STATUS") {
     const tabId = sender?.tab?.id;
-    if (Number.isInteger(tabId)) watchWelcomePinStatus2(tabId);
+    if (Number.isInteger(tabId)) watchWelcomePinStatus(tabId);
     return;
   }
   sendResponse({ ok: false, error: "unknown_message_type" });

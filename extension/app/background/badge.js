@@ -3,7 +3,7 @@ import { readSession, readCheckState, readDefaultClickId, readClicks, normalizeS
 // because these are only referenced inside function bodies below, never at
 // module-evaluation time.
 import { getRuntimeExecutionState, clearShortcutHintTimer, startExecutionOnTab, setActionBadgeText } from "./execution.js";
-import { ext } from "../../lib/our/api.js";
+import { ext } from "../api.js";
 import {
   BADGE_ANIMATION_STEPS,
   BADGE_ANIMATION_STEP_MS,

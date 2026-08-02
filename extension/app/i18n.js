@@ -1,4 +1,4 @@
-import { ext } from "../lib/our/api.js";
+import { ext } from "./api.js";
 
 export const LOCALE_STORAGE_KEY = "locale";
 export const LOCALES = ["en", "es", "fr", "de", "ru", "zh_CN", "ar"];

@@ -1,5 +1,5 @@
-import { ext } from "../../lib/our/api.js";
-import { createSupportSurveyLogic } from "../../lib/our/support-survey/logic.js";
+import { ext } from "../api.js";
+import { createSupportSurveyLogic } from "./logic-core.js";
 import {
   SURVEY_STORAGE_KEY,
   SURVEY_THRESHOLD,

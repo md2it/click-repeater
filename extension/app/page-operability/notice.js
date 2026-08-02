@@ -1,5 +1,5 @@
 "use strict";
-import { showBlockedNotice } from "../../lib/our/page-operability/show-notice.js";
+import { showBlockedNotice } from "./show-notice.js";
 import { restrictedPageNoticeLocale, restrictedPageNoticeText, RESTRICTED_NOTICE_MIN_MS, RESTRICTED_NOTICE_CONFIG } from "./constants.js";
 
 export async function showRestrictedNotice(tabId, windowId) {

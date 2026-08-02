@@ -1,12 +1,12 @@
 import { openMainPopup } from "./execution.js";
-import { ext } from "../../lib/our/api.js";
+import { ext } from "../api.js";
 import {
   TRANSLATIONS,
   EN_MESSAGES,
   normalizeLocale,
   LOCALE_STORAGE_KEY,
 } from "../i18n.js";
-import { isRtlLocale } from "../../lib/our/i18n/rtl.js";
+import { isRtlLocale } from "../i18n/rtl.js";
 
 const CONTEXT_MENU_CLICKS = "clicks";
 const CONTEXT_MENU_SETTINGS = "settings";

@@ -1,10 +1,10 @@
 
 function trackerDefaultIconSvg() {
-  return globalThis.clickRepeaterLucideIcons.trackerDefault;
+  return globalThis.clickRepeaterProjectIcons.trackerDefault;
 }
 
 function trackerClickIconSvg() {
-  return globalThis.clickRepeaterLucideIcons.trackerClick;
+  return globalThis.clickRepeaterProjectIcons.trackerClick;
 }
 
 function applyTrackerStyle({ size, color }) {
