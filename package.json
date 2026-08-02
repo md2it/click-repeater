@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "verify:structure": "node scripts/verify-extension-structure.mjs"
+    "test": "./tests/run-tests.sh"
   },
   "devDependencies": {
     "canvas": "^3.2.3",
