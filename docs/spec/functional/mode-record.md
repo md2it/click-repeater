@@ -36,8 +36,8 @@
    - Name: `domain + date + time`, for example `google.com 2026-06-02 19:34`. Excludes http, www, /, etc.
    - Repeat = 1
    - All other values use their defaults
-- The new entry appears at the top of the list, and the save-confirmation animation described below plays on it
-- The user can rename the entry and change its other settings afterward through the [Manage menu](../ui/manage-menu.md)
+- The new entry appears at the top of the list, its [Manage menu](../ui/manage-menu.md) is open, and the save-confirmation animation described below plays on it
+- The user can rename the entry and change its other settings afterward through the Manage menu
 
 ### Save-confirmation animation
 - Plays once on a scenario entry immediately after it is newly saved (currently only reachable by finishing a recording)

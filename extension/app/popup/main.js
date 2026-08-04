@@ -18,6 +18,12 @@ async function init() {
   }
 
   if (createdClick) {
+    const manageBtn = refs.list.querySelector(
+      `.manage-btn[data-id="${CSS.escape(createdClick.id)}"]`
+    );
+    if (manageBtn) {
+      openManageMenu(createdClick.id, manageBtn);
+    }
     playSaveAnimation(createdClick.id);
     setStatus(t("saved"));
     return;
