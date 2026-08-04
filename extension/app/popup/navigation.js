@@ -16,8 +16,7 @@ for (const button of document.querySelectorAll(".modal-close-btn")) {
   button.innerHTML = iconSet.x;
 }
 
-refs.deleteEditBtn.innerHTML = iconSet.trash;
-refs.clearEditNameBtn.innerHTML = iconSet.x;
+refs.clearRenameNameBtn.innerHTML = iconSet.x;
 
 function renderLanguageSelector() {
   refs.languageSelector.replaceChildren();
@@ -49,9 +48,6 @@ function syncPopupLocale() {
   refs.list.setAttribute("aria-label", t("clicksList"));
   refs.languageSelector.setAttribute("aria-label", t("language"));
   renderLanguageSelector();
-  setEditDisplayMoves(refs.editDisplayMoves.checked);
-  setEditMode(state.editMode);
-  renderEditSteps(getCurrentEditSteps());
   render();
   syncPopupHeight();
 }

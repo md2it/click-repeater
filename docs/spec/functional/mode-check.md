@@ -15,14 +15,12 @@
 ## START AND STOP
 
 - Check mode starts:
-   - From the button for a specific scenario in the scenario modal
-   - With the working button name `Check`
-   - With a check icon as the working visual direction
+   - From "Look without run" in the [Manage menu](../ui/manage-menu.md) for a specific scenario
 - When check mode starts:
-   - The popup remains open
+   - The popup closes
    - The check overlay is rendered on the current page
 - Check mode stops:
-   - When the user clicks the same button again
+   - When the user reopens the popup
    - When the extension exits its active state for any reason
    - When the tab navigates to a different origin
    - When the check tab is closed

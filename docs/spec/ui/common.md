@@ -11,8 +11,7 @@
 - White buttons (all other `icon-btn`, `btn`):
    - White/transparent background; dark gray `#4f5570` icons and text
 - Exceptions that intentionally differ:
-   - Active default-click star: filled yellow `#ffc400` icon
-   - Expanded delete button: red `#c83232` background; white text and icon
+   - "Delete" in the [Manage menu](manage-menu.md): red `#c83232` text, in both its default and "Confirm deletion" armed state
 
 ## Tooltips
 
@@ -22,4 +21,4 @@
 - Use one consistent, concise style, are visually separated from the main interface, and provide good readability
 - Contain short localized text; a second explanatory line is allowed when needed
 - Positioned near the element and remain fully within the popup boundaries
-- Menu tooltips use a separate style and are specified separately
+- The "Manage" button on each scenario entry follows these rules; the menu it opens is specified in [Manage menu](manage-menu.md)

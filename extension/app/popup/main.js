@@ -8,7 +8,7 @@ async function init() {
   await refreshSupportSurveyAboutStatistic();
   await loadClicks();
   const createdClick = await completeCreateModeIfNeeded();
-  await refreshCheckStatus();
+  await stopActiveCheckMode();
   render();
   const executionStatus = await refreshExecutionStatus();
   if (executionStatus?.lastEvent?.kind === "completed") {
@@ -18,8 +18,8 @@ async function init() {
   }
 
   if (createdClick) {
-    openEditModal(createdClick.id, { selectAll: true });
-    setStatus(t("createCompleted"));
+    playSaveAnimation(createdClick.id);
+    setStatus(t("saved"));
     return;
   }
 

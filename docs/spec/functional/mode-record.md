@@ -32,13 +32,20 @@
 
 ### Ending recording mode
 - After finishing the actions, the user clicks the extension icon again to end the mode
-- The popup immediately opens the "Edit" window with prefilled steps:
-   - Name:
-      - Prefilled by default as `domain + date + time`, for example `google.com 2026-06-02 19:34`. Exclude http, www, /, etc.
-      - The text is selected so the user can immediately enter a custom name
+- The recorded scenario is saved immediately, with no intermediate confirmation window:
+   - Name: `domain + date + time`, for example `google.com 2026-06-02 19:34`. Excludes http, www, /, etc.
    - Repeat = 1
    - All other values use their defaults
-   - The user can work with this window in the same way as when editing existing recorded scenarios
+- The new entry appears at the top of the list, and the save-confirmation animation described below plays on it
+- The user can rename the entry and change its other settings afterward through the [Manage menu](../ui/manage-menu.md)
+
+### Save-confirmation animation
+- Plays once on a scenario entry immediately after it is newly saved (currently only reachable by finishing a recording)
+- A light streak sweeps across the entry: left to right, then right to left, then left to right again
+- The streak is angled at roughly 30 degrees
+- The streak has two layers: one sharp-edged, one blurred
+- The streak is visible against both the light and the dark theme
+- The animation is purely visual and does not block interaction with the entry
 
 ### Navigation during recording
 - Same origin (same site): recording continues; content scripts are re-injected after the page loads

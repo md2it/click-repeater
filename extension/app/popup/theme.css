@@ -24,9 +24,6 @@ html.dark-theme .popup-menu-btn.active {
 
 html.dark-theme .page-title,
 html.dark-theme .edit-name-input,
-html.dark-theme .setting-toggle,
-html.dark-theme .display-moves-toggle.display-moves-on,
-html.dark-theme .display-moves-toggle.display-moves-on .display-moves-toggle-icon,
 html.dark-theme .repeat-input {
   color: #f3f4f6;
 }
@@ -47,9 +44,7 @@ html.dark-theme .settings-row-label,
 html.dark-theme .status-line,
 html.dark-theme .modal-description,
 html.dark-theme .explanation-list,
-html.dark-theme .dont-show-row,
-html.dark-theme .click-mode-icon,
-html.dark-theme .click-display-moves-icon {
+html.dark-theme .dont-show-row {
   color: #cbd5e1;
 }
 
@@ -57,7 +52,8 @@ html.dark-theme .about-footer,
 html.dark-theme .about-icon,
 html.dark-theme .step-row::before,
 html.dark-theme .step-row-empty,
-html.dark-theme .repeat-prefix {
+html.dark-theme .repeat-field-label,
+html.dark-theme .manage-menu-field-label {
   color: #94a3b8;
 }
 
@@ -73,9 +69,6 @@ html.dark-theme .about-page .about-footer a {
 
 html.dark-theme .btn,
 html.dark-theme .icon-btn,
-html.dark-theme .setting-toggle,
-html.dark-theme .edit-repeat-setting,
-html.dark-theme .edit-speed-setting,
 html.dark-theme .speed-cycle-btn,
 html.dark-theme .language-btn {
   border-color: #4b5563;
@@ -90,7 +83,6 @@ html.dark-theme .sound-volume-btn {
 
 html.dark-theme .btn:hover,
 html.dark-theme .icon-btn:hover,
-html.dark-theme .setting-toggle:hover,
 html.dark-theme .speed-cycle-btn:hover {
   border-color: #64748b;
   background: #273449;
@@ -137,13 +129,18 @@ html.dark-theme .btn-success {
 }
 
 html.dark-theme .click-row {
-  border-color: #374151;
-  background: rgba(31, 41, 55, 0.88);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.28);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
-html.dark-theme .drag-handle,
-html.dark-theme .display-moves-toggle.display-moves-off {
+html.dark-theme .click-row .manage-btn:hover,
+html.dark-theme .click-row .manage-btn:focus-visible {
+  background: #273449;
+  border-color: #64748b;
+}
+
+html.dark-theme .drag-handle {
   color: #77839a;
 }
 
@@ -170,42 +167,30 @@ html.dark-theme .edit-name-clear-btn:hover {
   background: #273449;
 }
 
-html.dark-theme .edit-name-field {
+html.dark-theme .edit-name-field,
+html.dark-theme .repeat-field {
   border-color: #4b5563;
   background: #1f2937;
 }
 
 html.dark-theme .edit-name-field:hover,
-html.dark-theme .edit-repeat-setting:hover,
-html.dark-theme .edit-speed-setting:hover,
-html.dark-theme .click-repeats:hover {
+html.dark-theme .repeat-field:hover {
   border-color: #7185e8;
   background: #273449;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 html.dark-theme .edit-name-field:focus-within,
-html.dark-theme .edit-repeat-setting:focus-within,
-html.dark-theme .edit-speed-setting:focus-within,
-html.dark-theme .click-repeats:focus {
+html.dark-theme .repeat-field:focus-within {
   border-color: #7185e8;
   background: #1f2937;
   box-shadow: 0 0 0 1px #7185e8;
-}
-
-html.dark-theme .speed-select {
-  color: #d1d5db;
 }
 
 html.dark-theme .edit-name-field.invalid {
   border-color: #f87171;
   background: #3f1d25;
   box-shadow: 0 0 0 1px #f87171;
-}
-
-html.dark-theme .repeat-input {
-  border-color: #4b5563;
-  background: #111827;
 }
 
 html.dark-theme .toggle-switch-visual {
@@ -230,8 +215,109 @@ html.dark-theme .default-btn.active {
   color: #ffc400;
 }
 
-html.dark-theme .check-btn.active {
-  border-color: #2dd4bf;
-  color: #5eead4;
-  background: rgba(20, 83, 75, 0.68);
+html.dark-theme .clicks-list > li.click-row {
+  border-color: #374151;
+  background: rgba(31, 41, 55, 0.82);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.28);
+}
+
+html.dark-theme .click-card {
+  border-color: #374151;
+  background: rgba(31, 41, 55, 0.82);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.28);
+}
+
+html.dark-theme .manage-menu-divider {
+  background: #374151;
+}
+
+html.dark-theme .manage-menu-field {
+  border-color: #4b5563;
+  background: rgba(31, 41, 55, 0.9);
+}
+
+html.dark-theme .manage-menu-field:hover {
+  border-color: #64748b;
+  background: #273449;
+}
+
+html.dark-theme .manage-menu-field:focus-within {
+  border-color: #7185e8;
+  background: #1f2937;
+  box-shadow: 0 0 0 1px #7185e8;
+}
+
+html.dark-theme .manage-menu-field-input {
+  color: #f3f4f6;
+}
+
+html.dark-theme .manage-menu-btn,
+html.dark-theme .manage-menu-delete {
+  border-color: #4b5563;
+  color: #e5e7eb;
+  background: rgba(31, 41, 55, 0.9);
+}
+
+html.dark-theme .manage-menu-btn:hover,
+html.dark-theme .manage-menu-btn--active {
+  border-color: #64748b;
+  background: #273449;
+}
+
+html.dark-theme .manage-menu-btn--active {
+  box-shadow: 0 0 0 1px #7185e8;
+}
+
+html.dark-theme .manage-menu-delete {
+  color: #f87171;
+}
+
+html.dark-theme .manage-menu-delete:hover {
+  border-color: #f87171;
+  background: rgba(220, 76, 76, 0.16);
+}
+
+html.dark-theme .manage-menu-delete--armed {
+  border-color: #f87171;
+  background: rgba(220, 76, 76, 0.22);
+}
+
+html.dark-theme .manage-menu-delete--armed:hover {
+  background: rgba(220, 76, 76, 0.3);
+}
+
+html.dark-theme .manage-menu-select {
+  border-color: #4b5563;
+  color: #d1d5db;
+  background-color: rgba(31, 41, 55, 0.9);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 12px 12px;
+}
+
+html.dark-theme .manage-menu-select:hover {
+  border-color: #64748b;
+  background-color: #273449;
+}
+
+html.dark-theme .manage-menu-select:focus-visible {
+  border-color: #7185e8;
+  background-color: #1f2937;
+  box-shadow: 0 0 0 1px #7185e8;
+}
+
+html.dark-theme .manage-menu-field .manage-menu-select {
+  border: 0;
+  color: #f3f4f6;
+  background-color: transparent;
+  background-position: right 0 center;
+  box-shadow: none;
+}
+
+html.dark-theme .manage-menu-field .manage-menu-select:hover,
+html.dark-theme .manage-menu-field .manage-menu-select:focus-visible {
+  border: 0;
+  background-color: transparent;
+  box-shadow: none;
 }

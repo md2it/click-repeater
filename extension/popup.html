@@ -114,63 +114,39 @@
       </div>
     </main>
 
-    <div id="edit-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
-      <div class="modal">
+    <div id="rename-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="rename-modal-title">
+      <div class="modal rename-modal">
         <div class="modal-header">
-          <button id="delete-edit-btn" class="modal-delete-btn" type="button" data-i18n-title="delete"></button>
-          <h3 id="edit-modal-title" data-i18n="editTitle">Edit</h3>
-          <button id="close-edit-btn" class="modal-close-btn" type="button" data-i18n-title="close"></button>
+          <h3 id="rename-modal-title" data-i18n="rename">Rename</h3>
+          <button id="close-rename-modal-btn" class="modal-close-btn" type="button" data-i18n-title="close"></button>
         </div>
 
-        <div id="edit-name-field" class="edit-name-field" data-i18n-title="name">
-          <input id="edit-name" class="edit-name-input" type="text" />
-          <button id="clear-edit-name-btn" class="edit-name-clear-btn" type="button" data-i18n-title="clearName"></button>
-        </div>
-
-        <div class="edit-settings">
-          <button id="edit-display-moves-toggle" class="setting-toggle display-moves-toggle" type="button" aria-pressed="false">
-            <span id="edit-display-moves-icon" class="display-moves-toggle-icon" aria-hidden="true"></span>
-            <span id="edit-display-moves-label" class="display-moves-toggle-label">Visible</span>
-          </button>
-          <input id="edit-display-moves" type="checkbox" class="visually-hidden" />
-
-          <button id="edit-mode-toggle" class="setting-toggle mode-toggle" type="button">
-            <span id="edit-mode-icon" class="mode-toggle-icon" aria-hidden="true"></span>
-            <span id="edit-mode-label" class="setting-toggle-label">Position</span>
-          </button>
-
-          <label class="edit-speed-setting">
-            <span class="speed-prefix" data-i18n="speed">Speed</span>
-            <select id="edit-speed" class="speed-select">
-              <option value="0.1">0.1</option>
-              <option value="0.25">0.25</option>
-              <option value="0.5">0.5</option>
-              <option value="0.75">0.75</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="4">4</option>
-              <option value="8">8</option>
-            </select>
-          </label>
-
-          <label class="edit-repeat-setting">
-            <span class="repeat-prefix" data-i18n="repeat">Repeat</span>
-            <input id="edit-repeats" class="repeat-input" type="number" min="1" max="999" step="1" inputmode="numeric" />
-          </label>
+        <div id="rename-name-field" class="edit-name-field" data-i18n-title="name">
+          <input id="rename-name" class="edit-name-input" type="text" />
+          <button id="clear-rename-name-btn" class="edit-name-clear-btn" type="button" data-i18n-title="clearName"></button>
         </div>
 
         <div class="modal-actions edit-modal-actions">
-          <button id="save-edit-btn" class="btn btn-primary" type="button" data-i18n="save">Save</button>
-          <button id="cancel-edit-btn" class="btn" type="button" data-i18n="cancel">Cancel</button>
+          <button id="save-rename-btn" class="btn btn-primary" type="button" data-i18n="save">Save</button>
+          <button id="cancel-rename-btn" class="btn" type="button" data-i18n="cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="action-list-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="action-list-modal-title">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="action-list-modal-title">Scenario name</h3>
+          <button id="close-action-list-modal-btn" class="modal-close-btn" type="button" data-i18n-title="close"></button>
         </div>
 
         <section class="field">
           <span data-i18n="stepsList">Steps</span>
-          <ol id="edit-steps" class="steps-list"></ol>
-          <label id="edit-steps-detail-row" class="steps-detail-row" for="edit-steps-detail">
-            <input type="checkbox" id="edit-steps-detail" class="visually-hidden" />
+          <ol id="action-list-steps" class="steps-list"></ol>
+          <label id="action-list-detail-row" class="steps-detail-row" for="action-list-detail">
+            <input type="checkbox" id="action-list-detail" class="visually-hidden" />
             <span class="toggle-switch-visual" aria-hidden="true"></span>
-            <span id="edit-steps-detail-label" data-i18n="showDetailedSteps">Show details</span>
+            <span id="action-list-detail-label" data-i18n="showDetailedSteps">Show details</span>
           </label>
         </section>
       </div>

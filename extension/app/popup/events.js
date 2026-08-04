@@ -1,5 +1,27 @@
 let drag = null;
 
+function getDragSlot(clientY) {
+  const { rects, dragIndex } = drag;
+  let newSlot = dragIndex;
+
+  for (let i = 0; i < dragIndex; i++) {
+    const mid = rects[i].top + rects[i].height / 2;
+    if (clientY < mid) {
+      newSlot = i;
+      break;
+    }
+  }
+
+  for (let i = dragIndex + 1; i < rects.length; i++) {
+    const mid = rects[i].top + rects[i].height / 2;
+    if (clientY > mid) {
+      newSlot = i;
+    }
+  }
+
+  return newSlot;
+}
+
 function onDragMove(event) {
   if (!drag) {
     return;
@@ -8,17 +30,7 @@ function onDragMove(event) {
   const deltaY = event.clientY - drag.startY;
   drag.item.style.transform = `translateY(${deltaY}px)`;
 
-  const dragCenter = drag.rects[drag.dragIndex].top + drag.rects[drag.dragIndex].height / 2 + deltaY;
-  let newSlot = 0;
-  let minDist = Infinity;
-  for (let i = 0; i < drag.items.length; i++) {
-    const dist = Math.abs(dragCenter - (drag.rects[i].top + drag.rects[i].height / 2));
-    if (dist < minDist) {
-      minDist = dist;
-      newSlot = i;
-    }
-  }
-
+  const newSlot = getDragSlot(event.clientY);
   drag.currentSlot = newSlot;
 
   for (let i = 0; i < drag.items.length; i++) {
@@ -85,6 +97,11 @@ refs.list.addEventListener("pointerdown", (event) => {
 
   event.preventDefault();
 
+  // Collapse any open manage panel instantly so item heights stay stable while sorting.
+  if (state.manageMenuClickId) {
+    closeManageMenu({ instant: true });
+  }
+
   const items = [...refs.list.querySelectorAll("li[data-click-id]")];
   const dragIndex = items.indexOf(dragItem);
   const rects = items.map((el) => el.getBoundingClientRect());
@@ -140,58 +157,13 @@ refs.list.addEventListener("click", (event) => {
     return;
   }
 
-  if (action === "check") {
-    void toggleCheckMode(macroId);
-    return;
-  }
-
-  if (action === "edit") {
-    openEditModal(macroId);
-    return;
-  }
-
-  if (action === "set-default") {
-    void setDefaultClick(macroId, macroId !== defaultClickId);
-    return;
-  }
-
-  if (action === "toggle-display-moves") {
-    const macro = clicks.find((item) => item.id === macroId);
-    if (!macro) {
-      setStatus(t("notFound"));
-      return;
+  if (action === "manage") {
+    if (state.manageMenuClickId === macroId) {
+      closeManageMenu();
+    } else {
+      openManageMenu(macroId, target);
     }
-
-    const nextDisplayMoves = !getDisplayMovesValue(macro);
-    macro.displayMoves = nextDisplayMoves;
-    macro.trackMoves = nextDisplayMoves;
-    void persistClicks().then(() => {
-      render();
-      setStatus(t("displayMovesChanged", {
-        state: t(nextDisplayMoves ? "enabled" : "disabled"),
-        name: macro.name
-      }));
-    });
-    return;
   }
-
-  if (action === "delete") {
-    if (state.pendingDeleteClickId === macroId) {
-      void deleteClick(macroId);
-      return;
-    }
-
-    armDeleteButton(target, macroId);
-  }
-});
-
-refs.list.addEventListener("pointerout", (event) => {
-  const button = event.target.closest(".delete-btn-armed");
-  if (!button || button.contains(event.relatedTarget)) {
-    return;
-  }
-
-  clearDeleteConfirmation();
 });
 
 refs.list.addEventListener("change", (event) => {
@@ -225,159 +197,62 @@ refs.stopExecutionBtn.addEventListener("click", () => {
   void stopExecution();
 });
 
-refs.editDisplayMovesToggle.addEventListener("click", () => {
-  if (settings.skipDisplayMovesExplanation) {
-    setEditDisplayMoves(!refs.editDisplayMoves.checked);
-  } else {
-    openDisplayMovesModal();
-  }
-});
-
-refs.editRepeats.addEventListener("change", () => {
-  normalizeRepeatInput(refs.editRepeats);
-});
-
-refs.editName.addEventListener("input", () => {
-  if (refs.editName.value.trim()) {
-    refs.editNameField.classList.remove("invalid");
-  }
-});
-
-refs.editStepsDetail.addEventListener("change", () => {
-  state.showDetailedSteps = refs.editStepsDetail.checked;
-  renderEditSteps(getCurrentEditSteps());
-});
-
-refs.clearEditNameBtn.addEventListener("click", () => {
-  refs.editName.value = "";
-  refs.editName.focus();
-});
-
 document.addEventListener("keydown", (event) => {
   if (event.target.matches(".repeat-input") && ["e", "E", "+", "-", ".", ","].includes(event.key)) {
     event.preventDefault();
   }
 });
 
-refs.saveEditBtn.addEventListener("click", async () => {
-  const name = refs.editName.value.trim();
-  if (!name) {
-    validateEditName();
-    return;
-  }
-
-  const validRepeats = normalizeRepeats(refs.editRepeats.value);
-  const speed = normalizeScenarioSpeed(refs.editSpeed.value);
-  const displayMoves = Boolean(refs.editDisplayMoves.checked);
-
-  if (state.modalMode === "edit" && state.editClickId) {
-    const macro = clicks.find((item) => item.id === state.editClickId);
-    if (!macro) {
-      setStatus(t("notFoundForSave"));
-      closeEditModal();
-      return;
-    }
-
-    macro.name = name;
-    macro.repeats = validRepeats;
-    macro.speed = speed;
-    macro.displayMoves = displayMoves;
-    macro.trackMoves = displayMoves;
-    macro.mode = state.editMode;
-    if (!Array.isArray(macro.steps)) {
-      macro.steps = [];
-    }
-    await persistClicks();
-    closeEditModal();
-    render();
-    setStatus(t("updated"));
-    return;
-  }
-
-  if (state.modalMode !== "create") {
-    setStatus(t("saveUnavailable"));
-    return;
-  }
-
-  const createdClick = {
-    id: createClickId(),
-    name,
-    repeats: validRepeats,
-    speed,
-    displayMoves,
-    trackMoves: displayMoves,
-    mode: state.editMode,
-    steps: []
-  };
-  clicks.unshift(createdClick);
-  await persistClicks();
-  closeEditModal();
-  render();
-  setStatus(t("saved"));
-});
-
-refs.cancelEditBtn.addEventListener("click", () => {
-  requestCloseEditModal();
-});
-
-refs.deleteEditBtn.addEventListener("click", async () => {
-  const macroId = state.editClickId;
-  if (state.modalMode !== "edit" || !macroId) {
-    return;
-  }
-
-  closeEditModal();
-  await deleteClick(macroId);
-});
-
-refs.closeEditBtn.addEventListener("click", () => {
-  requestCloseEditModal();
-});
-
-refs.editModal.addEventListener("click", (event) => {
-  if (event.target === refs.editModal) {
-    requestCloseEditModal();
+refs.renameName.addEventListener("input", () => {
+  if (refs.renameName.value.trim()) {
+    refs.renameNameField.classList.remove("invalid");
   }
 });
 
-refs.editModeToggle.addEventListener("click", () => {
-  if (settings.skipModeExplanation) {
-    setEditMode(state.editMode === "position" ? "element" : "position");
-    renderEditSteps(getCurrentEditSteps());
-  } else {
-    openModeModal();
+refs.clearRenameNameBtn.addEventListener("click", () => {
+  refs.renameName.value = "";
+  refs.renameName.focus();
+});
+
+refs.saveRenameBtn.addEventListener("click", () => {
+  void saveRenameModal();
+});
+
+refs.cancelRenameBtn.addEventListener("click", () => {
+  closeRenameModal();
+  setStatus(t("initialHint"));
+});
+
+refs.closeRenameModalBtn.addEventListener("click", () => {
+  closeRenameModal();
+});
+
+refs.renameModal.addEventListener("click", (event) => {
+  if (event.target === refs.renameModal) {
+    closeRenameModal();
   }
 });
 
-refs.modePositionBtn.addEventListener("click", async () => {
-  if (refs.modeDontShow.checked) {
-    settings.skipModeExplanation = true;
-    syncSettingsUI();
-    await persistSettings();
+refs.renameName.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    void saveRenameModal();
   }
-  setEditMode("position");
-  closeModeModal();
-  renderEditSteps(getCurrentEditSteps());
 });
 
-refs.modeElementBtn.addEventListener("click", async () => {
-  if (refs.modeDontShow.checked) {
-    settings.skipModeExplanation = true;
-    syncSettingsUI();
-    await persistSettings();
-  }
-  setEditMode("element");
-  closeModeModal();
-  renderEditSteps(getCurrentEditSteps());
+refs.actionListDetail.addEventListener("change", () => {
+  state.showDetailedSteps = refs.actionListDetail.checked;
+  const macro = clicks.find((item) => item.id === state.actionListClickId);
+  renderActionListSteps(getStepsForClick(state.actionListClickId), macro?.mode ?? "position");
 });
 
-refs.closeModeModalBtn.addEventListener("click", () => {
-  closeModeModal();
+refs.closeActionListModalBtn.addEventListener("click", () => {
+  closeActionListModal();
 });
 
-refs.modeModal.addEventListener("click", (event) => {
-  if (event.target === refs.modeModal) {
-    closeModeModal();
+refs.actionListModal.addEventListener("click", (event) => {
+  if (event.target === refs.actionListModal) {
+    closeActionListModal();
   }
 });
 
@@ -421,8 +296,11 @@ refs.displayMovesVisibleBtn.addEventListener("click", async () => {
     syncSettingsUI();
     await persistSettings();
   }
-  setEditDisplayMoves(true);
+  const macro = clicks.find((item) => item.id === state.pendingDisplayMovesClickId);
   closeDisplayMovesModal();
+  if (macro) {
+    await applyDisplayMoves(macro, true);
+  }
 });
 
 refs.displayMovesStealthBtn.addEventListener("click", async () => {
@@ -431,8 +309,47 @@ refs.displayMovesStealthBtn.addEventListener("click", async () => {
     syncSettingsUI();
     await persistSettings();
   }
-  setEditDisplayMoves(false);
+  const macro = clicks.find((item) => item.id === state.pendingDisplayMovesClickId);
   closeDisplayMovesModal();
+  if (macro) {
+    await applyDisplayMoves(macro, false);
+  }
+});
+
+refs.closeModeModalBtn.addEventListener("click", () => {
+  closeModeModal();
+});
+
+refs.modeModal.addEventListener("click", (event) => {
+  if (event.target === refs.modeModal) {
+    closeModeModal();
+  }
+});
+
+refs.modePositionBtn.addEventListener("click", async () => {
+  if (refs.modeDontShow.checked) {
+    settings.skipModeExplanation = true;
+    syncSettingsUI();
+    await persistSettings();
+  }
+  const macro = clicks.find((item) => item.id === state.pendingModeClickId);
+  closeModeModal();
+  if (macro) {
+    await applyMode(macro, "position");
+  }
+});
+
+refs.modeElementBtn.addEventListener("click", async () => {
+  if (refs.modeDontShow.checked) {
+    settings.skipModeExplanation = true;
+    syncSettingsUI();
+    await persistSettings();
+  }
+  const macro = clicks.find((item) => item.id === state.pendingModeClickId);
+  closeModeModal();
+  if (macro) {
+    await applyMode(macro, "element");
+  }
 });
 
 refs.settingClickSound.addEventListener("click", async () => {
@@ -502,6 +419,11 @@ function closeModalByEscape() {
     return false;
   }
 
+  if (state.manageMenuEl) {
+    closeManageMenu();
+    return true;
+  }
+
   if (!refs.modeModal.classList.contains("hidden")) {
     closeModeModal();
     return true;
@@ -517,8 +439,13 @@ function closeModalByEscape() {
     return true;
   }
 
-  if (!refs.editModal.classList.contains("hidden")) {
-    requestCloseEditModal();
+  if (!refs.actionListModal.classList.contains("hidden")) {
+    closeActionListModal();
+    return true;
+  }
+
+  if (!refs.renameModal.classList.contains("hidden")) {
+    closeRenameModal();
     return true;
   }
 

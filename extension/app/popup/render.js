@@ -26,7 +26,6 @@ function createIconButton({ className, action, id, tooltip, ariaLabel, ariaPress
 }
 
 function render() {
-  clearDeleteConfirmation();
   refs.list.replaceChildren();
 
   if (clicks.length === 0) {
@@ -39,25 +38,25 @@ function render() {
   }
 
   for (const macro of clicks) {
-    const displayMovesEnabled = getDisplayMovesValue(macro);
-    const isElementMode = (macro.mode ?? "position") === "element";
-    const isDefault = macro.id === defaultClickId;
-    const defaultTitle = t("makeDefault");
     const runLabel = t("run");
-    const checkLabel = t("check");
-    const editLabel = t("edit");
-    const deleteLabel = t("delete");
-    const repeatLabel = t("repeat");
+    const manageLabel = t("manage");
+    const isManageOpen = state.manageMenuClickId === macro.id;
 
     const row = document.createElement("li");
     row.className = "click-item";
     row.dataset.clickId = macro.id;
+
+    const itemRow = document.createElement("div");
+    itemRow.className = "click-item-row";
 
     const dragHandle = document.createElement("span");
     dragHandle.className = "drag-handle";
     dragHandle.dataset.action = "drag-handle";
     dragHandle.setAttribute("aria-hidden", "true");
     appendStaticSvg(dragHandle, iconSet.gripVertical);
+
+    const card = document.createElement("div");
+    card.className = "click-card";
 
     const clickRow = document.createElement("div");
     clickRow.className = "click-row";
@@ -72,35 +71,8 @@ function render() {
         tooltip: runLabel,
         ariaLabel: runLabel,
         svgHtml: iconSet.play
-      }),
-      createIconButton({
-        className: `icon-btn check-btn${state.activeCheckClickId === macro.id ? " active" : ""}`,
-        action: "check",
-        id: macro.id,
-        tooltip: checkLabel,
-        ariaLabel: checkLabel,
-        ariaPressed: state.activeCheckClickId === macro.id,
-        svgHtml: iconSet.check
       })
     );
-
-    if (isElementMode) {
-      const modeIndicator = document.createElement("span");
-      modeIndicator.className = "click-mode-icon";
-      modeIndicator.setAttribute("aria-hidden", "true");
-      modeIndicator.dataset.tooltip = t("modeElement");
-      appendStaticSvg(modeIndicator, iconSet.code);
-      clickMain.append(modeIndicator);
-    }
-
-    if (!displayMovesEnabled) {
-      const displayMovesIndicator = document.createElement("span");
-      displayMovesIndicator.className = "click-display-moves-icon display-moves-off";
-      displayMovesIndicator.setAttribute("aria-hidden", "true");
-      displayMovesIndicator.dataset.tooltip = t("displayMovesOff");
-      appendStaticSvg(displayMovesIndicator, iconSet.eyeOff);
-      clickMain.append(displayMovesIndicator);
-    }
 
     const name = document.createElement("span");
     name.className = "click-name";
@@ -109,56 +81,32 @@ function render() {
 
     const clickActions = document.createElement("div");
     clickActions.className = "click-actions";
-
-    const defaultBtn = createIconButton({
-      className: `icon-btn default-btn${isDefault ? " active" : ""}`,
-      action: "set-default",
-      id: macro.id,
-      tooltip: defaultTitle,
-      ariaLabel: defaultTitle,
-      ariaPressed: isDefault,
-      svgHtml: iconSet.star
-    });
-
-    const repeatField = document.createElement("span");
-    repeatField.className = "repeat-field";
-    repeatField.dataset.tooltip = repeatLabel;
-    const repeatInput = document.createElement("input");
-    repeatInput.className = "click-repeats repeat-input";
-    repeatInput.type = "number";
-    repeatInput.min = "1";
-    repeatInput.max = "999";
-    repeatInput.step = "1";
-    repeatInput.inputMode = "numeric";
-    repeatInput.value = String(normalizeRepeats(macro.repeats));
-    repeatInput.dataset.action = "set-repeats";
-    repeatInput.dataset.id = macro.id;
-    repeatInput.setAttribute("aria-label", repeatLabel);
-    repeatField.append(repeatInput);
-
     clickActions.append(
-      defaultBtn,
-      repeatField,
       createIconButton({
-        className: "icon-btn",
-        action: "edit",
+        className: "icon-btn manage-btn",
+        action: "manage",
         id: macro.id,
-        tooltip: editLabel,
-        ariaLabel: editLabel,
-        svgHtml: iconSet.squarePen
-      }),
-      createIconButton({
-        className: "icon-btn delete-btn",
-        action: "delete",
-        id: macro.id,
-        tooltip: deleteLabel,
-        ariaLabel: deleteLabel,
-        svgHtml: iconSet.trash
+        tooltip: manageLabel,
+        ariaLabel: manageLabel,
+        ariaPressed: isManageOpen,
+        svgHtml: iconSet.ellipsisVertical
       })
     );
 
     clickRow.append(clickMain, clickActions);
-    row.append(dragHandle, clickRow);
+
+    const accordion = buildManageMenuAccordion(macro);
+    accordion.classList.toggle("is-open", isManageOpen);
+    card.append(clickRow, accordion);
+    itemRow.append(dragHandle, card);
+    row.append(itemRow);
+
+    if (isManageOpen) {
+      const panel = accordion.querySelector(".manage-menu");
+      wireManageMenu(panel, macro);
+      state.manageMenuEl = panel;
+    }
+
     refs.list.append(row);
   }
 
@@ -171,67 +119,423 @@ function setStatus(text, { error = false } = {}) {
   syncPopupHeight();
 }
 
-function clearDeleteConfirmation() {
-  for (const button of refs.list.querySelectorAll(".delete-btn-armed")) {
-    const label = button.querySelector(".delete-btn-label");
-    button.classList.remove("delete-btn-armed");
-    button.style.width = "28px";
-    button.dataset.tooltip = t("delete");
-    button.setAttribute("aria-label", t("delete"));
-
-    if (label) {
-      let collapseFallback;
-      const finishCollapse = () => {
-        button.removeEventListener("transitionend", handleCollapseTransitionEnd);
-        clearTimeout(collapseFallback);
-        if (!button.classList.contains("delete-btn-armed") && label.isConnected) {
-          label.remove();
-          button.style.width = "";
-        }
-      };
-      const handleCollapseTransitionEnd = (event) => {
-        if (event.propertyName !== "width") {
-          return;
-        }
-
-        finishCollapse();
-      };
-      button.addEventListener("transitionend", handleCollapseTransitionEnd);
-      collapseFallback = setTimeout(finishCollapse, 200);
-    }
+function playSaveAnimation(macroId) {
+  const row = refs.list.querySelector(`li[data-click-id="${CSS.escape(macroId)}"] .click-row`);
+  if (!row) {
+    return;
   }
 
-  state.pendingDeleteClickId = null;
+  row.classList.remove("save-flash");
+  // Force reflow so the animation restarts if it was already applied.
+  void row.offsetWidth;
+  row.classList.add("save-flash");
+
+  let fallbackTimer;
+  const finish = () => {
+    row.removeEventListener("animationend", finish);
+    clearTimeout(fallbackTimer);
+    row.classList.remove("save-flash");
+  };
+  row.addEventListener("animationend", finish);
+  fallbackTimer = setTimeout(finish, 3400);
 }
 
-function armDeleteButton(button, macroId) {
-  clearDeleteConfirmation();
-  state.pendingDeleteClickId = macroId;
-  button.dataset.tooltip = t("confirmDelete");
-  button.setAttribute("aria-label", t("confirmDelete"));
-  for (const existingLabel of button.querySelectorAll(".delete-btn-label")) {
-    existingLabel.remove();
+// ---------------------------------------------------------------------------
+// Manage menu
+// ---------------------------------------------------------------------------
+
+function createManageMenuButton({ action, label, active = false }) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "manage-menu-row manage-menu-btn";
+  button.classList.toggle("manage-menu-btn--active", active);
+  button.dataset.action = action;
+  button.textContent = label;
+  return button;
+}
+
+function createManageMenuSelect({ action, onLabel, offLabel, isOn, label, ariaLabel }) {
+  const select = document.createElement("select");
+  select.className = "manage-menu-select";
+  select.dataset.action = action;
+  if (ariaLabel) {
+    select.setAttribute("aria-label", ariaLabel);
   }
 
-  const label = document.createElement("span");
-  label.className = "delete-btn-label";
-  label.setAttribute("aria-hidden", "true");
-  label.textContent = t("confirmDelete");
-  button.append(label);
-  button.style.width = "max-content";
-  const expandedWidth = Math.ceil(button.getBoundingClientRect().width);
-  button.style.width = "28px";
-  button.getBoundingClientRect();
-  button.classList.add("delete-btn-armed");
-  button.style.width = `${expandedWidth}px`;
-  button.focus();
-  syncPopupHeight();
+  const onOption = document.createElement("option");
+  onOption.value = "on";
+  onOption.textContent = onLabel;
+
+  const offOption = document.createElement("option");
+  offOption.value = "off";
+  offOption.textContent = offLabel;
+
+  select.append(onOption, offOption);
+  select.value = isOn ? "on" : "off";
+  return createManageMenuField({ label, control: select, ariaLabel: ariaLabel || label });
+}
+
+function createManageMenuField({ label, control, ariaLabel }) {
+  const field = document.createElement("label");
+  field.className = "manage-menu-field";
+  const labelEl = document.createElement("span");
+  labelEl.className = "manage-menu-field-label";
+  labelEl.textContent = label;
+  labelEl.setAttribute("aria-hidden", "true");
+  if (ariaLabel) {
+    field.setAttribute("aria-label", ariaLabel);
+  }
+  field.append(labelEl, control);
+  return field;
+}
+
+function createManageMenuRepeatField(macro) {
+  const repeatLabel = t("repeat");
+  const repeatInput = document.createElement("input");
+  repeatInput.className = "manage-menu-field-input repeat-input click-repeats";
+  repeatInput.type = "number";
+  repeatInput.min = "1";
+  repeatInput.max = "999";
+  repeatInput.step = "1";
+  repeatInput.inputMode = "numeric";
+  repeatInput.value = String(normalizeRepeats(macro.repeats));
+  repeatInput.dataset.action = "set-repeats";
+  repeatInput.dataset.id = macro.id;
+  repeatInput.setAttribute("aria-label", repeatLabel);
+  return createManageMenuField({ label: repeatLabel, control: repeatInput, ariaLabel: repeatLabel });
+}
+
+function createManageMenuSpeedSelect(macro) {
+  const speedLabel = t("speed");
+  const speedSelect = document.createElement("select");
+  speedSelect.className = "manage-menu-select";
+  speedSelect.dataset.action = "manage-speed";
+  speedSelect.setAttribute("aria-label", speedLabel);
+  for (const value of SCENARIO_SPEED_VALUES) {
+    const option = document.createElement("option");
+    option.value = String(value);
+    option.textContent = String(value);
+    speedSelect.append(option);
+  }
+  speedSelect.value = String(normalizeScenarioSpeed(macro.speed));
+  return createManageMenuField({ label: speedLabel, control: speedSelect, ariaLabel: speedLabel });
+}
+
+function buildManageMenuAccordion(macro) {
+  const accordion = document.createElement("div");
+  accordion.className = "manage-menu-accordion";
+
+  const inner = document.createElement("div");
+  inner.className = "manage-menu-accordion-inner";
+
+  const divider = document.createElement("div");
+  divider.className = "manage-menu-divider";
+  divider.setAttribute("aria-hidden", "true");
+
+  const menu = document.createElement("div");
+  menu.className = "manage-menu";
+
+  const fieldsCol = document.createElement("div");
+  fieldsCol.className = "manage-menu-col manage-menu-col--fields";
+  fieldsCol.append(
+    createManageMenuRepeatField(macro),
+    createManageMenuSpeedSelect(macro),
+    createManageMenuSelect({
+      action: "manage-visibility",
+      label: t("visibility"),
+      ariaLabel: t("visibility"),
+      onLabel: t("visible"),
+      offLabel: t("stealth"),
+      isOn: getDisplayMovesValue(macro)
+    }),
+    createManageMenuSelect({
+      action: "manage-mode",
+      label: t("mode"),
+      ariaLabel: t("mode"),
+      onLabel: t("element"),
+      offLabel: t("position"),
+      isOn: (macro.mode ?? "position") === "element"
+    })
+  );
+
+  const actionsCol = document.createElement("div");
+  actionsCol.className = "manage-menu-col manage-menu-col--actions";
+  actionsCol.append(
+    createManageMenuButton({ action: "manage-rename", label: t("rename") }),
+    createManageMenuButton({
+      action: "manage-look",
+      label: t("lookWithoutRun"),
+      active: state.activeCheckClickId === macro.id
+    }),
+    createManageMenuButton({ action: "manage-actions", label: t("actionList") })
+  );
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.type = "button";
+  deleteBtn.className = "manage-menu-row manage-menu-delete";
+  deleteBtn.dataset.action = "manage-delete";
+  deleteBtn.textContent = t("delete");
+  actionsCol.append(deleteBtn);
+
+  menu.append(fieldsCol, actionsCol);
+  inner.append(divider, menu);
+  accordion.append(inner);
+  return accordion;
+}
+
+function onManageMenuOutsideClick(event) {
+  if (!state.manageMenuEl) {
+    return;
+  }
+  if (state.manageMenuEl.contains(event.target)) {
+    return;
+  }
+  if (event.target.closest?.('[data-action="manage"]')) {
+    return;
+  }
+  // Drag reordering collapses the panel itself; don't animate-close underneath it.
+  if (event.target.closest?.('[data-action="drag-handle"]')) {
+    return;
+  }
+  // Explanation modals (Visible/Stealth, Position/Element) can open on top of
+  // the menu without dismissing it; only a genuine outside click closes it.
+  if (event.target.closest?.(".modal-overlay")) {
+    return;
+  }
+  closeManageMenu();
+}
+
+const MANAGE_MENU_ACCORDION_MS = 220;
+let manageMenuHeightFrame = null;
+
+function watchAccordionHeight() {
+  if (manageMenuHeightFrame !== null) {
+    cancelAnimationFrame(manageMenuHeightFrame);
+    manageMenuHeightFrame = null;
+  }
+
+  const startedAt = performance.now();
+
+  const tick = (now) => {
+    syncPopupHeight();
+    if (now - startedAt < MANAGE_MENU_ACCORDION_MS + 40) {
+      manageMenuHeightFrame = requestAnimationFrame(tick);
+      return;
+    }
+    manageMenuHeightFrame = null;
+  };
+
+  manageMenuHeightFrame = requestAnimationFrame(tick);
+}
+
+function closeManageMenu({ instant = false } = {}) {
+  const previousMacroId = state.manageMenuClickId;
+  const accordion = state.manageMenuEl?.closest(".manage-menu-accordion");
+  const inner = accordion?.querySelector(".manage-menu-accordion-inner");
+  if (state.manageMenuEl) {
+    if (instant && inner) {
+      const previousTransition = inner.style.transition;
+      inner.style.transition = "none";
+      accordion.classList.remove("is-open");
+      void inner.offsetHeight;
+      inner.style.transition = previousTransition;
+    } else {
+      accordion?.classList.remove("is-open");
+    }
+    delete state.manageMenuEl.dataset.wired;
+  }
+  state.manageMenuEl = null;
+  state.manageMenuClickId = null;
+  state.manageMenuDeleteArmed = false;
+  document.removeEventListener("pointerdown", onManageMenuOutsideClick, true);
+
+  if (previousMacroId) {
+    const button = refs.list.querySelector(`.manage-btn[data-id="${CSS.escape(previousMacroId)}"]`);
+    button?.setAttribute("aria-pressed", "false");
+  }
+
+  if (instant) {
+    syncPopupHeight();
+  } else {
+    watchAccordionHeight();
+  }
+}
+
+function wireManageMenu(panel, macro) {
+  if (panel.dataset.wired === macro.id) {
+    return;
+  }
+  panel.dataset.wired = macro.id;
+  panel.addEventListener("click", (event) => onManageMenuClick(event, macro));
+  panel.addEventListener("change", (event) => onManageMenuChange(event, macro));
+  panel.addEventListener("pointerout", (event) => {
+    const deleteButton = event.target.closest(".manage-menu-delete");
+    if (!deleteButton || deleteButton.contains(event.relatedTarget)) {
+      return;
+    }
+    resetManageMenuDelete(panel);
+  });
+}
+
+function updateManageMenuSelectStates(macro) {
+  if (!state.manageMenuEl || state.manageMenuClickId !== macro.id) {
+    return;
+  }
+
+  const visibilitySelect = state.manageMenuEl.querySelector('[data-action="manage-visibility"]');
+  if (visibilitySelect) {
+    visibilitySelect.value = getDisplayMovesValue(macro) ? "on" : "off";
+  }
+
+  const modeSelect = state.manageMenuEl.querySelector('[data-action="manage-mode"]');
+  if (modeSelect) {
+    modeSelect.value = (macro.mode ?? "position") === "element" ? "on" : "off";
+  }
+}
+
+function openManageMenu(macroId, buttonEl) {
+  const macro = clicks.find((item) => item.id === macroId);
+  if (!macro) {
+    setStatus(t("notFound"));
+    return;
+  }
+
+  const row = buttonEl.closest("li[data-click-id]");
+  if (!row) {
+    return;
+  }
+
+  closeManageMenu();
+
+  const accordion = row.querySelector(".manage-menu-accordion");
+  const panel = accordion?.querySelector(".manage-menu");
+  if (!accordion || !panel) {
+    return;
+  }
+
+  accordion.classList.add("is-open");
+  wireManageMenu(panel, macro);
+
+  state.manageMenuEl = panel;
+  state.manageMenuClickId = macroId;
+  state.manageMenuDeleteArmed = false;
+  buttonEl.setAttribute("aria-pressed", "true");
+
+  document.addEventListener("pointerdown", onManageMenuOutsideClick, true);
+  watchAccordionHeight();
+}
+
+function resetManageMenuDelete(menu) {
+  const deleteBtn = menu.querySelector('[data-action="manage-delete"]');
+  if (!deleteBtn) {
+    return;
+  }
+  state.manageMenuDeleteArmed = false;
+  deleteBtn.textContent = t("delete");
+  deleteBtn.classList.remove("manage-menu-delete--armed");
+}
+
+async function onManageMenuChange(event, macro) {
+  const speedSelect = event.target.closest('[data-action="manage-speed"]');
+  if (speedSelect) {
+    macro.speed = normalizeScenarioSpeed(speedSelect.value);
+    await persistClicks();
+    setStatus(t("updated"));
+    return;
+  }
+
+  const visibilitySelect = event.target.closest('[data-action="manage-visibility"]');
+  if (visibilitySelect) {
+    const wantsVisible = visibilitySelect.value === "on";
+    const isVisible = getDisplayMovesValue(macro);
+    if (wantsVisible === isVisible) {
+      return;
+    }
+    if (settings.skipDisplayMovesExplanation) {
+      await applyDisplayMoves(macro, wantsVisible);
+    } else {
+      visibilitySelect.value = isVisible ? "on" : "off";
+      state.pendingDisplayMovesClickId = macro.id;
+      openDisplayMovesModal();
+    }
+    return;
+  }
+
+  const modeSelect = event.target.closest('[data-action="manage-mode"]');
+  if (modeSelect) {
+    const wantsElement = modeSelect.value === "on";
+    const isElement = (macro.mode ?? "position") === "element";
+    if (wantsElement === isElement) {
+      return;
+    }
+    if (settings.skipModeExplanation) {
+      await applyMode(macro, wantsElement ? "element" : "position");
+    } else {
+      modeSelect.value = isElement ? "on" : "off";
+      state.pendingModeClickId = macro.id;
+      openModeModal();
+    }
+  }
+}
+
+async function onManageMenuClick(event, macro) {
+  const renameBtn = event.target.closest('[data-action="manage-rename"]');
+  if (renameBtn) {
+    closeManageMenu();
+    openRenameModal(macro.id);
+    return;
+  }
+
+  const lookBtn = event.target.closest('[data-action="manage-look"]');
+  if (lookBtn) {
+    closeManageMenu();
+    await toggleCheckMode(macro.id);
+    return;
+  }
+
+  const actionsBtn = event.target.closest('[data-action="manage-actions"]');
+  if (actionsBtn) {
+    closeManageMenu();
+    openActionListModal(macro.id);
+    return;
+  }
+
+  const deleteBtn = event.target.closest('[data-action="manage-delete"]');
+  if (deleteBtn) {
+    if (state.manageMenuDeleteArmed) {
+      const macroId = macro.id;
+      closeManageMenu();
+      await deleteClick(macroId);
+      return;
+    }
+
+    state.manageMenuDeleteArmed = true;
+    deleteBtn.textContent = t("confirmDelete");
+    deleteBtn.classList.add("manage-menu-delete--armed");
+  }
+}
+
+async function applyDisplayMoves(macro, enabled) {
+  macro.displayMoves = enabled;
+  macro.trackMoves = enabled;
+  await persistClicks();
+  updateManageMenuSelectStates(macro);
+  setStatus(t("displayMovesChanged", {
+    state: t(enabled ? "enabled" : "disabled"),
+    name: macro.name
+  }));
+}
+
+async function applyMode(macro, mode) {
+  macro.mode = mode;
+  await persistClicks();
+  updateManageMenuSelectStates(macro);
+  setStatus(t("updated"));
 }
 
 async function deleteClick(macroId) {
   const index = clicks.findIndex((item) => item.id === macroId);
   if (index < 0) {
-    clearDeleteConfirmation();
     setStatus(t("notFound"));
     return;
   }
@@ -242,97 +546,115 @@ async function deleteClick(macroId) {
     await persistDefaultClickId();
   }
 
-  clearDeleteConfirmation();
   await persistClicks();
   render();
   setStatus(t("deleted"));
 }
 
-function openEditModal(macroId, { selectAll = false } = {}) {
-  if (macroId !== null) {
-    const macro = clicks.find((item) => item.id === macroId);
-    if (!macro) {
-      setStatus(t("notFound"));
-      return;
-    }
+// ---------------------------------------------------------------------------
+// Rename modal
+// ---------------------------------------------------------------------------
 
-    state.modalMode = "edit";
-    state.editClickId = macro.id;
-    refs.deleteEditBtn.classList.remove("hidden");
-    refs.editModalTitle.textContent = t("editTitle");
-    refs.editName.value = macro.name;
-    refs.editRepeats.value = String(macro.repeats ?? 1);
-    refs.editSpeed.value = String(normalizeScenarioSpeed(macro.speed));
-    setEditDisplayMoves(getDisplayMovesValue(macro));
-    setEditMode(macro.mode ?? "position");
-    state.showDetailedSteps = false;
-    refs.editStepsDetail.checked = false;
-    renderEditSteps(Array.isArray(macro.steps) ? macro.steps : []);
-    refs.editModal.classList.remove("hidden");
-    if (selectAll) {
-      focusEditNameSelectAll();
-    } else {
-      focusEditNameAtEnd();
-    }
+function openRenameModal(macroId) {
+  const macro = clicks.find((item) => item.id === macroId);
+  if (!macro) {
+    setStatus(t("notFound"));
+    return;
+  }
+
+  state.renameClickId = macroId;
+  refs.renameName.value = macro.name;
+  refs.renameModal.classList.remove("hidden");
+  syncPopupHeight();
+  refs.renameNameField.classList.remove("invalid");
+  refs.renameName.focus();
+  refs.renameName.select();
+}
+
+function closeRenameModal() {
+  state.renameClickId = null;
+  refs.renameNameField.classList.remove("invalid");
+  refs.renameModal.classList.add("hidden");
+  syncPopupHeight();
+}
+
+async function saveRenameModal() {
+  const name = refs.renameName.value.trim();
+  if (!name) {
+    refs.renameNameField.classList.add("invalid");
+    refs.renameName.focus();
+    setStatus(t("enterName"));
+    return;
+  }
+
+  const macro = clicks.find((item) => item.id === state.renameClickId);
+  if (!macro) {
+    setStatus(t("notFound"));
+    closeRenameModal();
+    return;
+  }
+
+  macro.name = name;
+  await persistClicks();
+  closeRenameModal();
+  render();
+  setStatus(t("updated"));
+}
+
+// ---------------------------------------------------------------------------
+// Action list modal
+// ---------------------------------------------------------------------------
+
+function getStepsForClick(macroId) {
+  const macro = clicks.find((item) => item.id === macroId);
+  return Array.isArray(macro?.steps) ? macro.steps : [];
+}
+
+function openActionListModal(macroId) {
+  const macro = clicks.find((item) => item.id === macroId);
+  if (!macro) {
+    setStatus(t("notFound"));
+    return;
+  }
+
+  state.actionListClickId = macroId;
+  state.showDetailedSteps = false;
+  refs.actionListModalTitle.textContent = macro.name;
+  refs.actionListDetail.checked = false;
+  renderActionListSteps(macro.steps, macro.mode ?? "position");
+  refs.actionListModal.classList.remove("hidden");
+  syncPopupHeight();
+}
+
+function closeActionListModal() {
+  state.actionListClickId = null;
+  refs.actionListModal.classList.add("hidden");
+  syncPopupHeight();
+}
+
+function renderActionListSteps(steps, clickMode) {
+  const normalizedSteps = Array.isArray(steps) ? steps : [];
+  refs.actionListSteps.replaceChildren();
+  refs.actionListDetailRow.classList.toggle("hidden", normalizedSteps.length === 0);
+  refs.actionListDetail.checked = state.showDetailedSteps;
+  refs.actionListDetailLabel.textContent = t(state.showDetailedSteps ? "hideDetailedSteps" : "showDetailedSteps");
+
+  if (normalizedSteps.length === 0) {
+    const li = document.createElement("li");
+    li.className = "step-row step-row-empty";
+    li.textContent = t("noSteps");
+    refs.actionListSteps.append(li);
     syncPopupHeight();
     return;
   }
 
-  state.modalMode = "create";
-  state.editClickId = null;
-  refs.deleteEditBtn.classList.add("hidden");
-  refs.editModalTitle.textContent = t("createTitle");
-  refs.editName.value = buildDefaultClickName();
-  refs.editRepeats.value = "1";
-  refs.editSpeed.value = "1";
-  setEditDisplayMoves(true);
-  setEditMode("position");
-  state.showDetailedSteps = false;
-  refs.editStepsDetail.checked = false;
-  renderEditSteps([]);
-  refs.editModal.classList.remove("hidden");
-  focusEditNameSelectAll();
-  syncPopupHeight();
-}
+  createStepDisplayRows(normalizedSteps, clickMode, state.showDetailedSteps).forEach((label) => {
+    const li = document.createElement("li");
+    li.className = "step-row";
+    li.textContent = label;
+    refs.actionListSteps.append(li);
+  });
 
-function focusEditNameAtEnd() {
-  refs.editNameField.classList.remove("invalid");
-  refs.editName.focus();
-  const end = refs.editName.value.length;
-  refs.editName.setSelectionRange(end, end);
-}
-
-function focusEditNameSelectAll() {
-  refs.editNameField.classList.remove("invalid");
-  refs.editName.focus();
-  refs.editName.select();
-}
-
-function validateEditName() {
-  const isValid = Boolean(refs.editName.value.trim());
-  refs.editNameField.classList.toggle("invalid", !isValid);
-  if (!isValid) {
-    refs.editName.focus();
-    setStatus(t("enterName"));
-  }
-  return isValid;
-}
-
-function requestCloseEditModal() {
-  if (!validateEditName()) {
-    return false;
-  }
-
-  closeEditModal();
-  setStatus(t("editCanceled"));
-  return true;
-}
-
-function closeEditModal() {
-  state.modalMode = null;
-  state.editClickId = null;
-  refs.editNameField.classList.remove("invalid");
-  refs.editModal.classList.add("hidden");
   syncPopupHeight();
 }
 
@@ -355,6 +677,7 @@ function openDisplayMovesModal() {
 
 function closeDisplayMovesModal() {
   refs.displayMovesModal.classList.add("hidden");
+  state.pendingDisplayMovesClickId = null;
   syncPopupHeight();
 }
 
@@ -366,6 +689,7 @@ function openModeModal() {
 
 function closeModeModal() {
   refs.modeModal.classList.add("hidden");
+  state.pendingModeClickId = null;
   syncPopupHeight();
 }
 
@@ -419,38 +743,4 @@ async function completeCreateModeIfNeeded() {
   clicks.unshift(createdClick);
   await persistClicks();
   return createdClick;
-}
-
-function getCurrentEditSteps() {
-  if (!state.editClickId) {
-    return [];
-  }
-
-  const macro = clicks.find((item) => item.id === state.editClickId);
-  return Array.isArray(macro?.steps) ? macro.steps : [];
-}
-
-function renderEditSteps(steps) {
-  refs.editSteps.replaceChildren();
-  refs.editStepsDetailRow.classList.toggle("hidden", steps.length === 0);
-  refs.editStepsDetail.checked = state.showDetailedSteps;
-  refs.editStepsDetailLabel.textContent = t(state.showDetailedSteps ? "hideDetailedSteps" : "showDetailedSteps");
-
-  if (steps.length === 0) {
-    const li = document.createElement("li");
-    li.className = "step-row step-row-empty";
-    li.textContent = t("noSteps");
-    refs.editSteps.append(li);
-    syncPopupHeight();
-    return;
-  }
-
-  createStepDisplayRows(steps, state.editMode, state.showDetailedSteps).forEach((label) => {
-    const li = document.createElement("li");
-    li.className = "step-row";
-    li.textContent = label;
-    refs.editSteps.append(li);
-  });
-
-  syncPopupHeight();
 }

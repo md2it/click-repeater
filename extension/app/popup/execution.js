@@ -2,13 +2,15 @@
 function syncPopupHeight() {
   const minHeightPx = parseFloat(window.getComputedStyle(document.body).minHeight) || 0;
   const popupHeight = refs.popup ? refs.popup.scrollHeight : 0;
-  const editModalHeight = refs.editModal.classList.contains("hidden") ? 0 : refs.editModal.scrollHeight;
+  const renameModalHeight = refs.renameModal.classList.contains("hidden") ? 0 : refs.renameModal.scrollHeight;
+  const actionListModalHeight = refs.actionListModal.classList.contains("hidden") ? 0 : refs.actionListModal.scrollHeight;
   const modeModalHeight = refs.modeModal.classList.contains("hidden") ? 0 : refs.modeModal.scrollHeight;
   const surveyModalHeight = refs.supportSurveyModal.classList.contains("hidden") ? 0 : refs.supportSurveyModal.scrollHeight;
   const targetHeight = Math.max(
     minHeightPx,
     popupHeight,
-    editModalHeight,
+    renameModalHeight,
+    actionListModalHeight,
     modeModalHeight,
     surveyModalHeight
   );
@@ -109,14 +111,9 @@ async function refreshExecutionStatus({ silent = false } = {}) {
   return response;
 }
 
-async function refreshCheckStatus() {
-  const activeTab = await getActiveTab();
-  const response = await sendRuntimeMessage({ type: "check-status" });
-  const checkState = response?.state;
-  state.activeCheckClickId = checkState?.isActive && Number.isInteger(activeTab?.id) && activeTab.id === checkState.tabId
-    ? checkState.clickId
-    : null;
-  return response;
+async function stopActiveCheckMode() {
+  await sendRuntimeMessage({ type: "check-stop" });
+  state.activeCheckClickId = null;
 }
 
 async function toggleCheckMode(macroId) {
@@ -157,10 +154,13 @@ async function toggleCheckMode(macroId) {
   }
 
   state.activeCheckClickId = response.isActive ? macro.id : null;
+  if (response.isActive) {
+    window.close();
+    return;
+  }
+
   render();
-  setStatus(response.isActive
-    ? t("checkStarted", { name: macro.name })
-    : t("checkStopped", { name: macro.name }));
+  setStatus(t("checkStopped", { name: macro.name }));
 }
 
 function describeExecutionEvent(event) {

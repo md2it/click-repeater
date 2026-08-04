@@ -139,29 +139,6 @@ function normalizeRepeatInput(input) {
   input.value = String(normalizeRepeats(input.value));
 }
 
-function setEditDisplayMoves(enabled) {
-  const displayMovesEnabled = Boolean(enabled);
-  refs.editDisplayMoves.checked = displayMovesEnabled;
-  refs.editDisplayMovesIcon.innerHTML = displayMovesEnabled ? iconSet.eye : iconSet.eyeOff;
-  refs.editDisplayMovesLabel.textContent = t(displayMovesEnabled ? "visible" : "stealth");
-  refs.editDisplayMovesToggle.classList.toggle("display-moves-on", displayMovesEnabled);
-  refs.editDisplayMovesToggle.classList.toggle("display-moves-off", !displayMovesEnabled);
-  const displayMovesTitle = t(displayMovesEnabled ? "visualisationVisible" : "visualisationStealth");
-  refs.editDisplayMovesToggle.setAttribute("title", displayMovesTitle);
-  refs.editDisplayMovesToggle.setAttribute("aria-label", displayMovesTitle);
-  refs.editDisplayMovesToggle.setAttribute("aria-pressed", String(displayMovesEnabled));
-}
-
-function setEditMode(mode) {
-  state.editMode = mode === "element" ? "element" : "position";
-  refs.editModeIcon.innerHTML = state.editMode === "element" ? iconSet.code : iconSet.crosshair;
-  refs.editModeLabel.textContent = t(state.editMode === "element" ? "element" : "position");
-  const modeTitle = t(state.editMode === "element" ? "modeElement" : "modePosition");
-  refs.editModeToggle.setAttribute("title", modeTitle);
-  refs.editModeToggle.setAttribute("aria-label", modeTitle);
-  refs.editModeToggle.setAttribute("aria-pressed", String(state.editMode === "element"));
-}
-
 function buildDefaultClickName() {
   const now = new Date();
   const date = now.toISOString().slice(0, 10);

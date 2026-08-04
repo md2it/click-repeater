@@ -24,7 +24,7 @@
 
 ## SETTING
 
-- Speed is controlled by the scenario setting: [Editing - Speed](edit.md#settings)
+- Speed is controlled by the "Speed" control in the [Manage menu](../ui/manage-menu.md#contents-top-to-bottom-one-item-per-line) for the scenario
 - The setting applies only to the scenario where it is configured
 - Default value: `1x`
 - Each speed is a positive multiplier, lower or higher than `1`
