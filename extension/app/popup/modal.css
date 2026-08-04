@@ -353,7 +353,7 @@
   color: #1a1a1a;
   background: transparent;
   font-size: 12px;
-  text-align: left;
+  text-align: start;
 }
 
 .repeat-input::-webkit-inner-spin-button,
@@ -442,7 +442,7 @@
 }
 
 .manage-menu-field-label {
-  padding-left: 7px;
+  padding-inline-start: 7px;
   color: #8f96b3;
   font-size: 11px;
   white-space: nowrap;
@@ -452,11 +452,11 @@
   min-width: 0;
   width: 100%;
   border: 0;
-  padding: 0 7px 0 0;
+  padding-inline: 0 7px;
   color: #1a1a1a;
   background: transparent;
   font-size: 12px;
-  text-align: left;
+  text-align: start;
   outline: 0;
 }
 
