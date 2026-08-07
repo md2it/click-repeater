@@ -7,6 +7,8 @@
 - Only one entry's panel can be open at a time; opening the panel on another entry, or on the same entry's button again, collapses any panel that is already open
 - The panel collapses on: choosing an action that doesn't keep it open, clicking outside the panel, Esc, and when the popup's active state changes (recording, check, or execution starting)
 
+---
+
 ## Contents
 
 1. "Name" field
@@ -15,29 +17,38 @@
    - Every typed change immediately updates the scenario row and is saved
    - Opening an existing scenario does not focus this field
    - Opening a newly recorded scenario focuses this field and selects its name
-2. Left column, top to bottom
-   1. "Repeat" control
-   2. "Speed" control
-   3. Visible / Stealth drop-down
-   4. Position / Element drop-down
-3. Right column
-   - Top to bottom: "Look without run" button, then "Action list" button
-   - "Delete" button is aligned to the bottom of the column
+2. Two columns under the name field, one field each
+   1. Left: "Repeat" control
+   2. Right: "Speed" control
+3. Compact icon row under the two fields
+   - Secondary actions are icon-only buttons (Lucide), inline, one shared style
+   - Left group, left to right:
+      1. "Look without run" (`waypoints`)
+      2. "Action list" (`list-ordered`)
+      3. Visible / Stealth toggle (`eye` when visible, `eye-off` when stealth)
+      4. Position / Element toggle (`locate` for position, `search-code` for element)
+   - Right edge: "Delete" (`trash-2`), red
+   - Every compact button has a standard black tooltip with localized text (existing strings: look without run, action list, visible/stealth, position/element, delete / confirm deletion)
    - "Look without run" starts check mode for this entry, as described in [Check mode](../functional/mode-check.md)
    - "Action list" opens the [Action list](../functional/action-list.md) modal
-   - "Delete" uses red text
-   - First click changes the text to "Confirm deletion"
-   - A second click, while the text reads "Confirm deletion", deletes the entry
-   - Moving focus/hover away from the button while armed reverts it to "Delete"
+   - Visible / Stealth and Position / Element:
+      - If the matching explanation modal is not skipped in settings, a click opens that modal and the change is made there
+      - If the explanation is skipped, a click toggles the setting immediately
+   - "Delete":
+      - First click arms the button (tooltip and accessible name become "Confirm deletion", red armed look)
+      - A second click while armed deletes the entry
+      - Moving focus/hover away from the button while armed reverts it to "Delete"
 
 ### Field details
 
 - "Speed" control:
    - Same values and default as described in [Speed](../functional/speed.md)
-- Visible / Stealth drop-down:
+- Visible / Stealth:
    - Two options, same behavior and defaults as described in [Visualisation](../functional/visualisation.md)
-- Position / Element drop-down:
+- Position / Element:
    - Two options, same behavior and defaults as described in [Actions](../functional/actions.md)
+
+---
 
 ## Sizing
 

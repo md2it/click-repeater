@@ -15,7 +15,9 @@ function createIconButton({ className, action, id, tooltip, ariaLabel, ariaPress
   button.className = className;
   button.type = "button";
   button.dataset.action = action;
-  button.dataset.id = id;
+  if (id !== undefined && id !== "") {
+    button.dataset.id = id;
+  }
   button.dataset.tooltip = tooltip;
   button.setAttribute("aria-label", ariaLabel);
   if (ariaPressed !== undefined) {
@@ -144,35 +146,27 @@ function playSaveAnimation(macroId) {
 // Manage menu
 // ---------------------------------------------------------------------------
 
-function createManageMenuButton({ action, label, active = false }) {
-  const button = document.createElement("button");
-  button.type = "button";
-  button.className = "manage-menu-row manage-menu-btn";
-  button.classList.toggle("manage-menu-btn--active", active);
-  button.dataset.action = action;
-  button.textContent = label;
-  return button;
+function setIconButtonContent(button, { svgHtml, tooltip, ariaPressed }) {
+  button.replaceChildren();
+  appendStaticSvg(button, svgHtml);
+  button.dataset.tooltip = tooltip;
+  button.setAttribute("aria-label", tooltip);
+  if (ariaPressed !== undefined) {
+    button.setAttribute("aria-pressed", String(ariaPressed));
+  } else {
+    button.removeAttribute("aria-pressed");
+  }
 }
 
-function createManageMenuSelect({ action, onLabel, offLabel, isOn, label, ariaLabel }) {
-  const select = document.createElement("select");
-  select.className = "manage-menu-select";
-  select.dataset.action = action;
-  if (ariaLabel) {
-    select.setAttribute("aria-label", ariaLabel);
-  }
-
-  const onOption = document.createElement("option");
-  onOption.value = "on";
-  onOption.textContent = onLabel;
-
-  const offOption = document.createElement("option");
-  offOption.value = "off";
-  offOption.textContent = offLabel;
-
-  select.append(onOption, offOption);
-  select.value = isOn ? "on" : "off";
-  return createManageMenuField({ label, control: select, ariaLabel: ariaLabel || label });
+function createManageMenuIconButton({ className, action, tooltip, ariaPressed, svgHtml }) {
+  return createIconButton({
+    className,
+    action,
+    tooltip,
+    ariaLabel: tooltip,
+    ariaPressed,
+    svgHtml
+  });
 }
 
 function createManageMenuField({ label, control, ariaLabel }) {
@@ -249,48 +243,62 @@ function buildManageMenuAccordion(macro) {
   const nameField = createManageMenuNameField(macro);
   nameField.classList.add("manage-menu-name-field");
 
-  const fieldsCol = document.createElement("div");
-  fieldsCol.className = "manage-menu-col manage-menu-col--fields";
-  fieldsCol.append(
-    createManageMenuRepeatField(macro),
-    createManageMenuSpeedSelect(macro),
-    createManageMenuSelect({
-      action: "manage-visibility",
-      label: t("visibility"),
-      ariaLabel: t("visibility"),
-      onLabel: t("visible"),
-      offLabel: t("stealth"),
-      isOn: getDisplayMovesValue(macro)
+  const isVisible = getDisplayMovesValue(macro);
+  const isElement = (macro.mode ?? "position") === "element";
+  const lookActive = state.activeCheckClickId === macro.id;
+
+  const iconGroup = document.createElement("div");
+  iconGroup.className = "manage-menu-icon-group";
+  iconGroup.append(
+    createManageMenuIconButton({
+      className: "icon-btn manage-menu-icon-btn",
+      action: "manage-look",
+      tooltip: t("lookWithoutRun"),
+      ariaPressed: lookActive,
+      svgHtml: iconSet.waypoints
     }),
-    createManageMenuSelect({
+    createManageMenuIconButton({
+      className: "icon-btn manage-menu-icon-btn",
+      action: "manage-actions",
+      tooltip: t("actionList"),
+      svgHtml: iconSet.listOrdered
+    }),
+    createManageMenuIconButton({
+      className: "icon-btn manage-menu-icon-btn",
+      action: "manage-visibility",
+      tooltip: t(isVisible ? "visible" : "stealth"),
+      ariaPressed: isVisible,
+      svgHtml: isVisible ? iconSet.eye : iconSet.eyeOff
+    }),
+    createManageMenuIconButton({
+      className: "icon-btn manage-menu-icon-btn",
       action: "manage-mode",
-      label: t("mode"),
-      ariaLabel: t("mode"),
-      onLabel: t("element"),
-      offLabel: t("position"),
-      isOn: (macro.mode ?? "position") === "element"
+      tooltip: t(isElement ? "element" : "position"),
+      ariaPressed: isElement,
+      svgHtml: isElement ? iconSet.searchCode : iconSet.locate
     })
   );
 
-  const actionsCol = document.createElement("div");
-  actionsCol.className = "manage-menu-col manage-menu-col--actions";
-  actionsCol.append(
-    createManageMenuButton({
-      action: "manage-look",
-      label: t("lookWithoutRun"),
-      active: state.activeCheckClickId === macro.id
-    }),
-    createManageMenuButton({ action: "manage-actions", label: t("actionList") })
+  const lookBtn = iconGroup.querySelector('[data-action="manage-look"]');
+  lookBtn?.classList.toggle("manage-menu-icon-btn--active", lookActive);
+
+  const deleteBtn = createManageMenuIconButton({
+    className: "icon-btn manage-menu-delete",
+    action: "manage-delete",
+    tooltip: t("delete"),
+    svgHtml: iconSet.trash2
+  });
+
+  const iconRow = document.createElement("div");
+  iconRow.className = "manage-menu-icon-row";
+  iconRow.append(iconGroup, deleteBtn);
+
+  menu.append(
+    nameField,
+    createManageMenuRepeatField(macro),
+    createManageMenuSpeedSelect(macro),
+    iconRow
   );
-
-  const deleteBtn = document.createElement("button");
-  deleteBtn.type = "button";
-  deleteBtn.className = "manage-menu-row manage-menu-delete";
-  deleteBtn.dataset.action = "manage-delete";
-  deleteBtn.textContent = t("delete");
-  actionsCol.append(deleteBtn);
-
-  menu.append(nameField, fieldsCol, actionsCol);
   inner.append(divider, menu);
   accordion.append(inner);
   return accordion;
@@ -392,19 +400,29 @@ function wireManageMenu(panel, macro) {
   });
 }
 
-function updateManageMenuSelectStates(macro) {
+function updateManageMenuIconStates(macro) {
   if (!state.manageMenuEl || state.manageMenuClickId !== macro.id) {
     return;
   }
 
-  const visibilitySelect = state.manageMenuEl.querySelector('[data-action="manage-visibility"]');
-  if (visibilitySelect) {
-    visibilitySelect.value = getDisplayMovesValue(macro) ? "on" : "off";
+  const isVisible = getDisplayMovesValue(macro);
+  const visibilityBtn = state.manageMenuEl.querySelector('[data-action="manage-visibility"]');
+  if (visibilityBtn) {
+    setIconButtonContent(visibilityBtn, {
+      svgHtml: isVisible ? iconSet.eye : iconSet.eyeOff,
+      tooltip: t(isVisible ? "visible" : "stealth"),
+      ariaPressed: isVisible
+    });
   }
 
-  const modeSelect = state.manageMenuEl.querySelector('[data-action="manage-mode"]');
-  if (modeSelect) {
-    modeSelect.value = (macro.mode ?? "position") === "element" ? "on" : "off";
+  const isElement = (macro.mode ?? "position") === "element";
+  const modeBtn = state.manageMenuEl.querySelector('[data-action="manage-mode"]');
+  if (modeBtn) {
+    setIconButtonContent(modeBtn, {
+      svgHtml: isElement ? iconSet.searchCode : iconSet.locate,
+      tooltip: t(isElement ? "element" : "position"),
+      ariaPressed: isElement
+    });
   }
 }
 
@@ -454,7 +472,10 @@ function resetManageMenuDelete(menu) {
     return;
   }
   state.manageMenuDeleteArmed = false;
-  deleteBtn.textContent = t("delete");
+  setIconButtonContent(deleteBtn, {
+    svgHtml: iconSet.trash2,
+    tooltip: t("delete")
+  });
   deleteBtn.classList.remove("manage-menu-delete--armed");
 }
 
@@ -477,40 +498,6 @@ async function onManageMenuChange(event, macro) {
     macro.speed = normalizeScenarioSpeed(speedSelect.value);
     await persistClicks();
     setStatus(t("updated"));
-    return;
-  }
-
-  const visibilitySelect = event.target.closest('[data-action="manage-visibility"]');
-  if (visibilitySelect) {
-    const wantsVisible = visibilitySelect.value === "on";
-    const isVisible = getDisplayMovesValue(macro);
-    if (wantsVisible === isVisible) {
-      return;
-    }
-    if (settings.skipDisplayMovesExplanation) {
-      await applyDisplayMoves(macro, wantsVisible);
-    } else {
-      visibilitySelect.value = isVisible ? "on" : "off";
-      state.pendingDisplayMovesClickId = macro.id;
-      openDisplayMovesModal();
-    }
-    return;
-  }
-
-  const modeSelect = event.target.closest('[data-action="manage-mode"]');
-  if (modeSelect) {
-    const wantsElement = modeSelect.value === "on";
-    const isElement = (macro.mode ?? "position") === "element";
-    if (wantsElement === isElement) {
-      return;
-    }
-    if (settings.skipModeExplanation) {
-      await applyMode(macro, wantsElement ? "element" : "position");
-    } else {
-      modeSelect.value = isElement ? "on" : "off";
-      state.pendingModeClickId = macro.id;
-      openModeModal();
-    }
   }
 }
 
@@ -529,6 +516,29 @@ async function onManageMenuClick(event, macro) {
     return;
   }
 
+  const visibilityBtn = event.target.closest('[data-action="manage-visibility"]');
+  if (visibilityBtn) {
+    if (settings.skipDisplayMovesExplanation) {
+      await applyDisplayMoves(macro, !getDisplayMovesValue(macro));
+    } else {
+      state.pendingDisplayMovesClickId = macro.id;
+      openDisplayMovesModal();
+    }
+    return;
+  }
+
+  const modeBtn = event.target.closest('[data-action="manage-mode"]');
+  if (modeBtn) {
+    if (settings.skipModeExplanation) {
+      const nextMode = (macro.mode ?? "position") === "element" ? "position" : "element";
+      await applyMode(macro, nextMode);
+    } else {
+      state.pendingModeClickId = macro.id;
+      openModeModal();
+    }
+    return;
+  }
+
   const deleteBtn = event.target.closest('[data-action="manage-delete"]');
   if (deleteBtn) {
     if (state.manageMenuDeleteArmed) {
@@ -539,7 +549,10 @@ async function onManageMenuClick(event, macro) {
     }
 
     state.manageMenuDeleteArmed = true;
-    deleteBtn.textContent = t("confirmDelete");
+    setIconButtonContent(deleteBtn, {
+      svgHtml: iconSet.trash2,
+      tooltip: t("confirmDelete")
+    });
     deleteBtn.classList.add("manage-menu-delete--armed");
   }
 }
@@ -575,7 +588,7 @@ async function applyDisplayMoves(macro, enabled) {
   macro.displayMoves = enabled;
   macro.trackMoves = enabled;
   await persistClicks();
-  updateManageMenuSelectStates(macro);
+  updateManageMenuIconStates(macro);
   setStatus(t("displayMovesChanged", {
     state: t(enabled ? "enabled" : "disabled"),
     name: macro.name
@@ -585,7 +598,7 @@ async function applyDisplayMoves(macro, enabled) {
 async function applyMode(macro, mode) {
   macro.mode = mode;
   await persistClicks();
-  updateManageMenuSelectStates(macro);
+  updateManageMenuIconStates(macro);
   setStatus(t("updated"));
 }
 

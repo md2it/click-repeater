@@ -247,20 +247,9 @@ html.dark-theme .manage-menu-field-input {
   color: #f3f4f6;
 }
 
-html.dark-theme .manage-menu-btn,
-html.dark-theme .manage-menu-delete {
-  border-color: #4b5563;
-  color: #e5e7eb;
-  background: rgba(31, 41, 55, 0.9);
-}
-
-html.dark-theme .manage-menu-btn:hover,
-html.dark-theme .manage-menu-btn--active {
+html.dark-theme .manage-menu-icon-btn--active {
   border-color: #64748b;
   background: #273449;
-}
-
-html.dark-theme .manage-menu-btn--active {
   box-shadow: 0 0 0 1px #7185e8;
 }
 

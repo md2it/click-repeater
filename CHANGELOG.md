@@ -12,6 +12,7 @@ Regular SemVer logic.
 - Action list opens as a small dedicated modal
 - Check mode starts from Manage as “Look without run” and closes the popup
 - Favorite/default control is temporarily hidden in the UI; shortcut default data is preserved
+- Compacted the Manage menu: name, then repeat and speed side by side; secondary actions are icon-only buttons with tooltips
 
 ### 1.2.14
 - Asks for page access only when you start the extension, instead of all websites and tabs upfront
