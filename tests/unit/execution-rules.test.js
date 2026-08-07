@@ -13,12 +13,11 @@ TestHarness.test("scenario speed accepts only the documented multipliers and sca
   TestHarness.assertEqual(fast.beforeDownMs, 50);
   TestHarness.assertEqual(fast.holdMs, 50);
   TestHarness.assertEqual(fast.afterUpMs, 1);
-  TestHarness.assertEqual(fast.stepMinMs, 25);
-  TestHarness.assertEqual(fast.stepMaxMs, 50);
+  TestHarness.assertEqual(fast.stepMs, 25);
 
   const slow = getExecutionSpeedProfile(0.5);
   TestHarness.assertEqual(slow.beforeDownMs, 400);
-  TestHarness.assertEqual(slow.stepMaxMs, 400);
+  TestHarness.assertEqual(slow.stepMs, 200);
 });
 
 TestHarness.test("execution rejects unusable saved actions and preserves valid click and keyboard details", () => {

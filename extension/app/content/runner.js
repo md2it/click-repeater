@@ -96,7 +96,7 @@ async function runClickAction(token, fromPoint, action) {
     throw clickTargetNotFoundError(action);
   }
 
-  const clickPoint = applyClickOffset(stepPoint);
+  const clickPoint = stepPoint;
   const path = buildHumanPath(fromPoint, clickPoint);
   animateTrackerMovement(fromPoint, clickPoint, path.length * profile.moveIntervalMs);
   let previousPoint = fromPoint;
@@ -145,7 +145,7 @@ async function runClickAction(token, fromPoint, action) {
     playClickSound(executionState.soundVolume);
   }
   if (!shouldStop(token)) {
-    await sleep(randomDelay(profile.stepMinMs, profile.stepMaxMs));
+    await sleep(profile.stepMs);
   }
   if (shouldStop(token)) {
     throw new Error("stopped");
@@ -164,7 +164,7 @@ async function runKeyboardAction(token, fromPoint, action) {
   if (executionState.clickSound && action.type === "keydown") {
     playKeyPressSound(executionState.soundVolume);
   }
-  await sleep(randomDelay(profile.stepMinMs, profile.stepMaxMs));
+  await sleep(profile.stepMs);
   if (shouldStop(token)) {
     throw new Error("stopped");
   }
@@ -220,7 +220,6 @@ async function runExecution(payload) {
   }
   executionState.lastPoint = executionState.lastPoint ?? getInitialPoint();
   executionState.lastTarget = getPointTarget(executionState.lastPoint);
-  executionState.lastDelayMs = null;
   if (hasClickActions) {
     moveTracker(executionState.lastPoint);
   }
@@ -233,7 +232,7 @@ async function runExecution(payload) {
     profile.beforeDownMs +
     profile.holdMs +
     profile.afterUpMs +
-    (profile.stepMinMs + profile.stepMaxMs) / 2;
+    profile.stepMs;
 
   void chrome.runtime.sendMessage({
     type: "execution-progress",
@@ -311,7 +310,6 @@ async function runExecution(payload) {
         executionState.soundVolume = "volume-1";
         executionState.clickSound = true;
         executionState.lastTarget = null;
-        executionState.lastDelayMs = null;
       }
       stopExecutionClickListener();
       removeTrackerElement();

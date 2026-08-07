@@ -25,20 +25,15 @@ function parseCoordinateStep(step) {
   return normalizeViewportPoint({ x, y });
 }
 
-function getRandomPointInElement(element) {
+function getElementPoint(element) {
   const rect = element.getBoundingClientRect();
   if (rect.width <= 0 || rect.height <= 0) {
     return null;
   }
 
-  const minX = rect.left + Math.min(HUMAN_MM_IN_PX, rect.width / 2);
-  const maxX = rect.right - Math.min(HUMAN_MM_IN_PX, rect.width / 2);
-  const minY = rect.top + Math.min(HUMAN_MM_IN_PX, rect.height / 2);
-  const maxY = rect.bottom - Math.min(HUMAN_MM_IN_PX, rect.height / 2);
-
   return normalizeViewportPoint({
-    x: randomBetween(minX, maxX),
-    y: randomBetween(minY, maxY)
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2
   });
 }
 
@@ -66,7 +61,7 @@ function resolveStepPoint(step) {
     return null;
   }
 
-  return getRandomPointInElement(element);
+  return getElementPoint(element);
 }
 
 function buildHumanPath(startPoint, endPoint) {
@@ -76,12 +71,9 @@ function buildHumanPath(startPoint, endPoint) {
   const deltaY = to.y - from.y;
   const distance = Math.hypot(deltaX, deltaY);
   const pointCount = Math.round(2 + 5 * Math.log2(1 + distance / 10));
-  const perpendicularX = distance > 0 ? -deltaY / distance : 0;
-  const perpendicularY = distance > 0 ? deltaX / distance : 0;
-  const curveOffset = randomBetween(-1, 1) * Math.min(distance * 0.08, 32);
   const controlPoint = {
-    x: (from.x + to.x) / 2 + perpendicularX * curveOffset,
-    y: (from.y + to.y) / 2 + perpendicularY * curveOffset
+    x: (from.x + to.x) / 2,
+    y: (from.y + to.y) / 2
   };
   const sampleCount = Math.max(32, pointCount * 4);
   const samples = [{ point: from, length: 0 }];
@@ -278,13 +270,6 @@ async function dispatchMouseClick(token, target, point) {
 
   target.dispatchEvent(buildMouseEvent("click", { ...init, buttons: 0 }));
   pulseTracker(normalized);
-}
-
-function applyClickOffset(point) {
-  return normalizeViewportPoint({
-    x: point.x + randomBetween(-HUMAN_MM_IN_PX, HUMAN_MM_IN_PX),
-    y: point.y + randomBetween(-HUMAN_MM_IN_PX, HUMAN_MM_IN_PX)
-  });
 }
 
 function shouldStop(token) {

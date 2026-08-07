@@ -3,12 +3,10 @@ const BASE_EXECUTION_SPEED_PROFILE = {
   beforeDownMs: 200,
   holdMs: 200,
   afterUpMs: 1,
-  stepMinMs: 100,
-  stepMaxMs: 200
+  stepMs: 100
 };
 const SCENARIO_SPEED_VALUES = [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4, 8];
 
-const HUMAN_MM_IN_PX = 0.75; // 0.2mm offset radius at 96 DPI
 const VIEWPORT_EDGE_PADDING = 2;
 const TRACKER_DEFAULT_SIZE = 36;
 const TRACKER_ACTIVE_SIZE = 54;
@@ -27,7 +25,6 @@ const executionState = {
   token: 0,
   lastPoint: null,
   lastTarget: null,
-  lastDelayMs: null,
   trackMoves: false,
   executionSpeed: 1,
   soundVolume: "volume-1",
@@ -54,30 +51,12 @@ let isRecordingClickListenerAttached = false;
 let isRecordingKeyboardListenerAttached = false;
 let isExecutionClickListenerAttached = false;
 
-function randomBetween(min, max) {
-  return min + Math.random() * (max - min);
-}
-
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
 function sleep(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
-}
-
-function randomDelay(min, max) {
-  const previous = executionState.lastDelayMs;
-  let delay = randomBetween(min, max);
-
-  if (Number.isFinite(previous)) {
-    for (let attempt = 0; attempt < 4 && Math.abs(delay - previous) < 12; attempt += 1) {
-      delay = randomBetween(min, max);
-    }
-  }
-
-  executionState.lastDelayMs = delay;
-  return delay;
 }
 
 function normalizeExecutionSpeed(speed) {
@@ -96,8 +75,7 @@ function getExecutionSpeedProfile(speed = executionState.executionSpeed) {
     beforeDownMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.beforeDownMs, speedMultiplier),
     holdMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.holdMs, speedMultiplier),
     afterUpMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.afterUpMs, speedMultiplier),
-    stepMinMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.stepMinMs, speedMultiplier),
-    stepMaxMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.stepMaxMs, speedMultiplier)
+    stepMs: scaleTimingMs(BASE_EXECUTION_SPEED_PROFILE.stepMs, speedMultiplier)
   };
 }
 
