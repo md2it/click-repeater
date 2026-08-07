@@ -50,7 +50,7 @@
   height: 18px;
 }
 
-.popup-menu-btn::after {
+body:not(.viewport-tooltips-ready) .popup-menu-btn::after {
   content: attr(data-tooltip);
   position: absolute;
   left: calc(100% + 7px);
@@ -70,13 +70,13 @@
   visibility: hidden;
 }
 
-.popup-menu-btn:hover::after,
-.popup-menu-btn:focus-visible::after {
+body:not(.viewport-tooltips-ready) .popup-menu-btn:hover::after,
+body:not(.viewport-tooltips-ready) .popup-menu-btn:focus-visible::after {
   opacity: 1;
   visibility: visible;
 }
 
-[dir="rtl"] .popup-menu-btn::after {
+body:not(.viewport-tooltips-ready) [dir="rtl"] .popup-menu-btn::after {
   right: auto;
   left: calc(100% + 7px);
 }

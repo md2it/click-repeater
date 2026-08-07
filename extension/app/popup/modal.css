@@ -50,7 +50,7 @@
   position: relative;
 }
 
-.icon-btn:not(.default-btn)[data-tooltip]::after {
+body:not(.viewport-tooltips-ready) .icon-btn:not(.default-btn)[data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
   bottom: calc(100% + 5px);
@@ -70,13 +70,13 @@
   visibility: hidden;
 }
 
-.icon-btn:not(.default-btn):hover[data-tooltip]::after,
-.icon-btn:not(.default-btn):focus-visible[data-tooltip]::after {
+body:not(.viewport-tooltips-ready) .icon-btn:not(.default-btn):hover[data-tooltip]::after,
+body:not(.viewport-tooltips-ready) .icon-btn:not(.default-btn):focus-visible[data-tooltip]::after {
   opacity: 1;
   visibility: visible;
 }
 
-.modal-close-btn[data-tooltip]::after {
+body:not(.viewport-tooltips-ready) .modal-close-btn[data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
   top: calc(100% + 5px);
@@ -95,8 +95,8 @@
   visibility: hidden;
 }
 
-.modal-close-btn:hover[data-tooltip]::after,
-.modal-close-btn:focus-visible[data-tooltip]::after {
+body:not(.viewport-tooltips-ready) .modal-close-btn:hover[data-tooltip]::after,
+body:not(.viewport-tooltips-ready) .modal-close-btn:focus-visible[data-tooltip]::after {
   opacity: 1;
   visibility: visible;
 }
@@ -105,7 +105,7 @@
   position: relative;
 }
 
-.default-btn::after {
+body:not(.viewport-tooltips-ready) .default-btn::after {
   content: attr(data-tooltip) "\A" attr(data-tooltip-detail);
   position: absolute;
   right: 0;
@@ -126,14 +126,32 @@
   visibility: hidden;
 }
 
-.default-btn:hover::after,
-.default-btn:focus-visible::after {
+body:not(.viewport-tooltips-ready) .default-btn:hover::after,
+body:not(.viewport-tooltips-ready) .default-btn:focus-visible::after {
   opacity: 1;
   visibility: visible;
 }
 
 .default-btn.active {
   color: #ffc400;
+}
+
+.viewport-tooltip {
+  position: fixed;
+  z-index: 10000;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100vh - 16px);
+  padding: 4px 7px;
+  border-radius: 5px;
+  color: #fff;
+  background: #111827;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow-y: auto;
+  pointer-events: none;
 }
 
 .status-line {
