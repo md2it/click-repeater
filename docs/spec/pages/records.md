@@ -14,7 +14,7 @@
       - Localized "repeat" label, followed by the numeric repeat-count input
       - The label width is adaptive: it fits the localized word for "repeat" in the active language
       - The input width is fixed at 3 characters regardless of language
-   - Name as non-clickable text, taking the remaining row space
+   - Name as non-editable text, taking the remaining row space
 - Right-aligned:
    - "Manage" button (Lucide `ellipsis-vertical`), which opens the [Manage menu](../ui/manage-menu.md)
    - Has a tooltip as described in [Interface - Tooltips](../ui/common.md#tooltips)

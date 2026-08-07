@@ -203,43 +203,6 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-refs.renameName.addEventListener("input", () => {
-  if (refs.renameName.value.trim()) {
-    refs.renameNameField.classList.remove("invalid");
-  }
-});
-
-refs.clearRenameNameBtn.addEventListener("click", () => {
-  refs.renameName.value = "";
-  refs.renameName.focus();
-});
-
-refs.saveRenameBtn.addEventListener("click", () => {
-  void saveRenameModal();
-});
-
-refs.cancelRenameBtn.addEventListener("click", () => {
-  closeRenameModal();
-  setStatus(t("initialHint"));
-});
-
-refs.closeRenameModalBtn.addEventListener("click", () => {
-  closeRenameModal();
-});
-
-refs.renameModal.addEventListener("click", (event) => {
-  if (event.target === refs.renameModal) {
-    closeRenameModal();
-  }
-});
-
-refs.renameName.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    void saveRenameModal();
-  }
-});
-
 refs.actionListDetail.addEventListener("change", () => {
   state.showDetailedSteps = refs.actionListDetail.checked;
   const macro = clicks.find((item) => item.id === state.actionListClickId);
@@ -441,11 +404,6 @@ function closeModalByEscape() {
 
   if (!refs.actionListModal.classList.contains("hidden")) {
     closeActionListModal();
-    return true;
-  }
-
-  if (!refs.renameModal.classList.contains("hidden")) {
-    closeRenameModal();
     return true;
   }
 

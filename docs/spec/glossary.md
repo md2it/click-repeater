@@ -17,7 +17,7 @@
 ## Scenario entry and Manage menu
 
 - **Scenario entry** — One scenario item in the Clicks page list.
-- **Scenario row** — The always-visible part of a scenario entry with its name, Run button, and Manage button.
+- **Scenario row** — The always-visible, non-editable part of a scenario entry with its name, Run button, and Manage button.
 - **Manage button** — The button in the scenario row that opens or closes the Manage menu.
 - **Manage menu** — The settings panel for one scenario.
 - **Manage menu accordion** — The expandable container that holds the Manage menu.

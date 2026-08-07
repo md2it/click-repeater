@@ -23,7 +23,7 @@ html.dark-theme .popup-menu-btn.active {
 }
 
 html.dark-theme .page-title,
-html.dark-theme .edit-name-input,
+html.dark-theme .manage-menu-name-input,
 html.dark-theme .repeat-input {
   color: #f3f4f6;
 }
@@ -161,36 +161,26 @@ html.dark-theme .modal-close-btn {
   color: #9ca3af;
 }
 
-html.dark-theme .modal-close-btn:hover,
-html.dark-theme .edit-name-clear-btn:hover {
+html.dark-theme .modal-close-btn:hover {
   color: #f3f4f6;
   background: #273449;
 }
 
-html.dark-theme .edit-name-field,
 html.dark-theme .repeat-field {
   border-color: #4b5563;
   background: #1f2937;
 }
 
-html.dark-theme .edit-name-field:hover,
 html.dark-theme .repeat-field:hover {
   border-color: #7185e8;
   background: #273449;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
-html.dark-theme .edit-name-field:focus-within,
 html.dark-theme .repeat-field:focus-within {
   border-color: #7185e8;
   background: #1f2937;
   box-shadow: 0 0 0 1px #7185e8;
-}
-
-html.dark-theme .edit-name-field.invalid {
-  border-color: #f87171;
-  background: #3f1d25;
-  box-shadow: 0 0 0 1px #f87171;
 }
 
 html.dark-theme .toggle-switch-visual {
@@ -245,6 +235,12 @@ html.dark-theme .manage-menu-field:focus-within {
   border-color: #7185e8;
   background: #1f2937;
   box-shadow: 0 0 0 1px #7185e8;
+}
+
+html.dark-theme .manage-menu-field.invalid {
+  border-color: #f87171;
+  background: #3f1d25;
+  box-shadow: 0 0 0 1px #f87171;
 }
 
 html.dark-theme .manage-menu-field-input {

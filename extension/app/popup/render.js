@@ -221,6 +221,17 @@ function createManageMenuSpeedSelect(macro) {
   return createManageMenuField({ label: speedLabel, control: speedSelect, ariaLabel: speedLabel });
 }
 
+function createManageMenuNameField(macro) {
+  const nameLabel = t("name");
+  const nameInput = document.createElement("input");
+  nameInput.className = "manage-menu-field-input manage-menu-name-input";
+  nameInput.type = "text";
+  nameInput.value = macro.name;
+  nameInput.dataset.action = "manage-name";
+  nameInput.setAttribute("aria-label", nameLabel);
+  return createManageMenuField({ label: nameLabel, control: nameInput, ariaLabel: nameLabel });
+}
+
 function buildManageMenuAccordion(macro) {
   const accordion = document.createElement("div");
   accordion.className = "manage-menu-accordion";
@@ -234,6 +245,9 @@ function buildManageMenuAccordion(macro) {
 
   const menu = document.createElement("div");
   menu.className = "manage-menu";
+
+  const nameField = createManageMenuNameField(macro);
+  nameField.classList.add("manage-menu-name-field");
 
   const fieldsCol = document.createElement("div");
   fieldsCol.className = "manage-menu-col manage-menu-col--fields";
@@ -261,7 +275,6 @@ function buildManageMenuAccordion(macro) {
   const actionsCol = document.createElement("div");
   actionsCol.className = "manage-menu-col manage-menu-col--actions";
   actionsCol.append(
-    createManageMenuButton({ action: "manage-rename", label: t("rename") }),
     createManageMenuButton({
       action: "manage-look",
       label: t("lookWithoutRun"),
@@ -277,7 +290,7 @@ function buildManageMenuAccordion(macro) {
   deleteBtn.textContent = t("delete");
   actionsCol.append(deleteBtn);
 
-  menu.append(fieldsCol, actionsCol);
+  menu.append(nameField, fieldsCol, actionsCol);
   inner.append(divider, menu);
   accordion.append(inner);
   return accordion;
@@ -367,7 +380,9 @@ function wireManageMenu(panel, macro) {
   }
   panel.dataset.wired = macro.id;
   panel.addEventListener("click", (event) => onManageMenuClick(event, macro));
+  panel.addEventListener("input", (event) => onManageMenuInput(event, macro));
   panel.addEventListener("change", (event) => onManageMenuChange(event, macro));
+  panel.addEventListener("keydown", (event) => onManageMenuKeydown(event));
   panel.addEventListener("pointerout", (event) => {
     const deleteButton = event.target.closest(".manage-menu-delete");
     if (!deleteButton || deleteButton.contains(event.relatedTarget)) {
@@ -393,7 +408,7 @@ function updateManageMenuSelectStates(macro) {
   }
 }
 
-function openManageMenu(macroId, buttonEl) {
+function openManageMenu(macroId, buttonEl, { focusName = false } = {}) {
   const macro = clicks.find((item) => item.id === macroId);
   if (!macro) {
     setStatus(t("notFound"));
@@ -423,6 +438,14 @@ function openManageMenu(macroId, buttonEl) {
 
   document.addEventListener("pointerdown", onManageMenuOutsideClick, true);
   watchAccordionHeight();
+
+  if (focusName) {
+    requestAnimationFrame(() => {
+      const nameInput = panel.querySelector('[data-action="manage-name"]');
+      nameInput?.focus();
+      nameInput?.select();
+    });
+  }
 }
 
 function resetManageMenuDelete(menu) {
@@ -436,6 +459,19 @@ function resetManageMenuDelete(menu) {
 }
 
 async function onManageMenuChange(event, macro) {
+  const nameInput = event.target.closest('[data-action="manage-name"]');
+  if (nameInput) {
+    const name = nameInput.value.trim();
+    if (!name) {
+      nameInput.value = macro.name;
+      refs.list.querySelector(`li[data-click-id="${CSS.escape(macro.id)}"] .click-name`).textContent = macro.name;
+      nameInput.closest(".manage-menu-field")?.classList.add("invalid");
+      setStatus(t("enterName"), { error: true });
+      return;
+    }
+    return;
+  }
+
   const speedSelect = event.target.closest('[data-action="manage-speed"]');
   if (speedSelect) {
     macro.speed = normalizeScenarioSpeed(speedSelect.value);
@@ -479,13 +515,6 @@ async function onManageMenuChange(event, macro) {
 }
 
 async function onManageMenuClick(event, macro) {
-  const renameBtn = event.target.closest('[data-action="manage-rename"]');
-  if (renameBtn) {
-    closeManageMenu();
-    openRenameModal(macro.id);
-    return;
-  }
-
   const lookBtn = event.target.closest('[data-action="manage-look"]');
   if (lookBtn) {
     closeManageMenu();
@@ -513,6 +542,33 @@ async function onManageMenuClick(event, macro) {
     deleteBtn.textContent = t("confirmDelete");
     deleteBtn.classList.add("manage-menu-delete--armed");
   }
+}
+
+function onManageMenuInput(event, macro) {
+  const nameInput = event.target.closest('[data-action="manage-name"]');
+  if (!nameInput) {
+    return;
+  }
+
+  const name = nameInput.value;
+  refs.list.querySelector(`li[data-click-id="${CSS.escape(macro.id)}"] .click-name`).textContent = name;
+  if (!name.trim()) {
+    return;
+  }
+
+  nameInput.closest(".manage-menu-field")?.classList.remove("invalid");
+  macro.name = name;
+  state.nameSavePromise = state.nameSavePromise
+    .catch(() => {})
+    .then(() => persistClicks());
+}
+
+function onManageMenuKeydown(event) {
+  if (event.key !== "Enter" || !event.target.matches('[data-action="manage-name"]')) {
+    return;
+  }
+  event.preventDefault();
+  event.target.blur();
 }
 
 async function applyDisplayMoves(macro, enabled) {
@@ -549,56 +605,6 @@ async function deleteClick(macroId) {
   await persistClicks();
   render();
   setStatus(t("deleted"));
-}
-
-// ---------------------------------------------------------------------------
-// Rename modal
-// ---------------------------------------------------------------------------
-
-function openRenameModal(macroId) {
-  const macro = clicks.find((item) => item.id === macroId);
-  if (!macro) {
-    setStatus(t("notFound"));
-    return;
-  }
-
-  state.renameClickId = macroId;
-  refs.renameName.value = macro.name;
-  refs.renameModal.classList.remove("hidden");
-  syncPopupHeight();
-  refs.renameNameField.classList.remove("invalid");
-  refs.renameName.focus();
-  refs.renameName.select();
-}
-
-function closeRenameModal() {
-  state.renameClickId = null;
-  refs.renameNameField.classList.remove("invalid");
-  refs.renameModal.classList.add("hidden");
-  syncPopupHeight();
-}
-
-async function saveRenameModal() {
-  const name = refs.renameName.value.trim();
-  if (!name) {
-    refs.renameNameField.classList.add("invalid");
-    refs.renameName.focus();
-    setStatus(t("enterName"));
-    return;
-  }
-
-  const macro = clicks.find((item) => item.id === state.renameClickId);
-  if (!macro) {
-    setStatus(t("notFound"));
-    closeRenameModal();
-    return;
-  }
-
-  macro.name = name;
-  await persistClicks();
-  closeRenameModal();
-  render();
-  setStatus(t("updated"));
 }
 
 // ---------------------------------------------------------------------------

@@ -46,14 +46,11 @@
 }
 
 .icon-btn:not(.default-btn),
-.modal-close-btn,
-.edit-name-field,
-.edit-name-clear-btn {
+.modal-close-btn {
   position: relative;
 }
 
-.icon-btn:not(.default-btn)[data-tooltip]::after,
-.edit-name-clear-btn[data-tooltip]::after {
+.icon-btn:not(.default-btn)[data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
   bottom: calc(100% + 5px);
@@ -74,34 +71,7 @@
 }
 
 .icon-btn:not(.default-btn):hover[data-tooltip]::after,
-.icon-btn:not(.default-btn):focus-visible[data-tooltip]::after,
-.edit-name-clear-btn:hover[data-tooltip]::after,
-.edit-name-clear-btn:focus-visible[data-tooltip]::after {
-  opacity: 1;
-  visibility: visible;
-}
-
-.edit-name-field[data-tooltip]::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: calc(100% + 5px);
-  right: 0;
-  z-index: 9999;
-  padding: 4px 7px;
-  border-radius: 5px;
-  color: #fff;
-  background: #111827;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.2;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-}
-
-.edit-name-field:hover[data-tooltip]::after,
-.edit-name-field:focus-within[data-tooltip]::after {
+.icon-btn:not(.default-btn):focus-visible[data-tooltip]::after {
   opacity: 1;
   visibility: visible;
 }
@@ -271,81 +241,6 @@
   font-size: 13px;
 }
 
-.edit-name-field {
-  position: relative;
-  width: 100%;
-  border: 1px solid #c8ccdb;
-  border-radius: 8px;
-  transition:
-    border-color 120ms ease,
-    background-color 120ms ease,
-    box-shadow 120ms ease;
-}
-
-.edit-name-field:hover {
-  border-color: #8f9fc9;
-  background: #fafbff;
-  box-shadow: 0 0 5px rgba(19, 25, 48, 0.1);
-}
-
-.edit-name-field:focus-within {
-  border-color: #012292;
-  background: #fff;
-  box-shadow: 0 0 0 1px #012292;
-}
-
-.edit-name-field.invalid {
-  border-color: #d03b3b;
-  background: #fff7f7;
-  box-shadow: 0 0 0 1px #d03b3b;
-}
-
-.edit-name-input {
-  width: 100%;
-  border: 0;
-  border-radius: inherit;
-  padding: 8px 36px 8px 10px;
-  color: #1a1a1a;
-  background: transparent;
-  font-size: 13px;
-  outline: 0;
-}
-
-.edit-name-clear-btn {
-  position: absolute;
-  top: 50%;
-  right: 5px;
-  transform: translateY(-50%);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: 0;
-  border-radius: 5px;
-  color: #6b7280;
-  background: transparent;
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.edit-name-field:focus-within .edit-name-clear-btn {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.edit-name-clear-btn:hover {
-  color: #1a1a1a;
-  background: #f0f2fa;
-}
-
-.edit-name-clear-btn svg {
-  width: 15px;
-  height: 15px;
-}
-
 .repeat-input {
   appearance: textfield;
   border: 0;
@@ -430,6 +325,12 @@
     box-shadow 120ms ease;
 }
 
+.manage-menu-field.manage-menu-name-field {
+  grid-column: 1 / -1;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 6px;
+}
+
 .manage-menu-field:hover {
   border-color: #8f9fc9;
   background: #fafbff;
@@ -458,6 +359,10 @@
   font-size: 12px;
   text-align: start;
   outline: 0;
+}
+
+.manage-menu-name-input {
+  font-size: 13px;
 }
 
 .manage-menu-select {
@@ -546,6 +451,10 @@
 
 .manage-menu-delete {
   color: #d03b3b;
+}
+
+.manage-menu-col--actions .manage-menu-delete {
+  margin-top: auto;
 }
 
 .manage-menu-delete:hover {

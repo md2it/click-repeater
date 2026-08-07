@@ -22,7 +22,7 @@ async function init() {
       `.manage-btn[data-id="${CSS.escape(createdClick.id)}"]`
     );
     if (manageBtn) {
-      openManageMenu(createdClick.id, manageBtn);
+      openManageMenu(createdClick.id, manageBtn, { focusName: true });
     }
     playSaveAnimation(createdClick.id);
     setStatus(t("saved"));

@@ -17,7 +17,6 @@ const settings = {
 };
 
 const state = {
-  renameClickId: null,
   actionListClickId: null,
   showDetailedSteps: false,
   manageMenuClickId: null,
@@ -29,7 +28,8 @@ const state = {
   executionPollTimer: null,
   stopButtonShowTimer: null,
   soundPreviewClickTimer: null,
-  soundPreviewReleaseTimer: null
+  soundPreviewReleaseTimer: null,
+  nameSavePromise: Promise.resolve()
 };
 
 const refs = {
@@ -41,13 +41,6 @@ const refs = {
   status: document.getElementById("status-line"),
   stopExecutionBtn: document.getElementById("stop-execution-btn"),
   recordBtn: document.getElementById("record-btn"),
-  renameModal: document.getElementById("rename-modal"),
-  closeRenameModalBtn: document.getElementById("close-rename-modal-btn"),
-  renameNameField: document.getElementById("rename-name-field"),
-  renameName: document.getElementById("rename-name"),
-  clearRenameNameBtn: document.getElementById("clear-rename-name-btn"),
-  saveRenameBtn: document.getElementById("save-rename-btn"),
-  cancelRenameBtn: document.getElementById("cancel-rename-btn"),
   actionListModal: document.getElementById("action-list-modal"),
   actionListModalTitle: document.getElementById("action-list-modal-title"),
   closeActionListModalBtn: document.getElementById("close-action-list-modal-btn"),

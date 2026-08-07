@@ -16,7 +16,6 @@ for (const button of document.querySelectorAll(".modal-close-btn")) {
   button.innerHTML = iconSet.x;
 }
 
-refs.clearRenameNameBtn.innerHTML = iconSet.x;
 
 function renderLanguageSelector() {
   refs.languageSelector.replaceChildren();
