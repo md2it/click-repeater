@@ -25,7 +25,7 @@ export const SHORTCUT_HINT_BADGE_TEXT = "M";
 export const SHORTCUT_HINT_BADGE_BACKGROUND_COLOR = "#ffffff";
 export const SHORTCUT_HINT_BADGE_TEXT_COLOR = "#000000";
 export const SHORTCUT_HINT_DURATION_MS = 3000;
-export const SCENARIO_SPEED_VALUES = [0.1, 0.25, 0.5, 0.75, 1, 2, 4, 8];
+export const SCENARIO_SPEED_VALUES = [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4, 8];
 
 // Mutated from both execution.js (clearShortcutHintTimer) and badge.js
 // (showShortcutHintBadge). Exposed as a mutable object property rather than a

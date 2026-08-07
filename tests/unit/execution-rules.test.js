@@ -3,6 +3,8 @@
 TestHarness.test("scenario speed accepts only the documented multipliers and scales all click timings", () => {
   TestHarness.assertEqual(normalizeExecutionSpeed(4), 4);
   TestHarness.assertEqual(normalizeExecutionSpeed("0.5"), 0.5);
+  TestHarness.assertEqual(normalizeExecutionSpeed(1.5), 1.5);
+  TestHarness.assertEqual(normalizeExecutionSpeed("1.5"), 1.5);
   TestHarness.assertEqual(normalizeExecutionSpeed(3), 1);
   TestHarness.assertEqual(normalizeExecutionSpeed(0), 1);
 

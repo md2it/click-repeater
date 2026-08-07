@@ -363,14 +363,10 @@ body:not(.viewport-tooltips-ready) .default-btn:focus-visible::after {
 .manage-menu-select {
   appearance: none;
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238f96b3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 6px center;
-  background-size: 12px 12px;
   height: 28px;
   border: 1px solid #c8ccdb;
   border-radius: 6px;
-  padding: 0 22px 0 8px;
+  padding: 0 8px;
   color: #1a1a1a;
   background-color: rgba(255, 255, 255, 0.72);
   font-size: 13px;
@@ -398,10 +394,9 @@ body:not(.viewport-tooltips-ready) .default-btn:focus-visible::after {
   height: 100%;
   border: 0;
   border-radius: 0;
-  padding: 0 20px 0 0;
+  padding: 0;
   color: #1a1a1a;
   background-color: transparent;
-  background-position: right 5px center;
   font-size: 12px;
   box-shadow: none;
 }

@@ -6,7 +6,7 @@ const BASE_EXECUTION_SPEED_PROFILE = {
   stepMinMs: 100,
   stepMaxMs: 200
 };
-const SCENARIO_SPEED_VALUES = [0.1, 0.25, 0.5, 0.75, 1, 2, 4, 8];
+const SCENARIO_SPEED_VALUES = [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4, 8];
 
 const HUMAN_MM_IN_PX = 0.75; // 0.2mm offset radius at 96 DPI
 const VIEWPORT_EDGE_PADDING = 2;

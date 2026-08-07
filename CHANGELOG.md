@@ -5,6 +5,7 @@ Regular SemVer logic.
 ## RELEASES
 
 ### 1.2.15
+- Added 1.5× scenario execution speed between 1× and 2×
 - Replaced the scenario edit window with a Manage menu under each list entry (name, speed, look without run, action list, visibility, mode, delete)
 - Scenario rows are compact: play, repeat count, name, and Manage; mode and visibility icons and the favorite star are no longer shown in the row
 - Recording saves immediately with a default name; a short confirmation animation highlights the new entry
