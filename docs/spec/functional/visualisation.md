@@ -25,10 +25,6 @@ The goal is to show every click and continuous movement of the virtual pointer b
 
 ## STEALTH
 
-The goal is to prevent websites from classifying the extension's behavior as automated:
+The goal is to execute scenarios without rendering a visual overlay:
 
 - Does not inject elements into the DOM, except when click visualisation is enabled
-- Does not perform obviously suspicious actions
-- Is not detected by website security scripts
-- Cursor movements and clicks imitate human behavior with slight randomness and unevenness
-- Websites should not detect that the extension is present

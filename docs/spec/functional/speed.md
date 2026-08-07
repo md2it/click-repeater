@@ -9,7 +9,6 @@
 - [BASE TIMING](#base-timing)
 - [CALCULATION](#calculation)
 - [EXAMPLES](#examples)
-- [RUNTIME VARIABILITY](#runtime-variability)
 
 ---
 
@@ -55,7 +54,7 @@
    - No specific pauses
 - Key up action:
    - No specific pauses
-- Completed-action pause: 100-200 ms after each action
+- Completed-action pause: 100 ms after each action
 
 ---
 
@@ -83,10 +82,3 @@
   | 100 ms | `0.5x` | `ceil(100 / 0.5)` | 200 ms |
 
 ---
-
-## RUNTIME VARIABILITY
-
-- Distance may increase pointer movement duration; the multiplier controls relative pacing but does not guarantee a proportional change in total duration
-- Calculate pauses at runtime
-- Do not repeat timing patterns
-- Avoid a uniform overall pace by varying the curve and non-movement pauses

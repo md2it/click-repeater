@@ -53,8 +53,7 @@
 
 - Do not jump the cursor
 - Calculate the path at runtime
-- Use one smooth uneven curve for the complete movement
-- Do not apply independent random displacement to every intermediate point
+- Use one smooth curve for the complete movement
 - The number of intermediate movement points depends logarithmically on the distance between the current cursor position and the click point
 - Calculate the number of points as:
 
@@ -65,7 +64,6 @@
    - `D` is the movement distance in pixels
 - Do not apply an additional minimum or maximum limit to `N`
 - The interval between movement points is fixed within one speed option
-- Do not randomize the interval between individual movement points
 - Different speed options may define different fixed movement intervals
 
 ### Events
@@ -93,8 +91,6 @@
    - Recorded coordinates, when position mode is used
 - Click point:
    - Calculated from the target source during execution
-- Target offset:
-   - Randomized within 0.2 mm radius from the click point
 - Pointer button:
    - Primary pointer button
 
