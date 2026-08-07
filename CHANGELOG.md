@@ -1,20 +1,23 @@
 # RELEASE LIST
 
-Regular SemVer logic.
+Regular SemVer logic. Review the [release requirements](RELEASE.md).
 
 ## RELEASES
 
-### 1.2.15
+### Unreleased
 - Added 1.5× scenario execution speed between 1× and 2×
-- Replaced the scenario edit window with a Manage menu under each list entry (name, speed, look without run, action list, visibility, mode, delete)
-- Scenario rows are compact: play, repeat count, name, and Manage; mode and visibility icons and the favorite star are no longer shown in the row
-- Recording saves immediately with a default name; a short confirmation animation highlights the new entry
 - Scenario names are edited and saved directly in the Manage menu; new recordings select the name for immediate typing
-- Action list opens as a small dedicated modal
-- Check mode starts from Manage as “View on screen without running” and closes the popup
-- Favorite/default control is temporarily hidden in the UI; shortcut default data is preserved
 - Compacted the Manage menu: name, then repeat and speed side by side; secondary actions are icon-only buttons with tooltips
 - Tooltips stay fully visible within the popup viewport
+- Check mode starts from Manage as “View on screen without running” and closes the popup
+
+### 1.2.15
+- Replaced the scenario edit window with a Manage menu under each list entry (speed, rename, look without run, action list, visibility, mode, delete)
+- Scenario rows are compact: play, repeat count, name, and Manage; mode and visibility icons and the favorite star are no longer shown in the row
+- Recording saves immediately with a default name; a short confirmation animation highlights the new entry
+- Rename and Action list open as small dedicated modals
+- Check mode starts from Manage as “Look without run” and closes the popup
+- Favorite/default control is temporarily hidden in the UI; shortcut default data is preserved
 
 ### 1.2.14
 - Asks for page access only when you start the extension, instead of all websites and tabs upfront
