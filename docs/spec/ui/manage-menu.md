@@ -23,19 +23,19 @@
 3. Compact icon row under the two fields
    - Secondary actions are icon-only buttons (Lucide), inline, one shared style
    - Left group, left to right:
-      1. "Look without run" (`waypoints`)
+      1. "View on screen without running" (`waypoints`)
       2. "Action list" (`list-ordered`)
       3. Visible / Stealth toggle (`eye` when visible, `eye-off` when stealth)
       4. Position / Element toggle (`locate` for position, `search-code` for element)
    - Right edge: "Delete" (`trash-2`), red
-   - Every compact button has a standard black tooltip with localized text (existing strings: look without run, action list, visible/stealth, position/element, delete / confirm deletion)
-   - "Look without run" starts check mode for this entry, as described in [Check mode](../functional/mode-check.md)
+   - Every compact button has a standard black tooltip with localized text (existing strings: view on screen without running, action list, visible/stealth, position/element, delete / sure? click again to delete)
+   - "View on screen without running" starts check mode for this entry, as described in [Check mode](../functional/mode-check.md)
    - "Action list" opens the [Action list](../functional/action-list.md) modal
    - Visible / Stealth and Position / Element:
       - If the matching explanation modal is not skipped in settings, a click opens that modal and the change is made there
       - If the explanation is skipped, a click toggles the setting immediately
    - "Delete":
-      - First click arms the button (tooltip and accessible name become "Confirm deletion", red armed look)
+      - First click arms the button (tooltip and accessible name become "Sure? Click again to delete", red armed look)
       - A second click while armed deletes the entry
       - Moving focus/hover away from the button while armed reverts it to "Delete"
 

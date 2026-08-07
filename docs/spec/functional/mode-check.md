@@ -15,7 +15,7 @@
 ## START AND STOP
 
 - Check mode starts:
-   - From "Look without run" in the [Manage menu](../ui/manage-menu.md) for a specific scenario
+   - From "View on screen without running" in the [Manage menu](../ui/manage-menu.md) for a specific scenario
 - When check mode starts:
    - The popup closes
    - The check overlay is rendered on the current page

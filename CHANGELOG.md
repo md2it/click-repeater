@@ -10,7 +10,7 @@ Regular SemVer logic.
 - Recording saves immediately with a default name; a short confirmation animation highlights the new entry
 - Scenario names are edited and saved directly in the Manage menu; new recordings select the name for immediate typing
 - Action list opens as a small dedicated modal
-- Check mode starts from Manage as “Look without run” and closes the popup
+- Check mode starts from Manage as “View on screen without running” and closes the popup
 - Favorite/default control is temporarily hidden in the UI; shortcut default data is preserved
 - Compacted the Manage menu: name, then repeat and speed side by side; secondary actions are icon-only buttons with tooltips
 

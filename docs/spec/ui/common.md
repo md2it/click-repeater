@@ -11,7 +11,7 @@
 - White buttons (all other `icon-btn`, `btn`):
    - White/transparent background; dark gray `#4f5570` icons and text
 - Exceptions that intentionally differ:
-   - "Delete" in the [Manage menu](manage-menu.md): red `#c83232` icon, in both its default and "Confirm deletion" armed state
+   - "Delete" in the [Manage menu](manage-menu.md): red `#c83232` icon, in both its default and "Sure? Click again to delete" armed state
 
 ## Tooltips
 
