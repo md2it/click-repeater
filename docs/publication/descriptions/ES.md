@@ -16,7 +16,4 @@ SEGURIDAD
 - No realiza seguimiento de los usuarios,
 - Los clics, las entradas de teclado y los ajustes se guardan solo contigo y no se transmiten a ningún lado.
 
-IDIOMAS DE LA INTERFAZ
-Inglés, francés, alemán, español, ruso, árabe, chino simplificado.
-
 Algunas páginas protegidas y aplicaciones web pueden limitar los clics simulados o la reproducción de entradas de teclado.

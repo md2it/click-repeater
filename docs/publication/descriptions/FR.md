@@ -16,7 +16,4 @@ SÉCURITÉ
 - Elle ne suit pas les utilisateurs,
 - Les clics, les saisies au clavier et les paramètres sont stockés uniquement chez vous et ne sont transmis nulle part.
 
-LANGUES DE L'INTERFACE
-Anglais, français, allemand, espagnol, russe, arabe, chinois simplifié.
-
 Certaines pages protégées et applications web peuvent limiter les clics simulés ou la lecture des saisies au clavier.

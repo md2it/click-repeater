@@ -16,7 +16,4 @@ SECURITY
 - It does not track users,
 - Clicks, keyboard input, and settings are stored only with you and are never transmitted.
 
-INTERFACE LANGUAGES
-English, French, German, Spanish, Russian, Arabic, Simplified Chinese.
-
 Some protected pages and web apps may limit simulated clicks or keyboard playback.

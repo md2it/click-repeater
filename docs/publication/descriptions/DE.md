@@ -16,7 +16,4 @@ SICHERHEIT
 - Sie verfolgt keine Benutzer,
 - Klicks, Tastatureingaben und Einstellungen werden nur bei Ihnen gespeichert und nirgendwohin übertragen.
 
-OBERFLÄCHENSPRACHEN
-Englisch, Französisch, Deutsch, Spanisch, Russisch, Arabisch, vereinfachtes Chinesisch.
-
 Einige geschützte Seiten und Web-Apps können simulierte Klicks oder die Wiedergabe von Tastatureingaben einschränken.
