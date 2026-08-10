@@ -4,7 +4,7 @@ Regular SemVer logic. Review the [release requirements](RELEASE.md).
 
 ## RELEASES
 
-### Unreleased
+### 1.3.0
 - Added 1.5× scenario execution speed between 1× and 2×
 - Scenario names are edited and saved directly in the Manage menu; new recordings select the name for immediate typing
 - Compacted the Manage menu: name, then repeat and speed side by side; secondary actions are icon-only buttons with tooltips
