@@ -191,7 +191,7 @@ export async function setActionBadgeText(text) {
   await ext.action.setBadgeText({ text });
   if (text) {
     await ext.action.setBadgeBackgroundColor({ color: BADGE_BACKGROUND_COLOR });
-    if (typeof ext.action.setBadgeTextColor === "function") {
+    if (typeof browser === "undefined" && typeof ext.action.setBadgeTextColor === "function") {
       await ext.action.setBadgeTextColor({ color: BADGE_TEXT_COLOR });
     }
   }
@@ -292,16 +292,20 @@ export async function openMainPopup(tabId, windowId, page) {
   const popupUrl = page ? `popup.html?page=${encodeURIComponent(page)}` : "popup.html";
 
   try {
+    let setPopupPromise;
     if (Number.isInteger(tabId)) {
-      await ext.action.setPopup({ tabId, popup: popupUrl });
+      // Preserve the context-menu user activation on Firefox 121–148. The
+      // popup update is queued before openPopup and completed in cleanup.
+      setPopupPromise = ext.action.setPopup({ tabId, popup: popupUrl });
     }
     await ext.action.openPopup(winId !== void 0 ? { windowId: winId } : undefined);
+    await setPopupPromise;
     return true;
   } catch {
     return false;
   } finally {
     if (Number.isInteger(tabId)) {
-      await ext.action.setPopup({ tabId, popup: "" });
+      await ext.action.setPopup({ tabId, popup: "popup.html" });
     }
   }
 }

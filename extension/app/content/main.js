@@ -1,6 +1,12 @@
 
 registerDocumentOperabilityProbeListener();
 
+document.addEventListener(
+  "pointerdown",
+  (event) => warmSoundEffectsFromUserGesture(event),
+  { capture: true, passive: true }
+);
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (!message || typeof message.type !== "string") {
     sendResponse({ ok: false, error: "invalid_message" });
@@ -76,6 +82,8 @@ document.addEventListener(
     if (!event.isTrusted) {
       return;
     }
+
+    warmSoundEffectsFromUserGesture(event);
 
     if (event.key === "Escape") {
       if (executionState.isRunning) {

@@ -62,6 +62,7 @@ Crea una secuencia de acciones una vez, configura cómo debe ejecutarse e iníci
 
 ## LIMITACIONES
 
+- Se requiere Firefox 140+ porque esta extensión usa la propiedad de manifiesto `data_collection_permissions`; Firefox 121–139 no es compatible.
 - Las extensiones no funcionan en páginas del sistema del navegador ni en sitios web protegidos
 - La grabación, la comprobación y la ejecución permanecen en el origen del sitio actual: navegar a otro origen detiene el escenario activo; las navegaciones en el mismo origen continúan (reinyección / reanudación)
 - El modo Elemento requiere que los elementos grabados sigan disponibles en la página

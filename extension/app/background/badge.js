@@ -27,14 +27,18 @@ let badgeAnimationIntervalId = null;
 let badgeAnimationFrame = 0;
 let badgeAnimationMode = null;
 
-function badgeColorToHex(color) {
-  return `#${color.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
+function interpolateBadgeColor(startColor, endColor, progress) {
+  return startColor.map((channel, index) =>
+    Math.round(channel + (endColor[index] - channel) * progress)
+  );
 }
 
-function interpolateBadgeColor(startColor, endColor, progress) {
-  return badgeColorToHex(startColor.map((channel, index) =>
-    Math.round(channel + (endColor[index] - channel) * progress)
-  ));
+async function setBadgeTextColor(details) {
+  // Firefox 140 rejects this API despite accepting the rest of action badge
+  // updates. The browser supplies a contrasting text color automatically.
+  if (typeof browser !== "undefined") return;
+  if (typeof ext.action.setBadgeTextColor !== "function") return;
+  await ext.action.setBadgeTextColor(details);
 }
 
 function getBadgeAnimationTextColor(colors, frame) {
@@ -84,11 +88,9 @@ async function setActiveBadgeVisual(mode) {
     : RUN_BADGE_BACKGROUND_COLOR;
 
   await ext.action.setBadgeBackgroundColor({ color: backgroundColor });
-  if (typeof ext.action.setBadgeTextColor === "function") {
-    await ext.action.setBadgeTextColor({
-      color: getBadgeAnimationTextColor(colors, badgeAnimationFrame)
-    });
-  }
+  await setBadgeTextColor({
+    color: getBadgeAnimationTextColor(colors, badgeAnimationFrame)
+  });
   await ext.action.setBadgeText({ text: ACTIVE_BADGE_TEXT });
 }
 
@@ -131,9 +133,7 @@ export async function syncActionBadge() {
     clearBadgeAnimation();
     await ext.action.setBadgeText({ text: "✓" });
     await ext.action.setBadgeBackgroundColor({ color: CHECK_BADGE_BACKGROUND_COLOR });
-    if (typeof ext.action.setBadgeTextColor === "function") {
-      await ext.action.setBadgeTextColor({ color: BADGE_TEXT_COLOR });
-    }
+    await setBadgeTextColor({ color: BADGE_TEXT_COLOR });
     return;
   }
 
@@ -154,9 +154,7 @@ export async function showShortcutHintBadge() {
   clearBadgeAnimation();
   await ext.action.setBadgeText({ text: SHORTCUT_HINT_BADGE_TEXT });
   await ext.action.setBadgeBackgroundColor({ color: SHORTCUT_HINT_BADGE_BACKGROUND_COLOR });
-  if (typeof ext.action.setBadgeTextColor === "function") {
-    await ext.action.setBadgeTextColor({ color: SHORTCUT_HINT_BADGE_TEXT_COLOR });
-  }
+  await setBadgeTextColor({ color: SHORTCUT_HINT_BADGE_TEXT_COLOR });
   shortcutHintTimer.id = setTimeout(() => {
     shortcutHintTimer.id = null;
     void syncActionBadge();

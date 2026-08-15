@@ -5,7 +5,6 @@ async function showBlockedNotice(tabId, config, payload, windowId) {
   void ext.storage.session.set({
     [sessionKey]: { ...payload, tabId },
   });
-  const noticeUrl = ext.runtime.getURL(popupHtml);
   let winId = windowId;
   if (winId === void 0) {
     try {
@@ -23,19 +22,10 @@ async function showBlockedNotice(tabId, config, payload, windowId) {
     }
     throw new Error("action.openPopup unavailable");
   } catch (err) {
-    // Fall back to a tab when the browser cannot open the action popup.
-    console.debug(`[${logLabel}] openPopup notice failed, using tab:`, err);
-    try {
-      await ext.tabs.create({
-        url: `${noticeUrl}?mode=tab`,
-        active: true,
-      });
-    } catch (err2) {
-      console.error(`[${logLabel}] blocked notice tab failed:`, err2);
-    }
+    console.debug(`[${logLabel}] openPopup notice failed:`, err);
   } finally {
-    // Always clear the temporary popup override.
-    await ext.action.setPopup({ tabId, popup: "" });
+    // Restore the manifest popup; an empty per-tab override disables it.
+    await ext.action.setPopup({ tabId, popup: "popup.html" });
   }
 }
 

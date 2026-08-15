@@ -62,6 +62,7 @@ Créez une séquence d'actions une fois, configurez son exécution et lancez-la 
 
 ## LIMITATIONS
 
+- Firefox 140+ est requis, car cette extension utilise la propriété de manifeste `data_collection_permissions` ; Firefox 121–139 n’est pas pris en charge.
 - Les extensions ne fonctionnent pas sur les pages système du navigateur ni sur les sites web protégés
 - L’enregistrement, la vérification et l’exécution restent sur l’origine du site actuel : naviguer vers une autre origine arrête le scénario actif ; les navigations sur la même origine continuent (réinjection / reprise)
 - Le mode Élément nécessite que les éléments enregistrés soient toujours présents sur la page

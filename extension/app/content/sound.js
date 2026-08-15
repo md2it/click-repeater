@@ -92,6 +92,14 @@ function prepareSoundEffects() {
   return true;
 }
 
+// Firefox grants audio playback to the document that receives a trusted user
+// gesture. Warm the context at that moment, rather than first creating it from
+// an asynchronous scenario message where Firefox may keep it suspended.
+function warmSoundEffectsFromUserGesture(event) {
+  if (event && !event.isTrusted) return;
+  prepareSoundEffects();
+}
+
 function playSoundBuffer(getBuffer, volume = 0.18) {
   if (!prepareSoundEffects()) return;
 
@@ -123,16 +131,6 @@ function playKeyPressSound(soundVolume = "volume-1") {
 }
 
 function releaseSoundEffects() {
-  const context = soundAudioContext;
-  const keepAlive = soundAudioKeepAlive;
-  soundAudioContext = null;
-  clickAudioBuffer = null;
-  keyPressAudioBuffer = null;
-  soundAudioKeepAlive = null;
-  if (keepAlive) {
-    keepAlive.stop();
-  }
-  if (context && context.state !== "closed") {
-    window.setTimeout(() => void context.close(), 250);
-  }
+  // Keep the context alive for this document. Closing it after every run loses
+  // Firefox's user-gesture permission and makes the next scenario silent.
 }

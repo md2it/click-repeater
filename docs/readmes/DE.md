@@ -62,6 +62,7 @@ Erstellen Sie einmal eine Aktionsfolge, konfigurieren Sie die Ausführung und st
 
 ## EINSCHRÄNKUNGEN
 
+- Firefox 140+ ist erforderlich, weil diese Erweiterung die Manifest-Eigenschaft `data_collection_permissions` verwendet; Firefox 121–139 werden nicht unterstützt.
 - Browsererweiterungen funktionieren nicht auf Systemseiten des Browsers oder geschützten Websites
 - Aufnahme, Prüfung und Ausführung bleiben auf dem Origin der aktuellen Website: ein Wechsel zu einem anderen Origin beendet das aktive Szenario; Navigationen im selben Origin werden fortgesetzt (erneutes Injizieren / Fortsetzen)
 - Der Elementmodus setzt voraus, dass die aufgezeichneten Elemente weiterhin auf der Seite vorhanden sind

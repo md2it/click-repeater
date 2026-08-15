@@ -62,6 +62,7 @@ Create an action sequence once, configure how it should run, and launch it from 
 
 ## LIMITATIONS
 
+- Firefox 140+ is required because this extension uses the `data_collection_permissions` manifest property; Firefox 121–139 are unsupported.
 - Browser extensions cannot operate on browser system pages or protected websites
 - Recording, check, and execution stay on the current site origin: navigating to a different origin stops the active scenario; same-origin navigations continue (re-inject / resume)
 - Element mode depends on recorded elements remaining available on the page

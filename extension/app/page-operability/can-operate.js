@@ -33,8 +33,9 @@ async function canOperateOnTab(tabId, frameId) {
       func: probeDocumentOperability,
     });
     return result?.result === true;
-  } catch {
-    // Communication failures cover restricted pages and missing host permissions.
+  } catch (error) {
+    // Keep the user-facing message neutral while retaining the technical cause.
+    console.debug("[Click Repeater] page operability probe failed:", error);
     return false;
   }
 }

@@ -21,4 +21,17 @@ TestHarness.test("extension manifest and injected content script inventory stay 
   TestHarness.assert(!JSON.stringify(manifest).includes("<all_urls>"), "<all_urls> must stay removed");
   TestHarness.assertEqual(manifest.background.service_worker, "app/background/main.js");
   TestHarness.assertEqual(manifest.background.type, "module");
+  TestHarness.assertEqual(
+    manifest.action.default_popup,
+    "popup.html",
+    "toolbar clicks must use Firefox's native popup path",
+  );
+
+  const executionResponse = await fetch("/extension/app/background/execution.js");
+  TestHarness.assert(executionResponse.ok, "execution source must be reachable");
+  const executionSource = await executionResponse.text();
+  TestHarness.assert(
+    /setPopup\(\{ tabId, popup: "popup\.html" \}\)/.test(executionSource),
+    "temporary execution popups must restore the native popup after a run",
+  );
 });

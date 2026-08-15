@@ -4,6 +4,9 @@ Regular SemVer logic. Review the [release requirements](RELEASE.md).
 
 ## RELEASES
 
+### 1.4.0
+- Raised the minimum supported Firefox version to 140 because `data_collection_permissions` is supported from Firefox 140 (released June 24, 2025).
+
 ### 1.3.0
 - Added 1.5× scenario execution speed between 1× and 2×
 - Scenario names are edited and saved directly in the Manage menu; new recordings select the name for immediate typing
