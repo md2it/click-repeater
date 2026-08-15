@@ -191,8 +191,12 @@ export async function setActionBadgeText(text) {
   await ext.action.setBadgeText({ text });
   if (text) {
     await ext.action.setBadgeBackgroundColor({ color: BADGE_BACKGROUND_COLOR });
-    if (typeof browser === "undefined" && typeof ext.action.setBadgeTextColor === "function") {
-      await ext.action.setBadgeTextColor({ color: BADGE_TEXT_COLOR });
+    if (typeof ext.action.setBadgeTextColor === "function") {
+      try {
+        await ext.action.setBadgeTextColor({ color: BADGE_TEXT_COLOR });
+      } catch {
+        // Badge text color is cosmetic and is not supported by every browser.
+      }
     }
   }
 }

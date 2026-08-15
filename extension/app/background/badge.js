@@ -26,6 +26,8 @@ import {
 let badgeAnimationIntervalId = null;
 let badgeAnimationFrame = 0;
 let badgeAnimationMode = null;
+let badgeAnimationUpdate = null;
+let badgeTextColorSupported = typeof ext.action.setBadgeTextColor === "function";
 
 function interpolateBadgeColor(startColor, endColor, progress) {
   return startColor.map((channel, index) =>
@@ -34,11 +36,12 @@ function interpolateBadgeColor(startColor, endColor, progress) {
 }
 
 async function setBadgeTextColor(details) {
-  // Firefox 140 rejects this API despite accepting the rest of action badge
-  // updates. The browser supplies a contrasting text color automatically.
-  if (typeof browser !== "undefined") return;
-  if (typeof ext.action.setBadgeTextColor !== "function") return;
-  await ext.action.setBadgeTextColor(details);
+  if (!badgeTextColorSupported) return;
+  try {
+    await ext.action.setBadgeTextColor(details);
+  } catch {
+    badgeTextColorSupported = false;
+  }
 }
 
 function getBadgeAnimationTextColor(colors, frame) {
@@ -78,6 +81,7 @@ function clearBadgeAnimation() {
   }
   badgeAnimationFrame = 0;
   badgeAnimationMode = null;
+  badgeAnimationUpdate = null;
 }
 
 async function setActiveBadgeVisual(mode) {
@@ -94,6 +98,17 @@ async function setActiveBadgeVisual(mode) {
   await ext.action.setBadgeText({ text: ACTIVE_BADGE_TEXT });
 }
 
+async function updateActiveBadgeVisual(mode) {
+  if (badgeAnimationUpdate !== null) return;
+  const update = Symbol();
+  badgeAnimationUpdate = update;
+  try {
+    await setActiveBadgeVisual(mode);
+  } finally {
+    if (badgeAnimationUpdate === update) badgeAnimationUpdate = null;
+  }
+}
+
 function ensureBadgeAnimation(mode) {
   if (badgeAnimationIntervalId !== null && badgeAnimationMode === mode) {
     return;
@@ -103,9 +118,10 @@ function ensureBadgeAnimation(mode) {
   badgeAnimationMode = mode;
   const totalFrames = BADGE_ANIMATION_STEPS * 2;
 
-  badgeAnimationIntervalId = setInterval(() => {
+  badgeAnimationIntervalId = setInterval(async () => {
+    if (badgeAnimationUpdate !== null) return;
     badgeAnimationFrame = (badgeAnimationFrame + 1) % totalFrames;
-    void setActiveBadgeVisual(mode);
+    await updateActiveBadgeVisual(mode);
   }, BADGE_ANIMATION_STEP_MS);
 }
 
@@ -115,7 +131,7 @@ export async function syncActionBadge() {
   const session = await readSession();
   if (session?.isActive) {
     ensureBadgeAnimation("create");
-    await setActiveBadgeVisual("create");
+    await updateActiveBadgeVisual("create");
     return;
   }
 
