@@ -1,11 +1,8 @@
-# Canonical gitignore: ALL-PRJ-REQ/.gitignore
+# Canonical gitignore: browser-ext-requirements/.gitignore
 
 # --- PROJECT-SPECIFIC RULES ---------------------------------------------------
 
 # --- USER-SPECIFIC RULES ------------------------------------------------------
-
-# Personal Working Files
-docs/publication/checklist.md
 
 # AI and LLM Tools
 .cursor/
