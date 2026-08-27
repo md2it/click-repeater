@@ -52,9 +52,13 @@
     if (!label) return;
     activeTrigger = trigger;
     const element = getTooltip();
+    element.style.visibility = "hidden";
+    element.style.top = "0";
+    element.style.left = "0";
     element.textContent = tooltipText(trigger);
     element.hidden = false;
     positionTooltip();
+    element.style.visibility = "";
   }
 
   function hide(trigger) {
