@@ -1,6 +1,41 @@
 
 registerDocumentOperabilityProbeListener();
 
+let compositePauseTimer = null;
+function clearCompositePause() {
+  if (compositePauseTimer === null) return;
+  window.clearTimeout(compositePauseTimer);
+  compositePauseTimer = null;
+  stopExecutionClickListener();
+  removeTrackerElement();
+  executionState.trackMoves = false;
+}
+
+function startCompositePause({ until, runToken, point }) {
+  clearCompositePause();
+  executionState.runToken = runToken;
+  if (point) {
+    executionState.trackMoves = true;
+    moveTracker(point);
+  }
+  startExecutionClickListener();
+  const checkDeadline = () => {
+    const remaining = Math.max(0, until - Date.now());
+    setTrackerPauseCountdown(Math.ceil(remaining / 1000));
+    if (remaining > 0) {
+      const nextTick = Math.min(remaining, remaining % 1000 || 1000);
+      compositePauseTimer = window.setTimeout(checkDeadline, point ? nextTick : Math.min(remaining, 2147483647));
+      return;
+    }
+    // Leave zero visible through a paint before handing off to the next item.
+    compositePauseTimer = window.setTimeout(() => {
+      clearCompositePause();
+      void sendRuntimeMessage({ type: "execution-completed", runToken });
+    }, point ? 34 : 0);
+  };
+  compositePauseTimer = window.setTimeout(checkDeadline, 0);
+}
+
 document.addEventListener(
   "pointerdown",
   (event) => warmSoundEffectsFromUserGesture(event),
@@ -10,6 +45,12 @@ document.addEventListener(
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (!message || typeof message.type !== "string") {
     sendResponse({ ok: false, error: "invalid_message" });
+    return;
+  }
+
+  if (message.type === "composite-pause") {
+    startCompositePause(message);
+    sendResponse({ ok: true });
     return;
   }
 
@@ -27,6 +68,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   }
 
   if (message.type === "execution-stop") {
+    clearCompositePause();
     if (!executionState.isRunning) {
       sendResponse({ ok: true, wasRunning: false });
       return;
@@ -80,9 +122,10 @@ document.addEventListener(
     warmSoundEffectsFromUserGesture(event);
 
     if (event.key === "Escape") {
-      if (executionState.isRunning) {
+      if (executionState.isRunning || compositePauseTimer !== null) {
+        clearCompositePause();
         executionState.stopRequested = true;
-        void sendRuntimeMessage({ type: "execution-stop-request" });
+        void sendRuntimeMessage({ type: "execution-stop-request", runToken: executionState.runToken });
       }
       return;
     }

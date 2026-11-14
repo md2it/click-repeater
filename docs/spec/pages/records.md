@@ -13,7 +13,7 @@
    - Repeat field, positioned right after the play icon:
       - Localized "repeat" label, followed by the numeric repeat-count input
       - The label width is adaptive: it fits the localized word for "repeat" in the active language
-      - The input width is fixed at 3 characters regardless of language
+      - The input reserves space for three digits and the increment and decrement arrows regardless of language
    - Name as non-editable text, taking the remaining row space
 - Right-aligned:
    - "Manage" button (Lucide `ellipsis-vertical`), which opens the [Manage menu](../ui/manage-menu.md)

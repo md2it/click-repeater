@@ -41,6 +41,8 @@
 
 ### Field details
 
+- Clicking a field label focuses its control. Clicking Speed opens its options where the browser supports it
+- Numeric Repeat fields show increment and decrement arrows on hovering the field group, including its label, or when the group contains focus. The number stays in place
 - "Speed" control:
    - Same values and default as described in [Speed](../functional/speed.md)
 - Visible / Stealth:

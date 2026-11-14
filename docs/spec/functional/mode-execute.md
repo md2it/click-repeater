@@ -7,7 +7,7 @@
 - Clicking the extension icon in the browser toolbar:
    - Opens the popup
    - Does not start anything
-   - Stops the active mode, if one is running
+   - Stops the active mode, if one is running. During [composite playback](../pages/composite-scenarios.md#playback), the run continues and the popup shows its status and Stop control
 - Recording mode starts only from the button in the popup
 - Execution mode starts:
    - From the button for a specific entry in the popup

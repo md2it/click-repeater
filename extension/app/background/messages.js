@@ -31,6 +31,9 @@ import { watchWelcomePinStatus, showWelcome } from "../welcome/background.js";
 import { recordSuccessfulScenario } from "../support-survey/state.js";
 import { ext } from "../api.js";
 import "./navigation.js";
+import { updateComposites } from "./composite-storage.js";
+import { enqueueModeOperation } from "./mode-queue.js";
+import { startCompositeExecution, completeCompositeItem, withCompositeCursor } from "./composite-execution.js";
 
 void syncActionBadge();
 
@@ -38,7 +41,23 @@ ext.action.onClicked.addListener((tab) => {
   void handleActionClick(tab);
 });
 
+const queuedMessages = new Set([
+  "recording-start", "recording-stop", "execution-start", "composite-start",
+  "composite-update", "execution-stop", "execution-stop-request", "check-start", "check-stop", "execution-progress",
+  "execution-completed", "execution-stopped", "execution-user-click-interrupt",
+]);
+
 ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (queuedMessages.has(message?.type)) {
+    void enqueueModeOperation(() => new Promise((resolve) => {
+      handleMessage(message, sender, resolve);
+    })).then(sendResponse).catch(() => sendResponse({ ok: false, error: "operation_failed" }));
+    return true;
+  }
+  return handleMessage(message, sender, sendResponse);
+});
+
+function handleMessage(message, sender, sendResponse) {
   if (!message || typeof message.type !== "string") {
     sendResponse({ ok: false, error: "invalid_message" });
     return;
@@ -46,6 +65,34 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (isBlockedNoticeDismissedMessage(message)) {
     return;
   }
+  if (message.type === "composite-update") {
+    void updateComposites(message.operations).then(sendResponse, () => sendResponse({ ok: false }));
+    return true;
+  }
+  if (["recording-start", "check-start", "composite-start", "execution-start"].includes(message.type)) {
+    (async () => {
+      const executionState = await getRuntimeExecutionState();
+      if (executionState?.isComposite || (message.type === "composite-start" && executionState?.isRunning)) {
+        sendResponse({ ok: false, error: "already_running", state: executionState });
+        return;
+      }
+      if (message.type === "composite-start") {
+        if ((await readSession())?.isActive) {
+          sendResponse({ ok: false, error: "recording_active" });
+          return;
+        }
+        await stopCheckMode();
+        sendResponse(await startCompositeExecution(message));
+        return;
+      }
+      handleModeMessage(message, sender, sendResponse);
+    })().catch(() => sendResponse({ ok: false, error: "operation_failed" }));
+    return true;
+  }
+  return handleModeMessage(message, sender, sendResponse);
+}
+
+function handleModeMessage(message, sender, sendResponse) {
   if (message.type === "recording-start") {
     (async () => {
       await stopCheckMode();
@@ -69,6 +116,7 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
         tabId,
         domain: getDomainFromUrl(message.url),
         origin: getOriginFromUrl(message.url),
+        compositeId: typeof message.compositeId === "string" ? message.compositeId : null,
         steps: []
       };
       await writeSession(session);
@@ -101,6 +149,7 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
         ok: true,
         hasSession: true,
         mode: session.mode,
+        compositeId: session.compositeId,
         clickName: buildClickName(session.domain),
         steps: Array.isArray(session.steps) ? session.steps : []
       });
@@ -311,16 +360,20 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ ok: true, ignored: true, reason: "other_tab" });
         return;
       }
+      if ((storedState.runToken ?? null) !== (message.runToken ?? null)) {
+        sendResponse({ ok: true, ignored: true });
+        return;
+      }
       const completedStepsRaw = Number(message.completedSteps);
       const totalStepsRaw = Number(message.totalSteps);
       const remainingMsRaw = Number(message.remainingMs);
       const nextState = {
         ...storedState,
-        completedSteps: Number.isFinite(completedStepsRaw) ? Math.max(0, completedStepsRaw) : storedState.completedSteps,
+        completedSteps: Number.isFinite(completedStepsRaw) ? Math.max(storedState.completedSteps, completedStepsRaw) : storedState.completedSteps,
         totalSteps: Number.isFinite(totalStepsRaw) ? Math.max(0, totalStepsRaw) : storedState.totalSteps,
         remainingMs: Number.isFinite(remainingMsRaw) ? Math.max(0, remainingMsRaw) : storedState.remainingMs
       };
-      await writeExecutionState(nextState);
+      await writeExecutionState(nextState.composite ? withCompositeCursor(nextState, message.point, sender.frameId) : nextState);
       await syncActionBadge();
       sendResponse({ ok: true });
     })().catch(() => sendResponse({ ok: false, error: "execution_progress_failed" }));
@@ -335,6 +388,19 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
       if (!sender?.tab || sender.tab.id !== currentState.tabId) {
         sendResponse({ ok: true, ignored: true, reason: "other_tab" });
+        return;
+      }
+      if (currentState.isComposite) {
+        const stored = await readExecutionState();
+        if (stored?.runToken !== message.runToken) {
+          sendResponse({ ok: true, ignored: true });
+          return;
+        }
+        sendResponse(await completeCompositeItem(withCompositeCursor(stored, message.point, sender.frameId)));
+        return;
+      }
+      if (message.runToken) {
+        sendResponse({ ok: true, ignored: true });
         return;
       }
       await recordSuccessfulScenario();
@@ -356,6 +422,10 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
       if (!sender?.tab || sender.tab.id !== currentState.tabId) {
         sendResponse({ ok: true, ignored: true, reason: "other_tab" });
+        return;
+      }
+      if ((currentState.runToken ?? null) !== (message.runToken ?? null)) {
+        sendResponse({ ok: true, ignored: true });
         return;
       }
       const kind = resolveStopEventKind(message);
@@ -392,6 +462,10 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ ok: true, wasRunning: false });
         return;
       }
+      if (sender?.tab?.id !== currentState.tabId || (currentState.runToken ?? null) !== (message.runToken ?? null)) {
+        sendResponse({ ok: true, ignored: true });
+        return;
+      }
       if (Number.isInteger(currentState.tabId)) {
         try {
           await ext.tabs.sendMessage(currentState.tabId, { type: "execution-stop" });
@@ -411,7 +485,7 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return;
   }
   sendResponse({ ok: false, error: "unknown_message_type" });
-});
+}
 
 ext.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {

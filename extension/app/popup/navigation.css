@@ -34,6 +34,10 @@
   cursor: pointer;
 }
 
+.popup-menu-btn.hidden {
+  display: none;
+}
+
 .popup-menu-btn:hover,
 .popup-menu-btn:focus-visible {
   color: #012292;

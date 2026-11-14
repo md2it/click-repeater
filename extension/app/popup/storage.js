@@ -222,6 +222,7 @@ async function readSettingsFromStorage() {
       if (typeof stored.skipModeExplanation === "boolean") {
         settings.skipModeExplanation = stored.skipModeExplanation;
       }
+      settings.showComposites = stored.showComposites === true;
       if (typeof stored.darkTheme === "boolean") {
         settings.darkTheme = stored.darkTheme;
       }
@@ -238,6 +239,8 @@ function syncSettingsUI() {
   refs.settingSkipNewRecording.checked = settings.skipNewClickExplanation;
   refs.settingSkipDisplayMoves.checked = settings.skipDisplayMovesExplanation;
   refs.settingSkipMode.checked = settings.skipModeExplanation;
+  refs.settingShowComposites.checked = settings.showComposites;
+  refs.compositeMenuButton.classList.toggle("hidden", !settings.showComposites);
   refs.settingDarkTheme.checked = settings.darkTheme;
   document.documentElement.classList.toggle("dark-theme", settings.darkTheme);
 }

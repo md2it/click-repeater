@@ -35,92 +35,93 @@ function render() {
     emptyRow.className = "click-row";
     emptyRow.textContent = t("emptyList");
     refs.list.append(emptyRow);
-    syncPopupHeight();
-    return;
   }
 
-  for (const macro of clicks) {
-    const runLabel = t("run");
-    const stopLabel = t("stop");
-    const manageLabel = t("manage");
-    const isManageOpen = state.manageMenuClickId === macro.id;
-    const isExecutionRunning = state.activeExecutionClickId !== null;
-    const isActiveExecution = state.activeExecutionClickId === macro.id;
-
-    const row = document.createElement("li");
-    row.className = "click-item";
-    row.dataset.clickId = macro.id;
-
-    const itemRow = document.createElement("div");
-    itemRow.className = "click-item-row";
-
-    const dragHandle = document.createElement("span");
-    dragHandle.className = "drag-handle";
-    dragHandle.dataset.action = "drag-handle";
-    dragHandle.setAttribute("aria-hidden", "true");
-    appendStaticSvg(dragHandle, iconSet.gripVertical);
-
-    const card = document.createElement("div");
-    card.className = "click-card";
-
-    const clickRow = document.createElement("div");
-    clickRow.className = "click-row";
-
-    const clickMain = document.createElement("div");
-    clickMain.className = "click-main";
-    clickMain.append(
-      createIconButton({
-        className: `icon-btn run-btn${isActiveExecution ? " run-btn--stop" : ""}`,
-        action: isActiveExecution ? "stop" : "run",
-        id: macro.id,
-        tooltip: isActiveExecution ? stopLabel : runLabel,
-        ariaLabel: isActiveExecution ? stopLabel : runLabel,
-        svgHtml: isActiveExecution ? iconSet.square : iconSet.play
-      })
-    );
-    const runButton = clickMain.querySelector(".run-btn");
-    runButton.disabled = isExecutionRunning && !isActiveExecution;
-    if (runButton.disabled) {
-      delete runButton.dataset.tooltip;
-    }
-
-    const name = document.createElement("span");
-    name.className = "click-name";
-    name.textContent = macro.name;
-    clickMain.append(name);
-
-    const clickActions = document.createElement("div");
-    clickActions.className = "click-actions";
-    clickActions.append(
-      createIconButton({
-        className: "icon-btn manage-btn",
-        action: "manage",
-        id: macro.id,
-        tooltip: manageLabel,
-        ariaLabel: manageLabel,
-        ariaPressed: isManageOpen,
-        svgHtml: iconSet.ellipsisVertical
-      })
-    );
-
-    clickRow.append(clickMain, clickActions);
-
-    const accordion = buildManageMenuAccordion(macro);
-    accordion.classList.toggle("is-open", isManageOpen);
-    card.append(clickRow, accordion);
-    itemRow.append(dragHandle, card);
-    row.append(itemRow);
-
-    if (isManageOpen) {
-      const panel = accordion.querySelector(".manage-menu");
-      wireManageMenu(panel, macro);
-      state.manageMenuEl = panel;
-    }
-
-    refs.list.append(row);
-  }
-
+  for (const macro of clicks) refs.list.append(buildSimpleCard(macro));
+  renderComposites();
   syncPopupHeight();
+}
+
+function buildSimpleCard(macro, composite) {
+  const runLabel = t(composite ? "runNestedScenario" : "run");
+  const stopLabel = t("stop");
+  const manageLabel = t("manage");
+  const isManageOpen = state.manageMenuClickId === macro.id;
+  const isExecutionRunning = state.activeExecutionClickId !== null;
+  const isActiveExecution = state.activeExecutionClickId === macro.id;
+
+  const row = document.createElement("li");
+  row.className = "click-item";
+  row.dataset.clickId = macro.id;
+
+  const itemRow = document.createElement("div");
+  itemRow.className = "click-item-row";
+
+  const dragHandle = document.createElement("span");
+  dragHandle.className = "drag-handle";
+  dragHandle.dataset.action = "drag-handle";
+  dragHandle.setAttribute("aria-hidden", "true");
+  appendStaticSvg(dragHandle, iconSet.gripVertical);
+
+  const card = document.createElement("div");
+  card.className = "click-card";
+  card.classList.toggle("click-card--running", isActiveExecution || state.activeCompositeItemId === macro.id);
+
+  const clickRow = document.createElement("div");
+  clickRow.className = "click-row";
+
+  const clickMain = document.createElement("div");
+  clickMain.className = "click-main";
+  clickMain.append(
+    createIconButton({
+      className: `icon-btn run-btn${isActiveExecution ? " run-btn--stop" : ""}`,
+      action: isActiveExecution ? "stop" : "run",
+      id: macro.id,
+      tooltip: isActiveExecution ? stopLabel : runLabel,
+      ariaLabel: isActiveExecution ? stopLabel : runLabel,
+      svgHtml: isActiveExecution ? iconSet.square : iconSet.play
+    })
+  );
+  const runButton = clickMain.querySelector(".run-btn");
+  runButton.disabled = isExecutionRunning && !isActiveExecution;
+  if (runButton.disabled) {
+    delete runButton.dataset.tooltip;
+  }
+
+  const name = document.createElement("span");
+  name.className = "click-name";
+  name.textContent = macro.name;
+  clickMain.append(name);
+
+  const clickActions = document.createElement("div");
+  clickActions.className = "click-actions";
+  clickActions.append(
+    createIconButton({
+      className: "icon-btn manage-btn",
+      action: "manage",
+      id: macro.id,
+      tooltip: manageLabel,
+      ariaLabel: manageLabel,
+      ariaPressed: isManageOpen,
+      svgHtml: iconSet.ellipsisVertical
+    })
+  );
+
+  clickRow.append(clickMain, clickActions);
+
+  const accordion = buildManageMenuAccordion(macro, composite);
+  accordion.classList.toggle("is-open", isManageOpen);
+  card.append(clickRow, accordion);
+  itemRow.append(dragHandle, card);
+  row.append(itemRow);
+
+  if (isManageOpen) {
+    const panel = accordion.querySelector(".manage-menu");
+    wireManageMenu(panel, macro);
+    state.manageMenuEl = panel;
+  }
+
+  return row;
 }
 
 function setStatus(text, { error = false } = {}) {
@@ -130,7 +131,7 @@ function setStatus(text, { error = false } = {}) {
 }
 
 function playSaveAnimation(macroId) {
-  const row = refs.list.querySelector(`li[data-click-id="${CSS.escape(macroId)}"] .click-row`);
+  const row = document.querySelector(`li[data-click-id="${CSS.escape(macroId)}"] .click-row`);
   if (!row) {
     return;
   }
@@ -220,7 +221,19 @@ function createManageMenuSpeedSelect(macro) {
     speedSelect.append(option);
   }
   speedSelect.value = String(normalizeScenarioSpeed(macro.speed));
-  return createManageMenuField({ label: speedLabel, control: speedSelect, ariaLabel: speedLabel });
+  const field = createManageMenuField({ label: speedLabel, control: speedSelect, ariaLabel: speedLabel });
+  field.addEventListener("click", (event) => {
+    if (event.target === speedSelect || speedSelect.disabled || typeof speedSelect.showPicker !== "function") return;
+
+    try {
+      speedSelect.focus();
+      speedSelect.showPicker();
+      event.preventDefault();
+    } catch {
+      // The associated label still focuses the select when the native picker is unavailable.
+    }
+  });
+  return field;
 }
 
 function createManageMenuNameField(macro) {
@@ -234,7 +247,7 @@ function createManageMenuNameField(macro) {
   return createManageMenuField({ label: nameLabel, control: nameInput, ariaLabel: nameLabel });
 }
 
-function buildManageMenuAccordion(macro) {
+function buildManageMenuAccordion(macro, composite) {
   const accordion = document.createElement("div");
   accordion.className = "manage-menu-accordion";
 
@@ -288,7 +301,22 @@ function buildManageMenuAccordion(macro) {
   );
 
   const lookBtn = iconGroup.querySelector('[data-action="manage-look"]');
+  if (lookBtn) lookBtn.disabled = state.isCompositeRunning;
   lookBtn?.classList.toggle("manage-menu-icon-btn--active", lookActive);
+
+  if (composite) {
+    const duplicate = createManageMenuIconButton({
+      className: "icon-btn manage-menu-icon-btn",
+      action: "manage-duplicate",
+      tooltip: t("duplicateScenario"),
+      svgHtml: iconSet.copy
+    });
+    duplicate.addEventListener("click", () => {
+      closeManageMenu({ instant: true });
+      void duplicateCompositeItem(composite, macro.id);
+    });
+    iconGroup.append(duplicate);
+  }
 
   const deleteBtn = createManageMenuIconButton({
     className: "icon-btn manage-menu-delete",
@@ -379,7 +407,7 @@ function closeManageMenu({ instant = false } = {}) {
   document.removeEventListener("pointerdown", onManageMenuOutsideClick, true);
 
   if (previousMacroId) {
-    const button = refs.list.querySelector(`.manage-btn[data-id="${CSS.escape(previousMacroId)}"]`);
+    const button = document.querySelector(`.manage-btn[data-id="${CSS.escape(previousMacroId)}"]`);
     button?.setAttribute("aria-pressed", "false");
   }
 
@@ -435,7 +463,7 @@ function updateManageMenuIconStates(macro) {
 }
 
 function openManageMenu(macroId, buttonEl, { focusName = false } = {}) {
-  const macro = clicks.find((item) => item.id === macroId);
+  const macro = findSimpleScenario(macroId);
   if (!macro) {
     setStatus(t("notFound"));
     return;
@@ -493,7 +521,7 @@ async function onManageMenuChange(event, macro) {
     const name = nameInput.value.trim();
     if (!name) {
       nameInput.value = macro.name;
-      refs.list.querySelector(`li[data-click-id="${CSS.escape(macro.id)}"] .click-name`).textContent = macro.name;
+      document.querySelector(`li[data-click-id="${CSS.escape(macro.id)}"] .click-name`).textContent = macro.name;
       nameInput.closest(".manage-menu-field")?.classList.add("invalid");
       setStatus(t("enterName"), { error: true });
       return;
@@ -504,7 +532,7 @@ async function onManageMenuChange(event, macro) {
   const speedSelect = event.target.closest('[data-action="manage-speed"]');
   if (speedSelect) {
     macro.speed = normalizeScenarioSpeed(speedSelect.value);
-    await persistClicks();
+    await persistSimpleScenario(macro.id, { speed: macro.speed });
     setStatus(t("updated"));
   }
 }
@@ -572,7 +600,7 @@ function onManageMenuInput(event, macro) {
   }
 
   const name = nameInput.value;
-  refs.list.querySelector(`li[data-click-id="${CSS.escape(macro.id)}"] .click-name`).textContent = name;
+  document.querySelector(`li[data-click-id="${CSS.escape(macro.id)}"] .click-name`).textContent = name;
   if (!name.trim()) {
     return;
   }
@@ -581,7 +609,7 @@ function onManageMenuInput(event, macro) {
   macro.name = name;
   state.nameSavePromise = state.nameSavePromise
     .catch(() => {})
-    .then(() => persistClicks());
+    .then(() => persistSimpleScenario(macro.id, { name }));
 }
 
 function onManageMenuKeydown(event) {
@@ -595,7 +623,7 @@ function onManageMenuKeydown(event) {
 async function applyDisplayMoves(macro, enabled) {
   macro.displayMoves = enabled;
   macro.trackMoves = enabled;
-  await persistClicks();
+  await persistSimpleScenario(macro.id, { displayMoves: enabled, trackMoves: enabled });
   updateManageMenuIconStates(macro);
   setStatus(t("displayMovesChanged", {
     state: t(enabled ? "enabled" : "disabled"),
@@ -605,20 +633,26 @@ async function applyDisplayMoves(macro, enabled) {
 
 async function applyMode(macro, mode) {
   macro.mode = mode;
-  await persistClicks();
+  await persistSimpleScenario(macro.id, { mode });
   updateManageMenuIconStates(macro);
   setStatus(t("updated"));
 }
 
 async function deleteClick(macroId) {
-  const index = clicks.findIndex((item) => item.id === macroId);
+  const parent = findCompositeWithItem(macroId);
+  const items = parent?.items ?? clicks;
+  const index = items.findIndex((item) => item.id === macroId);
   if (index < 0) {
     setStatus(t("notFound"));
     return;
   }
 
-  clicks.splice(index, 1);
-  await persistClicks();
+  if (parent) {
+    await deleteCompositeItem(parent, macroId);
+  } else {
+    items.splice(index, 1);
+    await persistClicks();
+  }
   render();
   setStatus(t("deleted"));
 }
@@ -628,12 +662,12 @@ async function deleteClick(macroId) {
 // ---------------------------------------------------------------------------
 
 function getStepsForClick(macroId) {
-  const macro = clicks.find((item) => item.id === macroId);
+  const macro = findSimpleScenario(macroId);
   return Array.isArray(macro?.steps) ? macro.steps : [];
 }
 
 function openActionListModal(macroId) {
-  const macro = clicks.find((item) => item.id === macroId);
+  const macro = findSimpleScenario(macroId);
   if (!macro) {
     setStatus(t("notFound"));
     return;
@@ -725,7 +759,8 @@ async function startCreateMode() {
   const response = await sendRuntimeMessage({
     type: "recording-start",
     tabId: activeTab.id,
-    url: activeTab.url
+    url: activeTab.url,
+    compositeId: state.recordingCompositeId
   });
 
   if (!response?.ok) {
@@ -762,7 +797,15 @@ async function completeCreateModeIfNeeded() {
     steps
   };
 
-  clicks.unshift(createdClick);
-  await persistClicks();
+  if (response.compositeId) {
+    const composite = composites.find((item) => item.id === response.compositeId);
+    if (!composite || !steps.length) return null;
+    if (!(await appendCompositeItem(composite, createdClick))) return null;
+    expandedComposites.add(composite.id);
+    selectPopupPage("composites");
+  } else {
+    clicks.unshift(createdClick);
+    await persistClicks();
+  }
   return createdClick;
 }

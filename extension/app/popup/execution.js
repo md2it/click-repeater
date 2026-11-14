@@ -31,23 +31,44 @@ function clearExecutionPolling() {
 function hideStopExecutionButton() {
   refs.stopExecutionBtn.classList.add("hidden");
   refs.recordBtn.classList.remove("hidden");
+  createCompositeBtn.classList.remove("hidden");
 }
 
 function showStopExecutionButton() {
   refs.recordBtn.classList.add("hidden");
+  createCompositeBtn.classList.add("hidden");
   refs.stopExecutionBtn.classList.remove("hidden");
   syncPopupHeight();
+}
+
+function syncPlaybackStatusVisibility() {
+  const pageName = refs.menu.querySelector(".active")?.dataset.page;
+  document.getElementById("playback-status").classList.toggle("hidden",
+    !state.isCompositeRunning && pageName !== "clicks" && pageName !== "composites");
 }
 
 function setActiveExecutionClickId(executionState) {
   const nextClickId = executionState?.isRunning && typeof executionState.clickId === "string"
     ? executionState.clickId
     : null;
-  if (state.activeExecutionClickId === nextClickId) {
+  const isComposite = Boolean(executionState?.isComposite);
+  const nextItemId = isComposite ? executionState.activeItemId ?? null : null;
+  if (state.activeCompositeItemId !== nextItemId) {
+    const previousItemId = state.activeCompositeItemId;
+    state.activeCompositeItemId = nextItemId;
+    for (const id of [previousItemId, nextItemId]) {
+      if (!id) continue;
+      refs.compositeList.querySelector(`[data-click-id="${CSS.escape(id)}"] > .click-item-row > .click-card`)
+        ?.classList.toggle("click-card--running", id === nextItemId);
+    }
+  }
+  if (state.activeExecutionClickId === nextClickId && state.isCompositeRunning === isComposite) {
     return;
   }
 
   state.activeExecutionClickId = nextClickId;
+  state.isCompositeRunning = isComposite;
+  syncPlaybackStatusVisibility();
   render();
 }
 
@@ -59,6 +80,9 @@ function formatRemainingMs(remainingMs) {
 }
 
 function getExecutionCycleCounts(executionState) {
+  if (executionState.isComposite) {
+    return { remainingCycles: executionState.remainingCycles, totalRepeats: executionState.totalRepeats };
+  }
   const totalRepeats = Math.min(999, Math.max(1, Number(executionState.repeats) || 1));
   const stepsPerCycleRaw = Number(executionState.stepsPerCycle);
   const stepsPerCycle = Number.isFinite(stepsPerCycleRaw) && stepsPerCycleRaw > 0
@@ -106,14 +130,19 @@ async function refreshExecutionStatus({ silent = false } = {}) {
     return response;
   }
 
+  const wasRunning = state.activeExecutionClickId !== null;
   clearExecutionPolling();
   setActiveExecutionClickId(null);
   hideStopExecutionButton();
-  if (!silent) {
+  if (!silent || response?.lastEvent) {
     const description = describeExecutionEvent(response?.lastEvent);
     if (description) {
       setStatus(description.text, { error: description.error });
+    } else if (wasRunning) {
+      setStatus("");
     }
+  } else if (wasRunning) {
+    setStatus("");
   } else {
     syncPopupHeight();
   }
@@ -127,7 +156,7 @@ async function stopActiveCheckMode() {
 }
 
 async function toggleCheckMode(macroId) {
-  const macro = clicks.find((item) => item.id === macroId);
+  const macro = findSimpleScenario(macroId);
   if (!macro) {
     setStatus(t("notFound"));
     return;
@@ -205,7 +234,7 @@ function describeExecutionEvent(event) {
 }
 
 async function startExecution(macroId) {
-  const macro = clicks.find((item) => item.id === macroId);
+  const macro = findSimpleScenario(macroId);
   if (!macro) {
     setStatus(t("notFound"));
     return;

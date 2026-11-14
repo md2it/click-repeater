@@ -11,6 +11,7 @@ const settings = {
   skipNewClickExplanation: false,
   skipDisplayMovesExplanation: false,
   skipModeExplanation: false,
+  showComposites: false,
   darkTheme: false
 };
 
@@ -24,6 +25,9 @@ const state = {
   pendingModeClickId: null,
   activeCheckClickId: null,
   activeExecutionClickId: null,
+  activeCompositeItemId: null,
+  isCompositeRunning: false,
+  recordingCompositeId: null,
   executionPollTimer: null,
   soundPreviewClickTimer: null,
   soundPreviewReleaseTimer: null,
@@ -36,6 +40,7 @@ const refs = {
   menuButtons: document.querySelectorAll(".popup-menu-btn"),
   pages: document.querySelectorAll("[data-page-content]"),
   list: document.getElementById("clicks-list"),
+  compositeList: document.getElementById("composite-list"),
   status: document.getElementById("status-line"),
   stopExecutionBtn: document.getElementById("stop-execution-btn"),
   recordBtn: document.getElementById("record-btn"),
@@ -66,6 +71,8 @@ const refs = {
   settingSkipNewRecording: document.getElementById("setting-skip-new-recording"),
   settingSkipDisplayMoves: document.getElementById("setting-skip-display-moves"),
   settingSkipMode: document.getElementById("setting-skip-mode"),
+  settingShowComposites: document.getElementById("setting-show-composites"),
+  compositeMenuButton: document.querySelector('.popup-menu-btn[data-page="composites"]'),
   settingDarkTheme: document.getElementById("setting-dark-theme"),
   supportSurveyModal: document.getElementById("support-survey-modal"),
   supportSurveyTitle: document.getElementById("support-survey-title"),

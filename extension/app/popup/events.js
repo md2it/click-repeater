@@ -47,7 +47,7 @@ function onDragMove(event) {
   }
 }
 
-function onDragEnd() {
+function onDragEnd(event) {
   document.removeEventListener("pointermove", onDragMove);
   document.removeEventListener("pointerup", onDragEnd);
   document.removeEventListener("pointercancel", onDragEnd);
@@ -57,7 +57,7 @@ function onDragEnd() {
     return;
   }
 
-  const { dragIndex, currentSlot, clickId, items, item } = drag;
+  const { dragIndex, currentSlot, clickId, isCompositeEntry, items, item } = drag;
   drag = null;
 
   for (const el of items) {
@@ -72,11 +72,21 @@ function onDragEnd() {
     card.style.boxShadow = "";
   }
 
-  if (dragIndex !== currentSlot) {
-    const srcIndex = clicks.findIndex((m) => m.id === clickId);
-    if (srcIndex >= 0) {
-      const [moved] = clicks.splice(srcIndex, 1);
-      clicks.splice(currentSlot, 0, moved);
+  if (event.type === "pointerup" && dragIndex !== currentSlot) {
+    const parent = findCompositeWithItem(clickId);
+    const entries = isCompositeEntry ? composites : parent?.items ?? clicks;
+    const [moved] = entries.splice(dragIndex, 1);
+    entries.splice(currentSlot, 0, moved);
+    if (isCompositeEntry) {
+      void persistCompositeOperation({
+        type: "move", compositeId: clickId, beforeId: entries[currentSlot + 1]?.id,
+      });
+    } else if (parent) {
+      void persistCompositeOperation({
+        type: "move-item", compositeId: parent.id, itemId: clickId,
+        beforeId: entries[currentSlot + 1]?.id,
+      });
+    } else {
       void persistClicks();
     }
   }
@@ -84,13 +94,13 @@ function onDragEnd() {
   render();
 }
 
-refs.list.addEventListener("pointerdown", (event) => {
+function onListPointerDown(event) {
   const handle = event.target.closest("[data-action='drag-handle']");
   if (!handle) {
     return;
   }
 
-  const dragItem = handle.closest("li[data-click-id]");
+  const dragItem = handle.closest("li[data-click-id], li[data-composite-entry-id]");
   if (!dragItem) {
     return;
   }
@@ -102,7 +112,9 @@ refs.list.addEventListener("pointerdown", (event) => {
     closeManageMenu({ instant: true });
   }
 
-  const items = [...refs.list.querySelectorAll("li[data-click-id]")];
+  const isCompositeEntry = Boolean(dragItem.dataset.compositeEntryId);
+  const idKey = isCompositeEntry ? "compositeEntryId" : "clickId";
+  const items = [...dragItem.parentElement.children].filter((item) => item.dataset[idKey]);
   const dragIndex = items.indexOf(dragItem);
   const rects = items.map((el) => el.getBoundingClientRect());
   const gap = items.length > 1 ? rects[1].top - rects[0].bottom : 8;
@@ -132,15 +144,16 @@ refs.list.addEventListener("pointerdown", (event) => {
     dragIndex,
     currentSlot: dragIndex,
     slotHeight,
-    clickId: dragItem.dataset.clickId,
+    clickId: dragItem.dataset[idKey],
+    isCompositeEntry,
   };
 
   document.addEventListener("pointermove", onDragMove);
   document.addEventListener("pointerup", onDragEnd);
   document.addEventListener("pointercancel", onDragEnd);
-});
+}
 
-refs.list.addEventListener("click", (event) => {
+function onListClick(event) {
   const target = event.target.closest("button");
   if (!target) {
     return;
@@ -169,15 +182,15 @@ refs.list.addEventListener("click", (event) => {
       openManageMenu(macroId, target);
     }
   }
-});
+}
 
-refs.list.addEventListener("change", (event) => {
+function onListChange(event) {
   const input = event.target.closest("input[data-action='set-repeats']");
   if (!input) {
     return;
   }
 
-  const macro = clicks.find((item) => item.id === input.dataset.id);
+  const macro = findSimpleScenario(input.dataset.id);
   if (!macro) {
     setStatus(t("notFound"));
     return;
@@ -185,12 +198,19 @@ refs.list.addEventListener("change", (event) => {
 
   normalizeRepeatInput(input);
   macro.repeats = Number(input.value);
-  void persistClicks().then(() => {
+  void persistSimpleScenario(macro.id, { repeats: macro.repeats }).then(() => {
     setStatus(t("repeatChanged", { name: macro.name, repeats: macro.repeats }));
   });
-});
+}
+
+for (const list of [refs.list, refs.compositeList]) {
+  list.addEventListener("pointerdown", onListPointerDown);
+  list.addEventListener("click", onListClick);
+  list.addEventListener("change", onListChange);
+}
 
 refs.recordBtn.addEventListener("click", () => {
+  state.recordingCompositeId = null;
   if (settings.skipNewClickExplanation) {
     void startCreateMode();
   } else {
@@ -210,7 +230,7 @@ document.addEventListener("keydown", (event) => {
 
 refs.actionListDetail.addEventListener("change", () => {
   state.showDetailedSteps = refs.actionListDetail.checked;
-  const macro = clicks.find((item) => item.id === state.actionListClickId);
+  const macro = findSimpleScenario(state.actionListClickId);
   renderActionListSteps(getStepsForClick(state.actionListClickId), macro?.mode ?? "position");
 });
 
@@ -264,7 +284,7 @@ refs.displayMovesVisibleBtn.addEventListener("click", async () => {
     syncSettingsUI();
     await persistSettings();
   }
-  const macro = clicks.find((item) => item.id === state.pendingDisplayMovesClickId);
+  const macro = findSimpleScenario(state.pendingDisplayMovesClickId);
   closeDisplayMovesModal();
   if (macro) {
     await applyDisplayMoves(macro, true);
@@ -277,7 +297,7 @@ refs.displayMovesStealthBtn.addEventListener("click", async () => {
     syncSettingsUI();
     await persistSettings();
   }
-  const macro = clicks.find((item) => item.id === state.pendingDisplayMovesClickId);
+  const macro = findSimpleScenario(state.pendingDisplayMovesClickId);
   closeDisplayMovesModal();
   if (macro) {
     await applyDisplayMoves(macro, false);
@@ -300,7 +320,7 @@ refs.modePositionBtn.addEventListener("click", async () => {
     syncSettingsUI();
     await persistSettings();
   }
-  const macro = clicks.find((item) => item.id === state.pendingModeClickId);
+  const macro = findSimpleScenario(state.pendingModeClickId);
   closeModeModal();
   if (macro) {
     await applyMode(macro, "position");
@@ -313,7 +333,7 @@ refs.modeElementBtn.addEventListener("click", async () => {
     syncSettingsUI();
     await persistSettings();
   }
-  const macro = clicks.find((item) => item.id === state.pendingModeClickId);
+  const macro = findSimpleScenario(state.pendingModeClickId);
   closeModeModal();
   if (macro) {
     await applyMode(macro, "element");
@@ -361,6 +381,12 @@ refs.settingSkipDisplayMoves.addEventListener("change", async () => {
 
 refs.settingSkipMode.addEventListener("change", async () => {
   settings.skipModeExplanation = refs.settingSkipMode.checked;
+  await persistSettings();
+});
+
+refs.settingShowComposites.addEventListener("change", async () => {
+  settings.showComposites = refs.settingShowComposites.checked;
+  syncSettingsUI();
   await persistSettings();
 });
 

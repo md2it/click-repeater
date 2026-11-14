@@ -4,6 +4,13 @@ Regular SemVer logic. Review the [release requirements](RELEASE.md).
 
 ## RELEASES
 
+### 1.7.0
+- Added composite scenarios for running simple scenarios and pauses in sequence
+- The popup reopens on the last selected page
+- Repeat count fields show increment and decrement arrows on hover or focus
+- Clicking the Speed label activates the speed control
+- Expanded scenario cards glow around their outline, and the same highlight marks the scenario being played
+
 ### 1.6.0
 - Replaced Record with Stop during playback and added Stop to the active scenario card
 - Marked other scenario start buttons unavailable during playback

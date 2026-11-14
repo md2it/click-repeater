@@ -8,6 +8,7 @@ import { ensureContentScripts, applyRecordingListenersAllFrames } from "./inject
 // syncActionBadge is only referenced inside function bodies below, never at
 // module-evaluation time.
 import { syncActionBadge } from "./badge.js";
+import { compositeProgress, resumeCompositeItem, completeCompositeItem } from "./composite-execution.js";
 
 async function resolveTabOrigin(tabId) {
   try {
@@ -18,11 +19,12 @@ async function resolveTabOrigin(tabId) {
   }
 }
 
-async function sendExecutionRunMessage(tabId, payload) {
+export async function sendExecutionRunMessage(tabId, payload) {
   const targetFrameId = getExecutionFrameId(payload.steps);
   const executionMessage = {
     type: "execution-run",
     clickId: payload.clickId,
+    runToken: payload.runToken,
     clickName: payload.clickName,
     repeats: payload.repeats,
     steps: payload.steps,
@@ -123,6 +125,13 @@ export async function resumeExecutionAfterNavigation(tabId) {
     return { ok: false, error: "inactive" };
   }
 
+  if (state.composite) {
+    if (!state.pauseUntil && state.completedSteps >= state.totalSteps) {
+      return completeCompositeItem(state);
+    }
+    return resumeCompositeItem(state);
+  }
+
   const steps = Array.isArray(state.steps) ? state.steps : [];
   if (!steps.length) {
     await stopExecutionWithEvent({ kind: "failed", clickName: state.clickName });
@@ -217,7 +226,12 @@ export async function getRuntimeExecutionState() {
     stepsPerCycle: Number.isFinite(Number(state.stepsPerCycle)) && Number(state.stepsPerCycle) > 0 ? Number(state.stepsPerCycle) : 1,
     completedSteps: Number.isFinite(Number(state.completedSteps)) ? Number(state.completedSteps) : 0,
     totalSteps: Number.isFinite(Number(state.totalSteps)) ? Number(state.totalSteps) : 0,
-    remainingMs: Number.isFinite(Number(state.remainingMs)) ? Number(state.remainingMs) : 0
+    remainingMs: Number.isFinite(Number(state.remainingMs)) ? Number(state.remainingMs) : 0,
+    ...(state.composite ? {
+      isComposite: true,
+      runToken: state.runToken,
+      ...compositeProgress(state),
+    } : {})
   };
 }
 

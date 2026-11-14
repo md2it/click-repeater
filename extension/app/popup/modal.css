@@ -225,7 +225,6 @@ body:not(.viewport-tooltips-ready) .modal-close-btn:focus-visible[data-tooltip]:
 }
 
 .repeat-input {
-  appearance: textfield;
   border: 0;
   padding: 0;
   color: #1a1a1a;
@@ -237,11 +236,18 @@ body:not(.viewport-tooltips-ready) .modal-close-btn:focus-visible[data-tooltip]:
 .repeat-input::-webkit-inner-spin-button,
 .repeat-input::-webkit-outer-spin-button {
   margin: 0;
-  appearance: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:is(.manage-menu-field, .repeat-field):is(:hover, :focus-within) .repeat-input::-webkit-inner-spin-button,
+:is(.manage-menu-field, .repeat-field):is(:hover, :focus-within) .repeat-input::-webkit-outer-spin-button {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .click-repeats {
-  width: 3ch;
+  width: calc(3ch + 1em);
   outline: 0;
 }
 

@@ -3,6 +3,7 @@ import { ensureContentScripts, applyRecordingListenersAllFrames } from "./inject
 import { stopCheckMode, resumeCheckModeAfterNavigation } from "./check.js";
 import { stopExecutionWithEvent, resumeExecutionAfterNavigation } from "./execution.js";
 import { syncActionBadge } from "./badge.js";
+import { enqueueModeOperation } from "./mode-queue.js";
 import { ext } from "../api.js";
 
 // Prefer changeInfo.url from tabs.onUpdated; fall back to tab.url / tabs.get.
@@ -57,6 +58,13 @@ async function stopExecutionForTab(tabId) {
   const state = await readExecutionState();
   if (!state?.isRunning || state.tabId !== tabId) {
     return;
+  }
+  if (state.composite && state.pauseUntil) {
+    try {
+      await ext.tabs.sendMessage(tabId, { type: "execution-stop" });
+    } catch {
+      // Navigation or tab closure may already have removed the countdown.
+    }
   }
   await stopExecutionWithEvent({
     kind: "stopped",
@@ -145,26 +153,28 @@ async function handleExecutionNavigation(tabId, nextOrigin) {
 ext.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   // Explicit URL updates: stop as soon as a different origin is visible.
   if (changeInfo.url) {
-    void (async () => {
+    void enqueueModeOperation(async () => {
       const nextOrigin = await resolveTabOrigin(tabId, changeInfo, tab);
       await stopModesIfOriginLostOrChanged(tabId, nextOrigin, { requireKnownOrigin: false });
-    })();
+    }).catch(() => {});
   }
 
   if (changeInfo.status === "complete") {
-    void (async () => {
+    void enqueueModeOperation(async () => {
       const nextOrigin = await resolveTabOrigin(tabId, changeInfo, tab);
       // After navigation finishes, unknown URL/origin → stop (do not guess same-origin).
       await stopModesIfOriginLostOrChanged(tabId, nextOrigin, { requireKnownOrigin: true });
       await handleRecordingNavigation(tabId, nextOrigin);
       await handleCheckNavigation(tabId, nextOrigin);
       await handleExecutionNavigation(tabId, nextOrigin);
-    })();
+    }).catch(() => {});
   }
 });
 
 ext.tabs.onRemoved.addListener((tabId) => {
-  void stopRecordingForTab(tabId);
-  void stopCheckModeForTab(tabId);
-  void stopExecutionForTab(tabId);
+  void enqueueModeOperation(async () => {
+    await stopRecordingForTab(tabId);
+    await stopCheckModeForTab(tabId);
+    await stopExecutionForTab(tabId);
+  }).catch(() => {});
 });

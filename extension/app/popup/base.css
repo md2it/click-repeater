@@ -100,6 +100,11 @@ body {
   box-shadow: 0 0 5px rgba(19, 25, 48, 0.07);
 }
 
+.click-card:is(.click-card--running, :has(> .manage-menu-accordion.is-open, > .composite-details)) {
+  box-shadow: 0 0 0 1px var(--card-glow-outline, rgba(43, 83, 203, 0.28)),
+    0 0 8px var(--card-glow-shadow, rgba(43, 83, 203, 0.24));
+}
+
 .clicks-list > li.click-row {
   background: rgba(255, 255, 255, 0.82);
   border: 1px solid #d8dcec;
@@ -108,7 +113,8 @@ body {
   box-shadow: 0 0 5px rgba(19, 25, 48, 0.07);
 }
 
-.click-item-row .click-row {
+.click-item-row .click-row,
+.composite-entry > .click-card > .click-row {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -267,4 +273,148 @@ body {
 .drag-handle svg {
   width: 16px;
   height: 16px;
+}
+
+.composite-entry > .click-card > .click-row > .click-name {
+  flex: 1;
+  min-width: 0;
+  text-align: start;
+}
+
+.composite-details {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  padding: 0 8px 8px;
+}
+
+.composite-items:empty {
+  display: none;
+}
+
+.composite-item-section {
+  display: grid;
+  gap: 8px;
+}
+
+.composite-explanation {
+  margin: 0;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.composite-add-label {
+  flex-basis: 100%;
+}
+
+.composite-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.composite-details > :not(:first-child):not(:empty) {
+  padding-block-start: 8px;
+  border-block-start: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+}
+
+.composite-actions .btn {
+  min-height: 28px;
+  padding: 4px 7px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.composite-actions .btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.composite-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.composite-edit-row .manage-menu-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.composite-picker {
+  appearance: none;
+  min-width: 0;
+  max-width: 100%;
+  field-sizing: content;
+}
+
+.composite-picker option {
+  background: Canvas;
+  color: CanvasText;
+}
+
+.composite-items .click-row .run-btn:not(:disabled):not(.run-btn--stop) {
+  border-color: transparent;
+  color: #667085;
+  background: transparent;
+}
+
+.composite-items .click-row .run-btn:not(:disabled):not(.run-btn--stop):is(:hover, :focus-visible) {
+  border-color: currentColor;
+  background: rgba(143, 150, 179, 0.16);
+}
+
+html.dark-theme .composite-items .click-row .run-btn:not(:disabled):not(.run-btn--stop) {
+  color: #a6aec1;
+}
+
+.pause-actions:not([hidden]) {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-block-start: 1px solid rgba(143, 150, 179, 0.35);
+}
+
+.pause-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 30px;
+  color: #8f96b3;
+}
+
+.pause-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.composite-pause-field {
+  min-width: 0;
+  justify-content: space-between;
+  flex: 1;
+  gap: 8px;
+}
+
+.composite-pause-field input {
+  width: calc(6ch + 1em);
+}
+
+.popup-content > #playback-status {
+  padding: 12px 12px 0;
+}
+
+#stop-execution-btn {
+  width: 100%;
+  margin-block-end: 12px;
+}
+
+.playback-hint,
+#status-line:empty {
+  display: none;
+}
+
+[data-page-content="clicks"] #playback-status:has(#status-line:empty) [data-i18n="initialHint"],
+[data-page-content="composites"] #playback-status:has(#status-line:empty) [data-i18n="compositeHint"] {
+  display: block;
 }

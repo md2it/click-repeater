@@ -1,5 +1,6 @@
 const menuIcons = {
   clicks: iconSet.play,
+  composites: globalThis.clickRepeaterProjectIcons.circleChevronsRight,
   settings: iconSet.settings,
   about: iconSet.info,
   recommend: iconSet.heartHandshake
@@ -37,6 +38,7 @@ function syncPopupLocale() {
   void refreshSupportSurveyAboutStatistic();
   const menuKeys = {
     clicks: "navClicks",
+    composites: "navComposites",
     settings: "navSettings",
     about: "navAbout",
     recommend: "navRecommend"
@@ -59,7 +61,7 @@ refs.languageSelector.addEventListener("click", async (event) => {
   if (!button?.dataset.locale) return;
   await selectLocale(button.dataset.locale);
   syncPopupLocale();
-  setStatus(t("initialHint"));
+  if (state.activeExecutionClickId === null) setStatus("");
 });
 
 function selectPopupPage(pageName) {
@@ -73,23 +75,46 @@ function selectPopupPage(pageName) {
     button.setAttribute("aria-current", active ? "page" : "false");
   }
 
+  const playbackStatus = document.getElementById("playback-status");
+  if (pageName === "clicks") {
+    refs.recordBtn.after(playbackStatus);
+  } else if (pageName === "composites") {
+    createCompositeBtn.after(playbackStatus);
+  } else {
+    playbackStatus.parentElement.closest(".popup-content").prepend(playbackStatus);
+  }
+  syncPlaybackStatusVisibility();
   syncPopupHeight();
 }
 
-refs.menu.addEventListener("click", (event) => {
-  const button = event.target.closest(".popup-menu-btn");
-  if (button?.dataset.page) {
-    selectPopupPage(button.dataset.page);
-  }
-});
+const LAST_POPUP_PAGE_KEY = "last_popup_page";
+const validPopupPages = new Set(Array.from(refs.menuButtons, (button) => button.dataset.page));
+const requestedPopupPage = new URLSearchParams(location.search).get("page");
+const explicitPopupPage = validPopupPages.has(requestedPopupPage) ? requestedPopupPage : null;
+let chosePopupPage = false;
 
-const VALID_POPUP_PAGES = new Set(["clicks", "settings", "about", "recommend"]);
-
-function applyInitialPage() {
-  const page = new URLSearchParams(location.search).get("page");
-  if (page && VALID_POPUP_PAGES.has(page)) {
-    selectPopupPage(page);
-  }
+function rememberPopupPage(pageName) {
+  selectPopupPage(pageName);
+  void ext.storage.local.set({ [LAST_POPUP_PAGE_KEY]: pageName }).catch(() => {});
 }
 
-applyInitialPage();
+refs.menu.addEventListener("click", (event) => {
+  const page = event.target.closest(".popup-menu-btn")?.dataset.page;
+  if (!validPopupPages.has(page)) return;
+
+  chosePopupPage = true;
+  rememberPopupPage(page);
+});
+
+async function restorePopupPage() {
+  if (explicitPopupPage) {
+    rememberPopupPage(explicitPopupPage);
+    return;
+  }
+
+  const data = await ext.storage.local.get(LAST_POPUP_PAGE_KEY).catch(() => ({}));
+  if (chosePopupPage) return;
+
+  const savedPage = data?.[LAST_POPUP_PAGE_KEY];
+  selectPopupPage(validPopupPages.has(savedPage) ? savedPage : "clicks");
+}

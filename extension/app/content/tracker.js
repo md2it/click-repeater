@@ -188,3 +188,21 @@ function normalizeViewportPoint(point) {
     y: clamp(point.y, VIEWPORT_EDGE_PADDING, maxY)
   };
 }
+
+function setTrackerPauseCountdown(seconds) {
+  const anchor = trackerState.motionElement;
+  if (!(anchor instanceof HTMLElement)) return;
+  let label = anchor.querySelector("[data-click-repeater-countdown]");
+  if (!label) {
+    label = document.createElement("span");
+    label.dataset.clickRepeaterCountdown = "";
+    label.style.cssText = "position:absolute;top:4px;left:30px;transform:translateX(var(--countdown-offset,0));padding:2px 6px;border-radius:4px;background:#012292;color:#fff;font:600 13px/1.4 system-ui;white-space:nowrap";
+    anchor.append(label);
+  }
+  label.textContent = String(seconds);
+  const { left: anchorX, top: anchorY } = anchor.getBoundingClientRect();
+  label.style.top = anchorY + 4 + label.offsetHeight > window.innerHeight ? `-${label.offsetHeight}px` : "4px";
+  const left = anchorX + 30 + label.offsetWidth > window.innerWidth;
+  label.style.left = left ? "-4px" : "30px";
+  label.style.setProperty("--countdown-offset", left ? "-100%" : "0");
+}

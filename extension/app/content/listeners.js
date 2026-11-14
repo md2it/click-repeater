@@ -6,7 +6,8 @@ function handleExecutionClickInterrupt(event) {
 
   executionState.stopRequested = true;
   stopExecutionClickListener();
-  void chrome.runtime.sendMessage({ type: "execution-user-click-interrupt" });
+  clearCompositePause();
+  void chrome.runtime.sendMessage({ type: "execution-user-click-interrupt", runToken: executionState.runToken });
 }
 
 function startExecutionClickListener() {

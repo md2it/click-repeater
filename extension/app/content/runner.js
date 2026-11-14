@@ -182,9 +182,11 @@ function runAction(token, fromPoint, action) {
 
 async function runExecution(payload) {
   if (executionState.isRunning) {
+    if (payload?.runToken && payload.runToken === executionState.runToken) return { ok: true };
     return { ok: false, error: "already_running" };
   }
 
+  const runToken = payload?.runToken;
   const clickId = typeof payload?.clickId === "string" ? payload.clickId : "";
   const clickName = typeof payload?.clickName === "string" && payload.clickName.trim() ? payload.clickName.trim() : "clicks";
   const repeats = Number.isFinite(Number(payload?.repeats)) && Number(payload.repeats) > 0 ? Math.floor(Number(payload.repeats)) : 1;
@@ -207,6 +209,7 @@ async function runExecution(payload) {
     : 0;
 
   executionState.isRunning = true;
+  executionState.runToken = runToken;
   executionState.stopRequested = false;
   executionState.unloadDuringRun = false;
   executionState.token += 1;
@@ -236,6 +239,7 @@ async function runExecution(payload) {
 
   void chrome.runtime.sendMessage({
     type: "execution-progress",
+    runToken,
     clickId,
     clickName,
     completedSteps,
@@ -262,9 +266,11 @@ async function runExecution(payload) {
 
           void chrome.runtime.sendMessage({
             type: "execution-progress",
+            runToken,
             clickId,
             clickName,
             completedSteps,
+            point: runToken && trackerState.motionElement ? executionState.lastPoint : undefined,
             totalSteps,
             remainingMs: remainingSteps * msPerStep
           });
@@ -277,6 +283,8 @@ async function runExecution(payload) {
 
       void chrome.runtime.sendMessage({
         type: "execution-completed",
+        runToken,
+        point: runToken && trackerState.motionElement ? executionState.lastPoint : undefined,
         clickId,
         clickName
       });
@@ -296,6 +304,7 @@ async function runExecution(payload) {
           : "execution_error";
       void chrome.runtime.sendMessage({
         type: "execution-stopped",
+        runToken,
         clickId,
         clickName,
         reason: stopReason

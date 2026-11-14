@@ -14,6 +14,7 @@
     <main class="popup-shell">
       <nav class="popup-menu" aria-label="Popup pages">
         <button class="popup-menu-btn active" type="button" data-page="clicks" aria-current="page"></button>
+        <button class="popup-menu-btn hidden" type="button" data-page="composites"></button>
         <button class="popup-menu-btn" type="button" data-page="settings"></button>
         <button class="popup-menu-btn" type="button" data-page="about"></button>
         <button class="popup-menu-btn" type="button" data-page="recommend"></button>
@@ -22,13 +23,20 @@
       <div class="popup-content">
         <section class="popup-page popup" data-page-content="clicks">
           <button id="record-btn" class="btn btn-primary" type="button" data-i18n="recordBtn">RECORD</button>
+        <div id="playback-status">
           <button id="stop-execution-btn" class="btn btn-danger hidden" type="button" data-i18n="stop">STOP</button>
-
+          <p class="status-line playback-hint" data-i18n="initialHint"></p>
+          <p class="status-line playback-hint" data-i18n="compositeHint"></p>
           <p id="status-line" class="status-line" role="status" aria-live="polite"></p>
-
+        </div>
           <section>
             <ul id="clicks-list" class="clicks-list"></ul>
           </section>
+        </section>
+
+        <section class="popup-page popup hidden" data-page-content="composites">
+          <button id="create-composite-btn" class="btn btn-primary" type="button" data-i18n="createComposite"></button>
+          <ul id="composite-list" class="clicks-list"></ul>
         </section>
 
         <section class="popup-page hidden" data-page-content="settings">
@@ -62,6 +70,13 @@
               <span class="settings-row-label" data-i18n="skipMode">Skip explanations for Position / Element setting</span>
               <span class="settings-toggle-wrap">
                 <input type="checkbox" id="setting-skip-mode" class="visually-hidden" />
+                <span class="toggle-switch-visual" aria-hidden="true"></span>
+              </span>
+            </label>
+            <label class="settings-row" for="setting-show-composites">
+              <span class="settings-row-label" data-i18n="showComposites">Show composite scenarios in the menu</span>
+              <span class="settings-toggle-wrap">
+                <input type="checkbox" id="setting-show-composites" class="visually-hidden" />
                 <span class="toggle-switch-visual" aria-hidden="true"></span>
               </span>
             </label>
@@ -253,6 +268,7 @@
     <script src="app/popup/step-display.js"></script>
     <script src="app/popup/execution.js"></script>
     <script src="app/popup/render.js"></script>
+    <script src="app/popup/composites.js"></script>
     <script src="app/popup/navigation.js"></script>
     <script src="app/popup/recommend.js"></script>
     <script src="app/popup/tooltip.js"></script>

@@ -13,3 +13,6 @@
 - A vertical menu is displayed on the left
   - Recommend uses the heart-handshake icon and is always the last item
 - Contains one of the PAGES, except WELCOME, which opens in a separate tab
+- On reopening, the popup restores the last page selected in its navigation or opened through a direct menu action. If the saved page is missing or unavailable, it opens Clicks
+- A direct menu action opens its specified page. Completing a recording within a composite opens Composite scenarios. On a restored page, the composite playback status and Stop remain available
+- The automatic transition after recording leaves the saved page selection intact

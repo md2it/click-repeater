@@ -28,6 +28,11 @@
 - "Skip explanations for Position / Element setting"
 	- Toggler
 	- Default: off
+- "Show composite scenarios in the menu"
+	- Toggler
+	- Default: off, including existing profiles without a saved value
+	- The setting persists and controls only the visibility of the Composite scenarios item in the popup menu
+	- Direct routes, last-page restoration, saved scenarios, and playback remain available
 - "Dark theme"
 	- Toggler
 	- Default: off

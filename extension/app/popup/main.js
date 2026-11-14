@@ -1,12 +1,13 @@
 
 async function init() {
+  await restorePopupPage();
   await cleanupLegacySettings();
   await initializeLocale();
   await readSettingsFromStorage();
   syncSettingsUI();
   syncPopupLocale();
   await refreshSupportSurveyAboutStatistic();
-  await loadClicks();
+  await Promise.all([loadClicks(), loadComposites()]);
   const createdClick = await completeCreateModeIfNeeded();
   await stopActiveCheckMode();
   render();
@@ -18,7 +19,7 @@ async function init() {
   }
 
   if (createdClick) {
-    const manageBtn = refs.list.querySelector(
+    const manageBtn = document.querySelector(
       `.manage-btn[data-id="${CSS.escape(createdClick.id)}"]`
     );
     if (manageBtn) {
@@ -38,7 +39,7 @@ async function init() {
     return;
   }
 
-  setStatus(t("initialHint"));
+  setStatus("");
 }
 
 init();

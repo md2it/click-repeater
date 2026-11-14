@@ -9,12 +9,14 @@ import {
 import { isRtlLocale } from "../i18n/rtl.js";
 
 const CONTEXT_MENU_CLICKS = "clicks";
+const CONTEXT_MENU_COMPOSITES = "composites";
 const CONTEXT_MENU_SETTINGS = "settings";
 const CONTEXT_MENU_ABOUT = "about";
 const CONTEXT_MENU_RECOMMEND = "recommend";
 
 const CONTEXT_MENU_EMOJI = {
   clicks: "▶️",
+  composites: "▶▶▶▶",
   settings: "⚙️",
   about: "ℹ️",
   recommend: "❤️",
@@ -22,6 +24,7 @@ const CONTEXT_MENU_EMOJI = {
 
 const CONTEXT_MENU_NAV_KEYS = {
   clicks: "navClicks",
+  composites: "navComposites",
   settings: "navSettings",
   about: "navAbout",
   recommend: "navRecommend",
@@ -61,7 +64,7 @@ function ensureContextMenu() {
     } catch (err) {
       console.error("[Click Repeater] contextMenus.removeAll failed:", err);
     }
-    for (const id of [CONTEXT_MENU_CLICKS, CONTEXT_MENU_SETTINGS, CONTEXT_MENU_ABOUT, CONTEXT_MENU_RECOMMEND]) {
+    for (const id of [CONTEXT_MENU_CLICKS, CONTEXT_MENU_COMPOSITES, CONTEXT_MENU_SETTINGS, CONTEXT_MENU_ABOUT, CONTEXT_MENU_RECOMMEND]) {
       await createContextMenuItem({
         id,
         title: contextMenuTitle(id, locale),
@@ -86,7 +89,7 @@ ext.storage.onChanged.addListener((changes, area) => {
 
 ext.contextMenus.onClicked.addListener((info, tab) => {
   const page = info.menuItemId;
-  if (page === CONTEXT_MENU_CLICKS || page === CONTEXT_MENU_SETTINGS ||
+  if (page === CONTEXT_MENU_CLICKS || page === CONTEXT_MENU_COMPOSITES || page === CONTEXT_MENU_SETTINGS ||
       page === CONTEXT_MENU_ABOUT || page === CONTEXT_MENU_RECOMMEND) {
     void openMainPopup(tab?.id, tab?.windowId, page);
   }
