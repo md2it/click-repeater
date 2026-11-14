@@ -42,14 +42,24 @@ TestHarness.test("playback stop replaces the record button above the scenario li
   const popupDocument = new DOMParser().parseFromString(await popupResponse.text(), "text/html");
   const recordButton = popupDocument.getElementById("record-btn");
   const stopButton = popupDocument.getElementById("stop-execution-btn");
+  const playbackStatus = popupDocument.getElementById("playback-status");
+  const statusLine = popupDocument.getElementById("status-line");
   const scenarioList = popupDocument.getElementById("clicks-list");
 
   TestHarness.assert(recordButton, "Record button must exist");
   TestHarness.assert(stopButton, "Stop button must exist");
-  TestHarness.assertEqual(recordButton.nextElementSibling, stopButton);
+  TestHarness.assert(playbackStatus, "Playback status container must exist");
+  TestHarness.assert(statusLine, "Playback status line must exist");
+  TestHarness.assert(scenarioList, "Simple scenario list must exist");
+  TestHarness.assertEqual(recordButton.nextElementSibling, playbackStatus);
+  TestHarness.assertEqual(playbackStatus.firstElementChild, stopButton);
   TestHarness.assert(
-    recordButton.compareDocumentPosition(scenarioList) & Node.DOCUMENT_POSITION_FOLLOWING,
-    "Playback controls must stay above the scenario list",
+    stopButton.compareDocumentPosition(statusLine) & Node.DOCUMENT_POSITION_FOLLOWING,
+    "Stop must appear above the playback explanation",
+  );
+  TestHarness.assert(
+    statusLine.compareDocumentPosition(scenarioList) & Node.DOCUMENT_POSITION_FOLLOWING,
+    "The playback explanation must appear above the scenario list",
   );
 });
 
