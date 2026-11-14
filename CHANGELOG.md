@@ -4,6 +4,9 @@ Regular SemVer logic. Review the [release requirements](RELEASE.md).
 
 ## RELEASES
 
+### 1.7.1
+- Renamed the About statistics section to Personal statistics and clarified in every language that it counts successfully completed scenario runs.
+
 ### 1.7.0
 - Added composite scenarios for running simple scenarios and pauses in sequence
 - The popup reopens on the last selected page
